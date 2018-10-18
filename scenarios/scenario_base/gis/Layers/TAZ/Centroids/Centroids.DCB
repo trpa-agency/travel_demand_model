@@ -1,0 +1,9 @@
+
+48
+"ID",I,1,4,0,10,0,,,"",,Blank,
+"AREA:1",R,5,8,0,19,11,,,"",,Blank,
+"PERIMETER",R,13,8,0,19,11,,,"",,Blank,
+"TAZ",I,21,4,0,9,0,,,"",,Blank,
+"Shape_Leng",R,25,8,0,19,11,,,"",,Blank,
+"Shape_Area",R,33,8,0,19,11,,,"",,Blank,
+"PopulatedArea",R,41,8,0,10,2,,,"",,Blank,
