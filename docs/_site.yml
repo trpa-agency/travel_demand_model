@@ -1,0 +1,32 @@
+name: Tahoe-model
+output_dir: .
+navbar:
+  title: "Tahoe Model Documentation"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Pages"
+      menu:
+        - text: "UserGuide"
+          href: UserGuide.html
+        - text: "Resident Model"
+          href: ResidentModel.html
+        - text: "External Workers Model"
+          href: ExternalWorkers.html
+        - text: "Visitor Models"
+          href: VisitorModels.html
+        - text: "Traffic Assignment"
+          href: TrafficAssignment.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/trpa-agency/travel_demand_model
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    includes:
+        after_body: include/after_body.html
+    css: styles.css
+    highlight: textmate
+    theme: yeti
