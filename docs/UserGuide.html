@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Tahoe Model Users Guide</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 45px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+
+.section h2 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h3 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h4 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h5 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h6 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Tahoe Model Documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Pages
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="UserGuide.html">UserGuide</a>
+    </li>
+    <li>
+      <a href="ResidentModel.html">Resident Model</a>
+    </li>
+    <li>
+      <a href="ExternalWorkers.html">External Workers Model</a>
+    </li>
+    <li>
+      <a href="VisitorModels.html">Visitor Models</a>
+    </li>
+    <li>
+      <a href="TrafficAssignment.html">Traffic Assignment</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/trpa-agency/travel_demand_model">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Tahoe Model Users Guide</h1>
+
+</div>
+
+
+<div id="chapter-1.-introduction" class="section level1">
+<h1>Chapter 1. Introduction</h1>
+<p>This chapter introduces the Tahoe Activity-Based Travel Demand Model. It will briefly discuss the model components, as well as the user interface. It is by no means intended as a definitive guide to the details of the model; for that, see The Tahoe Activity Based Travel Demand Model Documentation.</p>
+<div id="the-tahoe-activity-based-model" class="section level2">
+<h2>The Tahoe Activity Based Model</h2>
+<p>The Tahoe Activity Base Travel Demand Model (from here on referred to as Tahoe AB Model) is a travel demand model developed for the Lake Tahoe basin region for the Tahoe Regional Planning Association (TRPA). It is a micro-simulated, activity-based model which can be used to generate traffic projections for present-day and future scenarios for both summer and winter seasons. The model components can be briefly described as follows:</p>
+<ul>
+<li><p><em>Resident Model</em> - This covers the population that lives full-time within the Tahoe basin region. This model includes:</p>
+<ul>
+<li><p>A population synthesizer that microsimulates a resident population which matches the income, house- hold size, and worker distributions of the region.</p></li>
+<li><p>A daily activity pattern model which determines the broad travel patterns for every person in the population.</p></li>
+<li><p>Tour generation models to determine the number, type, and participation in joint and individual tours.</p></li>
+<li><p>Destination, time-of-day, and mode choice models for every tour made by the population.</p></li>
+<li><p>Tour stop generation, destination, and mode choice models for every tour made by the population.</p></li>
+</ul></li>
+<li><em>External Worker Model</em> - This covers the people who live outside of the Tahoe basin region, but work within it. This model includes:
+<ul>
+<li><p>A population synthesizer to microsimulate the external workers to correctly fill the employment in the region.</p></li>
+<li><p>An origin choice model to determine which external station the workers orginated from.</p></li>
+<li><p>A time-of-day choice model for the external worker tours.</p></li>
+</ul></li>
+<li><p><em>Visitor Model</em> - This covers all of the people who come to visit the Tahoe basin region or live within it on a seasonal basis. This model includes:</p>
+<ul>
+<li><p>Population synthesizers for overnight, day, and thru visitor populations. These synthesizers are in- dexed to the vacancy rate at hotels, campgrounds, and other visitor residencies.</p></li>
+<li><p>Pattern choice models which determine the number and type of tours and stops made by the overnight and day visitor populations.</p></li>
+<li><p>Destination, time-of-day, and mode choice models for each of the tours and stops made by the overnight and day visitor populations.</p></li>
+</ul></li>
+<li><p><em>Traffic Assignment Model</em> - This model collects the results of the resident, external worker, and visitor models and assigns them to the Tahoe street network. The assignments are broken into four skim periods:</p>
+<ul>
+<li><p>AM Peak - 6:00 AM - 9:00 AM</p></li>
+<li><p>Midday - 9:00 AM - 3:00 PM</p></li>
+<li><p>PM Peak - 3:00 PM - 6:00 PM</p></li>
+<li><p>Overnight - 6:00 PM - 6:00 AM</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="the-user-interface" class="section level2">
+<h2>The User Interface</h2>
+<p>The access to the Tahoe AB Model is made through the TransCAD user interface. This interface pro- vides control over creating and editing model scenarios, running the model for scenarios, and viewing and analyzing the model results. In theory, the user should be able to access everything related to the Tahoe AB Model through this interface. The remainder of this document will primarily focus on how to set up and use the model via the user interface.</p>
+</div>
+</div>
+<div id="chapter-2.-installation" class="section level1">
+<h1>Chapter 2. Installation</h1>
+<p>This orignal model came with an installer. Going forward the installation will be plug an play type. User will be able to run the model directly after dowloading from Github. The contents below iwll be revised once the updating is over in Task 3.</p>
+<ul>
+<li><p>In the chosen installation directory it creates a new directory: TahoeModel/. Within this directory, the following subdirectories and files are created:</p></li>
+<li><p>A reference/ directory, which includes all of the model application code and related fixed files. This includes, but is not limited to, Java code used to run a majority of the model, and the GISDK code used to run the user interface. Also included are model specification files, image files, and the base scenario.</p></li>
+<li><p>A scenarios/ directory, which will include all of the scenario specific files and data.</p></li>
+<li><p>A documentation/ directory, which includes all of the documentation related to the model.</p></li>
+<li><p>A program shortcut to quickly start the model’s user interface.</p></li>
+<li><p>If requested, shortcuts to quickly start the model interface will be created in the following places:</p></li>
+<li><p>In a program group in the user’s Start Menu.</p></li>
+<li><p>On the user’s desktop.</p></li>
+<li><p>If requested, the model is added to the TransCAD “Add-Ins”; the installer will add a required line of text to the Add-ins.txt file located in the TransCAD installation directory.</p></li>
+<li><p>A TahoeModelRunnerBackup.txt is created in the TransCAD installation directory. This file contains the basic setup information used to load the user interface in the correct state. Uninstalling To uninstall the Tahoe AB Model, the installation actions described above should be reversed. Specifically, all created files and directories should be deleted and the relevant line in Add-ins.txt should be removed (if necessary). An automatic unistaller is not provided as it may be desirable to save certain data (e.g. the scenarios/ directory). Also, an automated unistaller might create the possibility of unintentionally deleting important data.</p></li>
+</ul>
+</div>
+<div id="chapter-3.-user-interface-overview" class="section level1">
+<h1>Chapter 3. User Interface: Overview</h1>
+<p>This chapter will introduce the user interface for the Tahoe AB Model. It will discuss its basic features and functions. The User Interface Figure 3.1, The Tahoe AB Model User Interface â shows the Tahoe AB Model as it appears when it is first opened. It consists of two main sections, the scenario control section and the model control section, which is broken up into multiple tabs. These sections and tabs will be discussed in the succeeding chapters. This chapter will deal with the the overall interface control.</p>
+<div class="figure">
+<img src="figs/ui.png" alt="Figure 3.1. The Tahoe AB Model User Interface." />
+<p class="caption">Figure 3.1. The Tahoe AB Model User Interface.</p>
+</div>
+<p>Note If the Tahoe AB Model user interface is being run for the first time, then the following warning may appear:</p>
+<div class="figure">
+<img src="figs/no_scenario.png" alt="Figure 3.2. Scenario Path Warning." />
+<p class="caption">Figure 3.2. Scenario Path Warning.</p>
+</div>
+<p>This does not signal an error, it merely is indicating that no scenarios have been set up yet. To avoid seeing this message again, create at least one new scenario as described in Chapter 4, User Interface: Scenario Control and Execution Tab . General User Interface Controls There are only a couple of general controls for the user interface. The first of these is the minimizing button. This is the white section at the top of the interface with the TRPA logo. Pressing on this button will minimize the interface, so that it looks like the picture in Figure 3.3, â The Minimized Tahoe AB Model User Interface â. Pressing this button when the interface is minimized will open it to its full size again.</p>
+<div class="figure">
+<img src="figs/ui_min.png" alt="Figure 3.3. The Minimized Tahoe AB Model User Interface." />
+<p class="caption">Figure 3.3. The Minimized Tahoe AB Model User Interface.</p>
+</div>
+<p>The other general control is the Quit button. This closes the interface, as well as any open maps, matrices, or other TransCAD files. It also performs important cleanup operations. Alternatively, the button in the upper right hand corner of the interface may be pressed. If TransCAD is closed before exiting the interface, then the cleanup operations will not be performed and the interface may be placed invalid configuration the next time it is opened. Thought this should never break the interface, it may be left in a state that will not reflect recent changes to scenarios and/or data. Therefore, it is emphasized that the interface always be closed before closing TransCAD so as to ensure that it is always in a valid and current state.</p>
+</div>
+<div id="chapter-4.-user-interface-scenario" class="section level1">
+<h1>Chapter 4. User Interface: Scenario</h1>
+<p>Control and Execution Tab This chapter will present the scenerio control section, as well as the user interface Execution tab. These collectively control the selection and creation of scenarios, as well as execution of the model. The Scenario Control Section The scenario control section is shown in Figure 4.1, â The Scenario Control User Interface Section â. This section controls the creation and selection of scenarios for use in the model control section. The first element of this section is the Select Scenario popdown menu. This menu contains the names of all of the created scenarios. When a particular scenario is selected, this indicates that all of the subsequent controls from the model control section will refer to this scenario. A scenario may be changed at any time during the interaction with an interface; there is generally no chance of internal conflicts when changing scenarios while performing different model control operations. The only exception to this is saving maps, which is discussed in Warning: Saving Maps to Current Scenario .</p>
+<div class="figure">
+<img src="figs/ui_sc.png" alt="Figure 4.1. The Scenario Control User Interface Section" />
+<p class="caption">Figure 4.1. The Scenario Control User Interface Section</p>
+</div>
+<p>Below the scenario selection menu is the Season selection box. The selection of Summer or Winter indi- cates which season the model control section operations will refer to. Each scenario is bi-seasonal, mean- ing it can model both summer and winter seasons. Model inputs and outputs concerning each season are held seperately, so model information and results can be independently accessed whenever the user would like. This minimizes data redundancy and potential confusion concerning scenarios.</p>
+<p>To the right of the scenario selection menu is the New Scenario button. This button allows the user to create a new scenario. Upon pressing this button, the popup window shown in Figure 4.2, â The Create New Scenario Popup Window â will appear. This window allows the user to type in a scneario name, as well as an optional description of the scenario. Pressing the OK button will create the scenario, while pressing the Cancel button will exit the dialogue without creating a scenario.</p>
+<div class="figure">
+<img src="figs/ui_new_scenario.png" alt="Figure 4.2. The Create New Scenario Popup Window" />
+<p class="caption">Figure 4.2. The Create New Scenario Popup Window</p>
+</div>
+<p>A few notes concerning the scenario creation procedure are worth noting:</p>
+<ul>
+<li><p>When a new scenario is created, it becomes the current scenario (and is reflected so in the Select Scenario menu).</p></li>
+<li><p>Only one scenario with a given name is allowed. So, if trying to create a scenario with a name previously used, then an error message will be shown and the scenario will not be created. Scenario names are not case-sensitive (though their typed casing will be preserved in the user interface); this means that a scenario named test is identical to one named tEsT. In addition to this, the overlap of names is subject to the constraints in the following item.</p></li>
+<li><p>Spaces may be used in the scenario name, however, they will be (internally) converted to underscore characters (“_“). Also, as a scenario gets represented on disk as a physical folder, characters not allowed in folder names are also not allowed in scenario names. Examples of such characters are”*&quot; and “%.”</p></li>
+<li><p>There is no limit on the length of the scenario name and/or description. However, the space provided in the text entry boxes should generally not be exceeded. If the name or description extends beyond the allotted space, then there is a good chance that the name or description will extend beyond the bounds of the user interface controls. While this will not affect the user interface’s operation, it may make it difficult to use because the scenario information will get cropped. The Execution Tab The Execution tab is shown in Figure 4.3, â The Execution Tab â. It consists of a section which displays the scenario description, as well as a model execution control. The Scenario Description text box shows the description for the currently selected scenario. When the current scenario is changed, the description changes to correspond to the new one.</p></li>
+</ul>
+<div class="figure">
+<img src="figs/ui_execution_tab.png" alt="Figure 4.3. The Execution Tab" />
+<p class="caption">Figure 4.3. The Execution Tab</p>
+</div>
+<p>If the user wants to change the scenario desctiption, then pressing the Change button will bring up the following popup box:</p>
+<div class="figure">
+<img src="figs/change_scenario_desc.png" alt="Figure 4.4. The Scenario Description Pop-Up Box" />
+<p class="caption">Figure 4.4. The Scenario Description Pop-Up Box</p>
+</div>
+<p>A picture of the scenario description pop-up box.</p>
+<p>which will allow the user to edit the current scenario description.</p>
+<p>The Documentation button allows the user to view documentation from the user interface. Pressing this button will open a popup window from which the model documentation can be opened in various formats. This guide as well as The Tahoe Activity Based Travel Demand Model Documentation are available to the user.</p>
+<p>The Run Model button starts the Tahoe AB Model. The box next to the button gives a summary of the model iteration parameters. The Highway Assignment value gives the maximum number of iterations for each highway assignment procedure. The Model Feedback value gives the number of feedback iterations for the model. Each feedback iteration will run the entire model, using skims generated from the previous feedback iteration’s highway assignment. The highway assignment and feedback iteration values have been fixed based on testing carried out during model development.</p>
+<p>Once the model is started, it cannot be stopped until it is finished. There will be “flashing” on the screen as both TransCAD and Java routines are executed. Depending on the computer configuration, the entire</p>
+<p>model run should take between 2.5 and 6 hours to run. There is no “status” indicator, so the current state of the model run can not be discerned. The model run is complete when TransCAD and the user interface are responsive again. If network and/or other geographic changes have been made to the scenario, then it is possible that a TransCAD popup window will appear indicating that a layer or network has been updated to reflect the changes. If this happens, just click the OK button to allow the model to continue. If a model run is accidentally stopped by force (for example by a power outage) then that model run must be re-run. However, such an occurance should not affect the user-interface’s operation.</p>
+<p>It is possible to run the model more than once for a given scenario and season combination. However, only the results of the last model run for a given season and scenario will be retained. If the model is run more than once for a scenario and season, then the previous model results will be deleted permanently. Because of this, attempting to run the model more than once will cause a warning popup window to display which asks the user to confirm that re-running the model is truly desired.</p>
+</div>
+<div id="chapter-5.-user-interface-gis-tab" class="section level1">
+<h1>Chapter 5. User Interface: GIS Tab</h1>
+<p>This chapter will present the Tahoe AB Model user interface GIS tab. This tab allows the user access to scneario-specific geographic data and mapping functionality. The GIS Tab GIS stands for Geographic Information Systems. GIS programs allow geographic information to be ana- lyzed and presented in a powerful way. TransCAD is an example of a GIS program. The GIS tab allows the geographic data associated with the Tahoe AB Model scenarios to be viewed, edited, and analyzed in a straightforward way. The GIS tab is shown in Figure 5.1, â The GIS Tab â. Its functionality can be spit into two may segments: saving and opening maps, and generating colored data mappings. These segments will be discussed in the following sections.</p>
+<div class="figure">
+<img src="figs/ui_gis_tab.png" alt="Figure 5.1. The GIS Tab" />
+<p class="caption">Figure 5.1. The GIS Tab</p>
+</div>
+<p>Opening and Saving Maps TransCAD maps provide the basic interface with which geographic data can be accessed and analyzed. The Saved Maps popdown menu provides a list of all previously saved maps that are available to be opened. Saved maps are scenario-specific, so when the current scenario is changed, the list of available maps will also change. Each saved map may have a description, which is displayed in the Description text box. To open a previously saved map, select the desired map from the Saved Maps menu and press the Open Map button. Unless the map is explicitly closed by the user, the map will remain open until the user interface has been closed.</p>
+<p>All scenarios have a Base Map map available to open. When opened, it will probably look like Figure 5.2, â The Base Map â.</p>
+<div class="figure">
+<img src="figs/base_map.png" alt="Figure 5.2. The Base Map" />
+<p class="caption">Figure 5.2. The Base Map</p>
+</div>
+<p>This map provides the basic access point to all the available model geographic data. By default, this map shows the TAZ boundary, the street network, and the transit line layers. The base map also contains the following information and geographic objects:</p>
+<ul>
+<li><p>Point layers which describe the street network nodes, the transit stops, and the physical transit stops. The difference between a regular and physical transit stop is the former corresponds to an actual street network node, whereas the latter corresponds to the actual physical location of the stop.</p></li>
+<li><p>A street network node selection set which describes which nodes are centroid points.</p></li>
+<li><p>A series of transit layer selection sets which describe in which skim periods and seasons each transit line runs.</p></li>
+</ul>
+<p>While a map is open, it can be edited and colored as the user pleases. To save the current map (the one whose window is on top), press the Save Current Map. This will bring up the following popup box:</p>
+<div class="figure">
+<img src="figs/save_map.png" alt="Figure 5.3. The Save Map Dialogue Box" />
+<p class="caption">Figure 5.3. The Save Map Dialogue Box</p>
+</div>
+<p>This box allows the user to enter a name for the map, as well as a description. If a map already exists by that name, then the user will be prompted to ensure that overwriting the previously saved map is desired. Once a map is saved, it is added to the Saved Maps menu. A few items concerning saving maps are worth noting:</p>
+<ul>
+<li><p>Map names are not case-sensitive (though their typed casing will be preserved in the user interface); this means that a map named test is identical to one named tEsT. In addition to this, the overlap of names is subject to the constraints in the following item.</p></li>
+<li><p>Spaces may be used in the scenario name, however, they will be (internally) converted to underscore characters (“_“). Also, as a scenario gets represented on disk as a physical file, characters not allowed in file names are also not allowed in scenario names. Examples of such characters are”*&quot; and “%.”</p></li>
+<li><p>There is no limit on the length of the map name and/or description. However, the space provided in the text entry boxes should generally not be exceeded. If the name or description extends beyond the allotted space, then there is a good chance that the name or description will extend beyond the bounds of the user interface controls. While this will not affect the user interface’s operation, it may make it difficult to use because the map information will get cropped.</p></li>
+<li><p>Often maps contain season-specific coloring and/or information. Because of this, it is recommended that a season specifier be added to the map name and description for any map that has season-specific elements. e.g. a map with the streets colored by the winter AM volumes might be named Volume AM Winter instead of Volume AM.</p></li>
+<li><p>Because the base map is central to the correct operation of the Tahoe AB Model, the model can be extremely sensitive to changes to it. Because of this, saving a map with the name Tahoe is not allowed (the base map’s physical file is called Tahoe.map). Furthermore, when the base map is opened from the user interface, it is actually a copy of the base map that is opened, so that using TransCAD’s save functionality directly will not overwrite the base map file. Sometimes, however, it is necessary to have base map changes, so this functionality is provided through a separate interface described in the section called â Rebuilding the Base Map â.</p></li>
+<li><p>To change the description of a previously saved map, simply open that map, and then resave it with the same name but using a different description. Warning: Saving Maps to Current Scenario When a map is saved, it is saved with respect to the currently selected scenario, not to the scenario under which is was originally opened. For example, if a map opened in scenario A is saved when scenario B is the current scenario, then the map is added to scenario B’s map list, not scenario A’s, even though the map refers to scenario A’s information. Thus, it is imperitive when saving a map that the scenario corresponding to that map is selected as the current scenario. It is also worth noting that a map may be saved through the typical TransCAD interface. Saving maps in this manner is discouraged. The map will not be listed in the Saved Maps menu, and accessing it through the user interface will not be possible. If, upon closing a map, TransCAD asks if the user would like to save the map, the answer should almost always be “No.” If the user wishes to save the map, then the map saving functionality in the user interface should be used. Rebuilding the Base Map Generally, the base map should not be changed. However, in the case that transit lines have been added to the scenario, then the transit season and time-period selections need to be recalculated. This can be done by rebuilding the base map. Also, if the base map is accidentally altered, then it can be rebuilt to bring it back to it original (correct) state. To rebuild the base map, simply press the Rebuild Base Map button located at the bottom of the GIS tab. The user will be prompted to confirm that rebuilding the base map is desired, and if that prompt is answered in the affirmative, then the base map will be rebuilt. Generating Pre-Formed Maps The GIS tab includes the functionality to generate “pre-formed” maps. Through this functionality, a series of defined map themes can be generated automatically via the user interface. The Pre-Formed Maps menu contains a list of all available pre-formed maps. Highlighting any of these will cause its description to be displayed in the Description text box below the menu. To generate the selected pre-formed map, press the Create Map button. Depending on the pre-formed map selection, a popup box may be displayed offering more granularity in the generated map. For all of the maps, the following dialogue window will popup:</p></li>
+</ul>
+<div class="figure">
+<img src="figs/ui_theme_control.png" alt="Figure 5.4. The Pre-Formed Map Theme Control Window" />
+<p class="caption">Figure 5.4. The Pre-Formed Map Theme Control Window</p>
+</div>
+<p>This window gives the user control over the specifics of the pre-formed map theme. At the top of the window is a Color Theme Name text entry box for the theme’s name. Beneath that is a control for the number of color categories used in the theme as well as the method used to generate the categories. Three category generator types are available, derived directly from TransCAD’s built in functions:</p>
+<ol style="list-style-type: decimal">
+<li><p>Equal Intervals - the numerical distance between each category interval cutoff is identical</p></li>
+<li><p>Equal Feature Count - the number of items in each category is identical</p></li>
+<li><p>Categories - one numerical value per category; only the most frequently found categories (up to the category limit) are shown</p></li>
+</ol>
+<p>Underneath the category control is a section which allows the user to control the theme’s color ramp: each map feature will be colored according to its category placement, with the color gradually shifting from the Start to the End color. Missing value colors can be specified seperately. Lastly, the option to treat zeros as missing values is provided.</p>
+<p>After a pre-formed map is created, the user can choose to save it as described previously or close it (either explicitly or by closing the user interface). An example of a preformed map is shown in Figure 5.5, â An Example of a Pre-Formed Map of Population Density â, which is a population density map created with five Equal Intervals categories. The map was created using the base year summer socioeconomic data.</p>
+<div class="figure">
+<img src="figs/pre_form_example.png" alt="Figure 5.5. An Example of a Pre-Formed Map of Population Density" />
+<p class="caption">Figure 5.5. An Example of a Pre-Formed Map of Population Density</p>
+</div>
+</div>
+<div id="chapter-6.-user-interface-input-files-tab" class="section level1">
+<h1>Chapter 6. User Interface: Input Files Tab</h1>
+<p>This chapter will present the Tahoe AB Model user interface Input Files tab. This tab allows the user access to model data files which may change between scenarios. The Input Files Tab There are a number of non-GIS files which may change between scenarios. Access to these mutable input files is provided through the Input Files tab, which is shown in Figure 6.1, â The Input Files Tab â.</p>
+<div class="figure">
+<img src="figs/ui_input_files_tab.png" alt="Figure 6.1. The Input Files Tab" />
+<p class="caption">Figure 6.1. The Input Files Tab</p>
+</div>
+<p>The Input File menu provides the list of input files available to the user. This list will be different depending on the current season selection, which allows for seasonal variation among model scenarios. Selecting a particular input file in the menu will cause a description of that particular file to show up in the Description text region. For more details concerning specific input files, the user is referred to the The Tahoe Activity Based Travel Demand Model Documentation.</p>
+<p>Once an input file is selected the user can open the file by pressing the Open File button. As all of the files are comma-separated value (.csv) files, they will be opened in the program associated with them (usually Microsoft Excel, if it is installed). The file can then be edited and saved through the application that it was opened in.</p>
+<p>If the user would like to see the absolute path to the input file, then pressing the Path to File button will display this. As these files are scenario specific, so too will be this path.</p>
+<p>When a scenario is created, the input files it starts with are those for the base year (2005) scenario. It is possible that a particular scenario will input files which are identical to another scenario’s, but not the same as the base scenario. For example, the user may have spent the time to edit the input files for a base 2010 scenario. If the user then creates a 2010 scenario which will have a different transit line layout from the 2010 base, the GIS data will change, but these input files will be identical. To facilitate such cases, the user</p>
+<p>interface allows the user to import an input file from one scenario to another. One a particular input file has been selected in the Input File menu, pressing the Import File button will bring up the following window:</p>
+<div class="figure">
+<img src="figs/ui_import_file.png" alt="Figure 6.2. The Import File Dialogue Box" />
+<p class="caption">Figure 6.2. The Import File Dialogue Box</p>
+</div>
+<p>In this window, using the Select Scenario to Import File From popdown menu, the user may choose a scenario to import the file from. Alternatively, the Browse for file… button allows the user to browser for the file. Only a file whose name is the same as the input file may be imported. If the user would like to import all of the input files from one scenario to another, then selecting the Import All Files checkbox before pressing the Import File button will import all of the input files (including summer and winter seasons) from the chosen scenario to the current one. All of the methods to used to import an input file will permanently overwrite the current scenario’s input file(s). Because of this, when the user chooses to import an input file, a warning window pops up forcing the user to confirm the file import.</p>
+</div>
+<div id="chapter-7.-user-interface-summaries-tab" class="section level1">
+<h1>Chapter 7. User Interface: Summaries Tab</h1>
+<p>This chapter will present the Tahoe AB Model user interface Summaries tab. This tab allows the user access to model summaries. The Summaries Files Tab After a model run has completed, a whole host of options are available for the user to analyze the results. The pre-formed mapping functionality discussed in the section called â Generating Pre-Formed Maps â allows some graphical analysis, and the actual outputs can be viewed using the Output Files tab. The Summaries tab, which allows the user to see summary reports based on the model outputs, will be discussed here. A picture of the Summaries tab is shown in Figure 7.1, â The Summaries Tab â.</p>
+<div class="figure">
+<img src="figs/ui_summaries_tab.png" alt="Figure 7.1. The Summaries Tab" />
+<p class="caption">Figure 7.1. The Summaries Tab</p>
+</div>
+<p>Model and Assignment Summaries Two sets of summaries available to the user from the Summaries tab are model and traffic assignment summaries. Both of these summaries and text based and are opened in a simple text viewer program. This program allows the summary to be printed, saved, or saved as comma-seperated values (.csv) file - which can be opened up in Microsoft Excel. This allows the user to analyze the summaries outside of the bounds of the TransCAD user interface. Model Summaries The model summaries provide tables which summarize the model run results across a variety of dimen- sions. The summaries are as follows:</p>
+<ul>
+<li><p>Resident Model</p></li>
+<li><p>Household income by household size</p></li>
+<li>Household income by workers in household</li>
+<li>Household size by workers in household</li>
+<li>Tour type by tour mode</li>
+<li>Tour type by start skim period</li>
+<li>Tour type by end skim period</li>
+<li>Tour type by tour stops</li>
+<li>Tour type by external destination station</li>
+<li>External Worker Model</li>
+<li>Entrance external station by start skim period</li>
+<li>Entrance (exit) external station by end skim period</li>
+<li>Overnight Visitor Model</li>
+<li>Stay type by travel party size</li>
+<li>Stay type by tour type</li>
+<li>Tour type by tour mode</li>
+<li>Tour type by start skim period</li>
+<li>Tour type by end skim period</li>
+<li>Tour type by tour stops</li>
+<li>Day Visitor Model</li>
+<li>Entrance external station by travel party size</li>
+<li>Entrance external station by tour type</li>
+<li>Tour type by start skim period</li>
+<li>Tour type by end skim period</li>
+<li>Tour type by tour stops</li>
+<li>Thru Visitors Model</li>
+<li>Entrance external station by exit external station Assignment Summaries The assignment summaries provide tables of total vehicle-miles traveled (VMT) and total vehicle-hours traveled (VHT) stratified by link type and skim period. The link types are as follows:</li>
+<li>Principal Arterial</li>
+<li><p>Minor Arterial</p></li>
+<li><p>Collector</p></li>
+<li><p>Centroid</p></li>
+</ul>
+<p>and the skim periods are:</p>
+<ul>
+<li><p>AM Peak - 7:00 AM - 10:00 AM</p></li>
+<li><p>Midday - 10:00 AM - 4:00 PM</p></li>
+<li><p>PM Peak - 4:00 PM - 7:00 PM</p></li>
+<li><p>Overnight - 7:00 PM - 7:00 AM</p></li>
+</ul>
+<p>In addition to these stratifications, VMT and VHT summaries for the entire day and for all link types together are reported in the summary. Report Files During the calibration stage of the Tahoe AB Model development, a number of summary report files were developed to aid in that effort. These report files offer a variety of summaries for each model component, including tour type, distance, time-of-day, and mode choice summaries. While these reports are not very “polished,” they may be of interest for the user, so they are made available through the Summaris tab. The user may select a report file from the Report Files menu, which will cause a description of the report to be displayed in the Description text box. Pressing the Open Report button will open the selected report. All of the reports are comma-seperated values (.bin) files, and will open with the program associated with such files (usually Microsoft Excel, if it is installed).</p>
+</div>
+<div id="chapter-8.-user-interface-output-files-tab" class="section level1">
+<h1>Chapter 8. User Interface: Output Files Tab</h1>
+<p>This chapter will present the Tahoe AB Model user interface Output Files tab. This tab allows the user access to the output files produced during a model run. The Output Files Tab During a model run, a number of files are produced. Often, the user will only want to see summaries of the model results, in which case the functionality present in Chapter 7, User Interface: Summaries Tab . However, if a greater level of model detail is desired, the actual model output files present all of the information available from the model run. Access to these model output files is provided in the Output Files tab, which is shown in Figure 8.1, â The Output Files Tab â.</p>
+<p><img src="figs/ui_output_files_tab.png" alt="Figure 8.1. The Output Files Tab" /> One of the most important model outputs for a user are the zone-to-zone trip tables. Pressing the Open Trip Tables opens the trip table corresponding to the Trip Period menu selection. The available trip periods are the model skim periods:</p>
+<ul>
+<li><p>AM Peak - 7:00 AM - 10:00 AM</p></li>
+<li><p>Midday - 10:00 AM - 4:00 PM</p></li>
+<li><p>PM Peak - 4:00 PM - 7:00 PM</p></li>
+<li><p>Overnight - 7:00 PM - 7:00 AM</p></li>
+</ul>
+<p>Each trip table opens as a TransCAD matrix view. Each matrix view contains a number of matrices, or “cores,” corresponding to different modes. The mode cores are:</p>
+<ul>
+<li><p>Drive Alone - auto trips with no passengers</p></li>
+<li><p>Shared Auto - auto trips with one or more passengers</p></li>
+<li><p>Visitor Shuttle - visitor trips on a shuttle bus</p></li>
+<li><p>Walk to Transit - transit trips in which the person walked to get to the transit line</p></li>
+<li><p>Drive to Transit - transit trips in which the person drove to get to the transit line</p></li>
+<li><p>Non-Motorized - trips usind non-motorized transportion: walk, bicycle, skateboard, etc.</p></li>
+<li><p>School Bus - (school) trips using a school bus</p></li>
+<li><p>Total Drive Trips - Drive Alone plus Shared Auto; these are the trips actually assigned during highway assignment</p></li>
+</ul>
+<p>The opened matrix view has its rows and columns indexed according to the TAZ numbers they correspond to. If the matrix is to be mapped, then it might be necessary to use the native TransCAD TAZ layer id values to index the matrix. This index is included in the view under the name Nodes.</p>
+<p>Access to the other model output files is provided in the Output Files menu interface. Selecting a file in this menu causes a short description of it to appear in the Description text region below the menu. Pressing the Open File button opens the selected file. A majority of the files are comma-seperated values (.csv) files, which will be opened in the program associated with them (usually Microsoft Excel, if it is installed). A few of the files are TransCAD fixed-format binary files (.bin) and are opened in a TransCAD dataview. Lastly, the event.log file, which is a text file, is opened in a simple text viewer program.</p>
+<p>The large number of available output files to view (almost 40) can make searching for and selecting a file to view rather unwieldy. To help with this, the interface allows the user to select from a subset of output files, based on categories. Selecting a file group from the Category menu will cause the Output Files to only show the files which pertain to that category. The available categories are:</p>
+<ul>
+<li><p>Zonal - output files which pertain to the zonal geography</p></li>
+<li><p>Resident - output files specific to the resident model</p></li>
+<li><p>External Worker - output files specific to the external worker model</p></li>
+<li><p>Visitor - output files specific to the visitor model</p></li>
+<li><p>Assignment - output files specific to the highway assignment</p></li>
+<li><p>Logs - log files created during the model run</p></li>
+</ul>
+</div>
+
+<br>
+<br>
+<br>
+<hr>
+<p><a href="http://wsp-sag.github.io/">Systems Analysis Group</a>,
+  WSP USA 2018</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
