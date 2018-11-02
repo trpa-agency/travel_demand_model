@@ -11,7 +11,7 @@
 
 
 
-<title>Tahoe Model Documentation</title>
+<title>Tahoe Data Dictionary</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -341,24 +341,70 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Tahoe Model Documentation</h1>
+<h1 class="title toc-ignore">Tahoe Data Dictionary</h1>
 
 </div>
 
 
-<p>Welcome to the Model Documentation for the Tahoe Travel Model. This set of webpages is under construction.</p>
-<p>The “Pages” menu at the top of this page will take you to the various sections of the document.<br />
-The sections are:</p>
-<ul>
-<li><a href="UserGuide.html">UserGuide</a>: User guide describing the GUI.</li>
-<li><a href="ResidentModel.html">Resident Model</a>: Describes the Resident Model: sub-models that are part of this model, inputs and outputs from this module.</li>
-<li><a href="ExternalWorkers.html">External Workers Models</a>: Describes the external workers model.</li>
-<li><a href="VisitorModels.html">Visitor Models</a>: Describes the visitor model.</li>
-<li><a href="TrafficAssignment.html">Traffic Assignment</a>: Describes the Traffic Assignment step of the model.</li>
-<li><a href="Calibration.html">Calibration and Validation Summary</a>: Describes the model calibration results.</li>
-<li><a href="DataDictionary.html">Data Dictionary</a>: Data Dictionary for all the main model inputs and outputs.</li>
-<li><a href="CodeReference.html">GISDK Reference</a>: This page provides documentation on the fucntions used in Tahoe GISDK scripts.</li>
-</ul>
+<p>This page documents the data dictionary of the all the major inputs and outputs used and produced in the Tahoe AB model.</p>
+<div id="input-data" class="section level1">
+<h1>Input Data</h1>
+<table>
+<caption>OvernightVisitorZonalData_SEASON.csv</caption>
+<colgroup>
+<col width="25%" />
+<col width="53%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">taz</td>
+<td align="left">Trafic Analysis Zone (TAZ ID)</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="even">
+<td align="left">hotelmotel</td>
+<td align="left">For visitors staying in a hotel or motel</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="odd">
+<td align="left">resort</td>
+<td align="left">For visitors staying in a higher-end (non-casino) resort</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="even">
+<td align="left">casino</td>
+<td align="left">For visitors staying in a casino-based hotel</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="odd">
+<td align="left">campground</td>
+<td align="left">For visitors staying at a campsite</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="even">
+<td align="left">percentHouseSeasonal</td>
+<td align="left">For seasonal residents</td>
+<td align="left">Float (between 0 and 1)</td>
+</tr>
+<tr class="odd">
+<td align="left">beach</td>
+<td align="left"></td>
+<td align="left">Integer</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="output-data" class="section level1">
+<h1>Output Data</h1>
+</div>
 
 <br>
 <br>

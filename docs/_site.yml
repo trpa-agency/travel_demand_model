@@ -17,6 +17,12 @@ navbar:
           href: VisitorModels.html
         - text: "Traffic Assignment"
           href: TrafficAssignment.html
+        - text: "Calibration and Validation Summary"
+          href: Calibration.html
+        - text: "Data Dictionary"
+          href: DataDictionary.html
+        - text: "GISDK Reference"
+          href: CodeReference.html          
   right:
     - icon: fa-github fa-lg
       href: https://github.com/trpa-agency/travel_demand_model

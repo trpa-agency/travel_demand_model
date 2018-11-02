@@ -1,0 +1,55 @@
+---
+title: "GISDK Code Reference"
+output: html_document
+---
+
+GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the GISDK code and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as "Macros", and that terminology will be used for the ramining part of this document.
+
+The most important Macros are documented below, it shows the name of the Macro, the function performed by the Macro and finally the output files orcreated by the Macros.
+
+
+
+-------------------------------------------------------------------------------------
+Macro              Macro                                          Output files from
+Name               Description                                    the Macro
+------------------ ---------------------------------------------- -------------------
+PreModelRunner     This Macro is the first Macro that is run      Refer to the outputs 
+                   when the "Run Model" button is clicked.        of Macros that are
+                   It is outside the global feedback loop and     called by this Macro  
+                   runs several other Macros listed below. 
+                   `UpdateFFSpeeds`<br/>
+                   `CreateDriveNetwork`<br/>
+                   `CopyBaseTripTables`<br/>
+                   `CreateTripMatrices`<br/>
+                   `TrafficAssignment`<br/>
+                   `BandsRun`<br/>
+                   `TransitSkimmer`<br/>
+                   `JavaPreModelCode`<br/>
+                   
+SaveLinkData       This Macro saves the link data from the         Fullstreets.bin  
+                   network file to fullstreets.bin with the
+                   feedback loop iteration suffixed to the
+                   file
+                   
+   
+UpdateFFSpeeds     Updates the link free flow speed in the 
+                   input network based on a specific formula.     FullStreets.bin
+                  
+CreateDriveNetwork Creates the Tahoe Drive Network                Tahoe_Drive_Network.net 
+
+CopyBaseTripTables Creates a copy of the base trip table so that  Trips_#PRD#.csv for
+                   it can be used to create the base trip         all time periods
+                   matrices
+
+CreateTripMatrices Converts each of the four CSV trip tables      Trips_#PRD#.mtx for
+                   created in the previous step into transcad     all time periods
+                   trip matrices in the .mtx format
+
+TrafficAssignment
+
+
+----------------------------------------------------------------------------------
+
+
+
+

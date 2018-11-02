@@ -1,0 +1,35 @@
+---
+title: "Tahoe Data Dictionary"
+output: html_document
+---
+
+This page documents the data dictionary of the all the major inputs and outputs used and produced in the Tahoe AB model.
+
+# Input Data
+
+-------------------------------------------------------------------------------------
+Attribute             Attribute                                      Attribute
+Name                  Description                                    Data Type
+--------------------- ---------------------------------------------- -------------------
+taz                   Trafic Analysis Zone (TAZ ID)                  Integer
+
+hotelmotel            For visitors staying in a hotel or motel       Integer
+
+resort                For visitors staying in a higher-end           Integer
+                      (non-casino) resort
+
+casino                For visitors staying in a casino-based hotel   Integer
+
+campground            For visitors staying at a campsite             Integer
+
+percentHouseSeasonal  For seasonal residents                         Float (between 0 and 1)
+
+beach                                                                Integer
+
+----------------------------------------------------------------------------------
+
+Table: OvernightVisitorZonalData_SEASON.csv
+
+
+# Output Data
+

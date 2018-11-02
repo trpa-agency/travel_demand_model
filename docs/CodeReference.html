@@ -11,7 +11,7 @@
 
 
 
-<title>Tahoe Model Documentation</title>
+<title>GISDK Code Reference</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -341,24 +341,64 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Tahoe Model Documentation</h1>
+<h1 class="title toc-ignore">GISDK Code Reference</h1>
 
 </div>
 
 
-<p>Welcome to the Model Documentation for the Tahoe Travel Model. This set of webpages is under construction.</p>
-<p>The “Pages” menu at the top of this page will take you to the various sections of the document.<br />
-The sections are:</p>
-<ul>
-<li><a href="UserGuide.html">UserGuide</a>: User guide describing the GUI.</li>
-<li><a href="ResidentModel.html">Resident Model</a>: Describes the Resident Model: sub-models that are part of this model, inputs and outputs from this module.</li>
-<li><a href="ExternalWorkers.html">External Workers Models</a>: Describes the external workers model.</li>
-<li><a href="VisitorModels.html">Visitor Models</a>: Describes the visitor model.</li>
-<li><a href="TrafficAssignment.html">Traffic Assignment</a>: Describes the Traffic Assignment step of the model.</li>
-<li><a href="Calibration.html">Calibration and Validation Summary</a>: Describes the model calibration results.</li>
-<li><a href="DataDictionary.html">Data Dictionary</a>: Data Dictionary for all the main model inputs and outputs.</li>
-<li><a href="CodeReference.html">GISDK Reference</a>: This page provides documentation on the fucntions used in Tahoe GISDK scripts.</li>
-</ul>
+<p>GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the GISDK code and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as “Macros”, and that terminology will be used for the ramining part of this document.</p>
+<p>The most important Macros are documented below, it shows the name of the Macro, the function performed by the Macro and finally the output files orcreated by the Macros.</p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="55%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Macro Name</th>
+<th align="left">Macro Description</th>
+<th align="left">Output files from the Macro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PreModelRunner</td>
+<td align="left">This Macro is the first Macro that is run when the “Run Model” button is clicked. It is outside the global feedback loop and runs several other Macros listed below. <code>UpdateFFSpeeds</code><br/> <code>CreateDriveNetwork</code><br/> <code>CopyBaseTripTables</code><br/> <code>CreateTripMatrices</code><br/> <code>TrafficAssignment</code><br/> <code>BandsRun</code><br/> <code>TransitSkimmer</code><br/> <code>JavaPreModelCode</code><br/></td>
+<td align="left">Refer to the outputs of Macros that are called by this Macro</td>
+</tr>
+<tr class="even">
+<td align="left">SaveLinkData</td>
+<td align="left">This Macro saves the link data from the network file to fullstreets.bin with the feedback loop iteration suffixed to the file</td>
+<td align="left">Fullstreets.bin</td>
+</tr>
+<tr class="odd">
+<td align="left">UpdateFFSpeeds</td>
+<td align="left">Updates the link free flow speed in the input network based on a specific formula.</td>
+<td align="left">FullStreets.bin</td>
+</tr>
+<tr class="even">
+<td align="left">CreateDriveNetwork</td>
+<td align="left">Creates the Tahoe Drive Network</td>
+<td align="left">Tahoe_Drive_Network.net</td>
+</tr>
+<tr class="odd">
+<td align="left">CopyBaseTripTables</td>
+<td align="left">Creates a copy of the base trip table so that it can be used to create the base trip matrices</td>
+<td align="left">Trips_#PRD#.csv for all time periods</td>
+</tr>
+<tr class="even">
+<td align="left">CreateTripMatrices</td>
+<td align="left">Converts each of the four CSV trip tables created in the previous step into transcad trip matrices in the .mtx format</td>
+<td align="left">Trips_#PRD#.mtx for all time periods</td>
+</tr>
+<tr class="odd">
+<td align="left">TrafficAssignment</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 
 <br>
 <br>
