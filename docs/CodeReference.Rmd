@@ -3,11 +3,54 @@ title: "GISDK Code Reference"
 output: html_document
 ---
 
-GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the GISDK code and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as "Macros", and that terminology will be used for the ramining part of this document.
+GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the main GISDK code, [TahoeModelToolbox_rev.rsc](../reference/code/TahoeModelToolbox_rev.rsc) and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as "Macros", and that terminology will be used for the ramining part of this document.
 
 The most important Macros are documented below, it shows the name of the Macro, the function performed by the Macro and finally the output files orcreated by the Macros.
 
+# Model Run Macro Flowchart
 
+### High level flow
+```{r,echo=F,,out.height=200}
+library(DiagrammeR)
+mermaid("
+graph LR
+A[PreModelRunner]-->B[SaveLinkData]
+B-->C{Feedback Loop}
+C-->D[CreateTripMatrices]
+D-->E[TransitAssignment]
+")
+```
+
+### PreModelRunner steps
+
+```{r,echo=F,out.height=500}
+mermaid("
+graph TD
+B[UpdateFFSpeeds]-->C[CreateDriveNetwork]
+C-->D[CopyBaseTripTables]
+D-->E[CreateTripMatrices]
+E-->F[TrafficAssignment]
+F-->G[BandsRun]
+G-->H[TransitSkimmer]
+H-->I[JavaPreModelCode]
+")
+```
+
+### Inside the feedback loop
+```{r,echo=F,out.height=500}
+mermaid("
+graph TD
+L[ClearLastFile]-->M[RunJavaModel]
+M-->N[CreateTripMatrices]
+N-->O[TrafficAssignment]
+O-->P[MSAAssignmentResults]
+P-->Q[RunTransitSkims]
+Q-->R[SaveLinkData]
+R-->S[TripSummarizer]
+")
+```
+
+# Macro Reference
 
 -------------------------------------------------------------------------------------
 Macro              Macro                                          Output files from
@@ -26,12 +69,7 @@ PreModelRunner     This Macro is the first Macro that is run      Refer to the o
                    `TransitSkimmer`<br/>
                    `JavaPreModelCode`<br/>
                    
-SaveLinkData       This Macro saves the link data from the         Fullstreets.bin  
-                   network file to fullstreets.bin with the
-                   feedback loop iteration suffixed to the
-                   file
-                   
-   
+  
 UpdateFFSpeeds     Updates the link free flow speed in the 
                    input network based on a specific formula.     FullStreets.bin
                   
@@ -46,6 +84,18 @@ CreateTripMatrices Converts each of the four CSV trip tables      Trips_#PRD#.mt
                    trip matrices in the .mtx format
 
 TrafficAssignment
+
+BandsRun
+
+TransitSkimmer
+
+JavaPreModelCode
+
+SaveLinkData       This Macro saves the link data from the         Fullstreets.bin  
+                   network file to fullstreets.bin with the
+                   feedback loop iteration suffixed to the
+                   file
+                   
 
 
 ----------------------------------------------------------------------------------

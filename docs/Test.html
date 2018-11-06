@@ -9,9 +9,10 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Raghu sidharthan" />
 
 
-<title>GISDK Code Reference</title>
+<title>Test</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,14 +26,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.2/htmlwidgets.js"></script>
-<script src="site_libs/d3-3.3.8/d3.min.js"></script>
-<script src="site_libs/dagre-0.4.0/dagre-d3.min.js"></script>
-<link href="site_libs/mermaid-0.3.0/dist/mermaid.css" rel="stylesheet" />
-<script src="site_libs/mermaid-0.3.0/dist/mermaid.slim.min.js"></script>
-<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
-<script src="site_libs/chromatography-0.1/chromatography.js"></script>
-<script src="site_libs/DiagrammeR-binding-1.0.0/DiagrammeR.js"></script>
 <link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
 <script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
 <script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
@@ -349,100 +342,55 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">GISDK Code Reference</h1>
+<h1 class="title toc-ignore">Test</h1>
+<h4 class="author"><em>Raghu sidharthan</em></h4>
+<h4 class="date"><em>November 3, 2018</em></h4>
 
 </div>
 
 
-<p>GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the main GISDK code, <a href="../reference/code/TahoeModelToolbox_rev.rsc">TahoeModelToolbox_rev.rsc</a> and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as “Macros”, and that terminology will be used for the ramining part of this document.</p>
-<p>The most important Macros are documented below, it shows the name of the Macro, the function performed by the Macro and finally the output files orcreated by the Macros.</p>
-<div id="model-run-macro-flowchart" class="section level1">
-<h1>Model Run Macro Flowchart</h1>
-<div id="high-level-flow" class="section level3">
-<h3>High level flow</h3>
-<div id="htmlwidget-0dd2814ab8b70792877e" style="width:672px;height:200px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0dd2814ab8b70792877e">{"x":{"diagram":"\ngraph LR\nA[PreModelRunner]-->B[SaveLinkData]\nB-->C{Feedback Loop}\nC-->D[CreateTripMatrices]\nD-->E[TransitAssignment]\n"},"evals":[],"jsHooks":[]}</script>
-</div>
-<div id="premodelrunner-steps" class="section level3">
-<h3>PreModelRunner steps</h3>
-<div id="htmlwidget-5e30be12a3c9c90797cb" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5e30be12a3c9c90797cb">{"x":{"diagram":"\ngraph TD\nB[UpdateFFSpeeds]-->C[CreateDriveNetwork]\nC-->D[CopyBaseTripTables]\nD-->E[CreateTripMatrices]\nE-->F[TrafficAssignment]\nF-->G[BandsRun]\nG-->H[TransitSkimmer]\nH-->I[JavaPreModelCode]\n"},"evals":[],"jsHooks":[]}</script>
-</div>
-<div id="inside-the-feedback-loop" class="section level3">
-<h3>Inside the feedback loop</h3>
-<div id="htmlwidget-33c7bdb45fc9b0091f49" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-33c7bdb45fc9b0091f49">{"x":{"diagram":"\ngraph TD\nL[ClearLastFile]-->M[RunJavaModel]\nM-->N[CreateTripMatrices]\nN-->O[TrafficAssignment]\nO-->P[MSAAssignmentResults]\nP-->Q[RunTransitSkims]\nQ-->R[SaveLinkData]\nR-->S[TripSummarizer]\n"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-<div id="macro-reference" class="section level1">
-<h1>Macro Reference</h1>
+<details><summary>TAZ_District</summary>
+<p>
+<p><a href="../reference/model_data/zonal/TAZ_District.csv">TAZ_District</a></p>
+<p>This file maps the zones to districts. It is a CSV format plain text file.</p>
 <table>
 <colgroup>
-<col width="22%" />
-<col width="55%" />
-<col width="22%" />
+<col width="25%" />
+<col width="53%" />
+<col width="21%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Macro Name</th>
-<th align="left">Macro Description</th>
-<th align="left">Output files from the Macro</th>
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">PreModelRunner</td>
-<td align="left">This Macro is the first Macro that is run when the “Run Model” button is clicked. It is outside the global feedback loop and runs several other Macros listed below. <code>UpdateFFSpeeds</code><br/> <code>CreateDriveNetwork</code><br/> <code>CopyBaseTripTables</code><br/> <code>CreateTripMatrices</code><br/> <code>TrafficAssignment</code><br/> <code>BandsRun</code><br/> <code>TransitSkimmer</code><br/> <code>JavaPreModelCode</code><br/></td>
-<td align="left">Refer to the outputs of Macros that are called by this Macro</td>
+<td align="left">taz</td>
+<td align="left">the zone number</td>
+<td align="left">Integer</td>
 </tr>
 <tr class="even">
-<td align="left">UpdateFFSpeeds</td>
-<td align="left">Updates the link free flow speed in the input network based on a specific formula.</td>
-<td align="left">FullStreets.bin</td>
+<td align="left">county_district</td>
+<td align="left">the county the zone sits in , using the following correspondence scheme</td>
+<td align="left">1. Washoe 2. Carson City 3. Douglas 4. El Dorado 5. Placer 6. External Zone</td>
 </tr>
 <tr class="odd">
-<td align="left">CreateDriveNetwork</td>
-<td align="left">Creates the Tahoe Drive Network</td>
-<td align="left">Tahoe_Drive_Network.net</td>
+<td align="left">district</td>
+<td align="left">a custom district system using the following correspondence</td>
+<td align="left">1. North Shore 2. South Shore 3. External Zone</td>
 </tr>
 <tr class="even">
-<td align="left">CopyBaseTripTables</td>
-<td align="left">Creates a copy of the base trip table so that it can be used to create the base trip matrices</td>
-<td align="left">Trips_#PRD#.csv for all time periods</td>
-</tr>
-<tr class="odd">
-<td align="left">CreateTripMatrices</td>
-<td align="left">Converts each of the four CSV trip tables created in the previous step into transcad trip matrices in the .mtx format</td>
-<td align="left">Trips_#PRD#.mtx for all time periods</td>
-</tr>
-<tr class="even">
-<td align="left">TrafficAssignment</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">BandsRun</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">TransitSkimmer</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">JavaPreModelCode</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">SaveLinkData</td>
-<td align="left">This Macro saves the link data from the network file to fullstreets.bin with the feedback loop iteration suffixed to the file</td>
-<td align="left">Fullstreets.bin</td>
+<td align="left">ext_zone</td>
+<td align="left">an external zone indicator; if the zone is an external zone, the value is the external zone number, otherwise it is zero</td>
+<td align="left">Integer</td>
 </tr>
 </tbody>
 </table>
-</div>
+</p>
+<p></details></p>
 
 <br>
 <br>

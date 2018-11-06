@@ -349,8 +349,11 @@ div.tocify {
 <p>This page documents the data dictionary of the all the major inputs and outputs used and produced in the Tahoe AB model.</p>
 <div id="input-data" class="section level1">
 <h1>Input Data</h1>
+<p><a href="../reference/model_data/zonal/TAZ_District.csv">TAZ_District</a></p>
+<p>This file maps the zones to districts. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
 <table>
-<caption>OvernightVisitorZonalData_SEASON.csv</caption>
 <colgroup>
 <col width="25%" />
 <col width="53%" />
@@ -360,50 +363,468 @@ div.tocify {
 <tr class="header">
 <th align="left">Attribute Name</th>
 <th align="left">Attribute Description</th>
-<th align="left">Attribute Data Type</th>
+<th align="left">Attribute Detail</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">taz</td>
-<td align="left">Trafic Analysis Zone (TAZ ID)</td>
+<td align="left">the zone number</td>
 <td align="left">Integer</td>
 </tr>
 <tr class="even">
-<td align="left">hotelmotel</td>
-<td align="left">For visitors staying in a hotel or motel</td>
-<td align="left">Integer</td>
+<td align="left">county_district</td>
+<td align="left">the county the zone sits in , using the following correspondence scheme</td>
+<td align="left">1. Washoe <br/> 2. Carson City <br/> 3. Douglas <br/> 4. El Dorado <br/> 5. Placer <br/> 6. External Zone <br/></td>
 </tr>
 <tr class="odd">
-<td align="left">resort</td>
-<td align="left">For visitors staying in a higher-end (non-casino) resort</td>
-<td align="left">Integer</td>
+<td align="left">district</td>
+<td align="left">a custom district system using the following correspondence</td>
+<td align="left">1. North Shore <br/> 2. South Shore <br/> 3. External Zone <br/></td>
 </tr>
 <tr class="even">
-<td align="left">casino</td>
-<td align="left">For visitors staying in a casino-based hotel</td>
-<td align="left">Integer</td>
-</tr>
-<tr class="odd">
-<td align="left">campground</td>
-<td align="left">For visitors staying at a campsite</td>
-<td align="left">Integer</td>
-</tr>
-<tr class="even">
-<td align="left">percentHouseSeasonal</td>
-<td align="left">For seasonal residents</td>
-<td align="left">Float (between 0 and 1)</td>
-</tr>
-<tr class="odd">
-<td align="left">beach</td>
-<td align="left"></td>
+<td align="left">ext_zone</td>
+<td align="left">an external zone indicator; if the zone is an external zone, the value is the external zone number, otherwise it is zero</td>
 <td align="left">Integer</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="output-data" class="section level1">
-<h1>Output Data</h1>
+</p>
+<p></details></p>
+<p><a href="../reference/model_data/zonal/ZoneMappings.csv">ZoneMappings</a></p>
+<p>This file contains geographic information about each zone. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="53%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">taz</td>
+<td align="left">the zone number</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="even">
+<td align="left">census_tract</td>
+<td align="left">the census tract the zone (mostly) belongs to</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="odd">
+<td align="left">block_group</td>
+<td align="left">the census block group the zone (mostly) belongs to</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="even">
+<td align="left">puma</td>
+<td align="left">the census puma (1%) the zone belongs to</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="odd">
+<td align="left">county</td>
+<td align="left">the county the zone belongs to</td>
+<td align="left">String</td>
+</tr>
+<tr class="even">
+<td align="left">county_code</td>
+<td align="left">the FIPS code of the county the zone belongs in</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="odd">
+<td align="left">state</td>
+<td align="left">the state the zone belongs in</td>
+<td align="left">String</td>
+</tr>
+<tr class="even">
+<td align="left">state_code</td>
+<td align="left">the FIPS state code the county belongs in</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="odd">
+<td align="left">full_census_code</td>
+<td align="left">the full census code of the census geography the zone belongs to</td>
+<td align="left">Integer</td>
+</tr>
+<tr class="even">
+<td align="left">area_in_sq_miles</td>
+<td align="left">the area of the zone in square miles</td>
+<td align="left">Float</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
+<p><a href="../reference/model_data/zonal/ExternalZoneSizeCoefficients.csv">ExternalZoneSizeCoefficients</a></p>
+<p>This file contains information for the various external zone size term calculations. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="51%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">zone</td>
+<td align="left">the external zone number</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">intWorkSizeCoeffSummer</td>
+<td align="left">the coefficient that will be multiplied by the full internal zonal employment to get an employment figure to use for the summer size term</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">intWorkSizeCoeffWinter</td>
+<td align="left">same as intWorkSizeCoeffSummer, only for the winter season</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">extWorkSizePercentSummer</td>
+<td align="left">the percent of all of the external workers expected to come from each external zone in the summer</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">extWorkSizePercentWinter</td>
+<td align="left">same as extWorkSizePercentSummer, only for the winter season</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ovDCSizePercentRec</td>
+<td align="left">the percent of the intWorkSizeCoeffSummer/ Winter to use for the overnight destination choice size term for recreation tours</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ovDCSizePercentGam</td>
+<td align="left">same as ovDCSizePercentRec, only for gaming tours</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ovDCSizePercentShp</td>
+<td align="left">same as ovDCSizePercentRec, only for shopping tours</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ovDCSizePercentOth</td>
+<td align="left">same as ovDCSizePercentRec, only for other tours</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ovDCSizePercentOth</td>
+<td align="left">same as ovDCSizePercentRec, only for tour stops</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
+<p><a href="../reference/model_data/visitor/synpop/daDayVisitorZonalData_Summer.csv">DayVisitorZonalData</a></p>
+<p>This file contains information for the day visitor synthetic population generator. There is a separate file for each season. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="51%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">zone</td>
+<td align="left">the external zone number</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">overnight2day</td>
+<td align="left">the percentage of overnight visitor count to use as the day visitor percentage</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">percentThru</td>
+<td align="left">the percentage of day visitors to use as thru-visitors</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
+<p><a href="../scenarios/scenario_base/zonal/SchoolEnrollment.csv">SchoolEnrollment</a></p>
+<p>This file contains information for the day visitor synthetic population generator. There is a separate file for each season. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="49%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">taz</td>
+<td align="left">the zone number</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">elementary_school_enrollment</td>
+<td align="left">the elementary school enrollment</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">middle_school_enrollement</td>
+<td align="left">the middle_school_enrollment</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">high_school_enrollment</td>
+<td align="left">the high school enrollment</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">college_enrollment</td>
+<td align="left">the college enrollment, including community colleges and an estimate of the college enrollment of internal residents in external zones</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
+<p><a href="../scenarios/scenario_base/zonal/SocioEcon_Summer.csv">SocioEcon_SEASON</a></p>
+<p>This file contains the socioeconomic data for the region. There is a separate file for each season. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="49%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">taz</td>
+<td align="left">the zone number</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">total_residential_units</td>
+<td align="left">the total housing units (occupied and unoccupied)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">census_occ_rate</td>
+<td align="left">the residential occupation rate (generally derived from the U.S. Census)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">total_occ_units</td>
+<td align="left">the total occupied housing units (total_residential_units times census_occ_rate, rounded to nearest unit)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">occ_units_low_inc</td>
+<td align="left">the total number of housing units occupied by low income households</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">occ_units_med_inc</td>
+<td align="left">the total number of housing units occupied by medium income households</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">occ_units_high_inc</td>
+<td align="left">the total number of housing units occupied by high income households</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">persons_per_occ_unit</td>
+<td align="left">the average number of persons per occupied unit</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">total_persons</td>
+<td align="left">population of the zone (total_occ_units time persons_per_occ_unit, rounded off to nearest person)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">emp_retail</td>
+<td align="left">the total retail employment</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">emp_srvc</td>
+<td align="left">the total service employment</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">emp_rec</td>
+<td align="left">the total recreation employment</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">emp_game</td>
+<td align="left">the total gaming employment</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">emp_other</td>
+<td align="left">the total other employment</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
+<p><a href="../scenarios/scenario_base/zonal/OvernightVisitorZonalData_Summer.csv">OvernightVisitorZonalData_SEASON</a></p>
+<p>This file gives information about the overnight visitor capacities; i.e. how many overnight visitors each zone could maximally hold. It also contains information concerning the beaches in zones. There is a separate file for each season. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="53%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">taz</td>
+<td align="left">the zone number</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">hotelmotel</td>
+<td align="left">the number of hotel/motel (not casino or resort) rooms</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">resort</td>
+<td align="left">the number of resort hotel (not casino) rooms</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">casino</td>
+<td align="left">the number of casino hotel (not resort) rooms</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">campground</td>
+<td align="left">the number of campsites</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">percentHouseSeasonal</td>
+<td align="left">the percentage of unoccupied houses in the zone which are potentially occupied by seasonal residents; the remaining unoccupied houses will potentially be occupied by non-seasonal overnight visitors</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">beach</td>
+<td align="left">the relative attractiveness of beaches in the zone â if a zone has no beaches, this value zero; since this is a relative attractiveness the absolute value does not matter (zone A wi an attractiveness of 1 and B with an attractiveness of 2 is the same as A with 2 and B with 4)</td>
+<td align="left">is , th</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
+<p><a href="../scenarios/scenario_base/zonal/VisitorOccupancyRates_Summer.csv">VisitorOccupancyRates</a></p>
+<p>This file gives information concerning the actual occupancy levels of the overnight visitor stay types. This is used, in conjunction with OvernightVisitorZonalData_[Summer/Winter].csv to generate a overnight visitor synthetic population. There is a separate file for each season. It is a CSV format plain text file.</p>
+<details><summary><font size="3">click for details</font></summary>
+<p>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="49%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Attribute Name</th>
+<th align="left">Attribute Description</th>
+<th align="left">Attribute Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">taz</td>
+<td align="left">the zone number</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">hotelmotel</td>
+<td align="left">the occupancy rate for hotel/motel stay type (not casino or resort)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">resort</td>
+<td align="left">the occupancy rate for resort hotel (not casino)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">casino</td>
+<td align="left">the occupancy rate for casino hotel (not resort)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">campground</td>
+<td align="left">the occupancy rate for campgrounds (should be zero in the winter)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">house</td>
+<td align="left">the occupancy rate for non-seasonal overnight visitors staying in houses</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">seasonal</td>
+<td align="left">the occupancy rate for seasonal visitors</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</p>
+<p></details></p>
 </div>
 
 <br>

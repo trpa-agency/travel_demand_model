@@ -12,7 +12,7 @@ This page documents the data dictionary of the all the major inputs and outputs 
 
 This file maps the zones to districts. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 -------------------------------------------------------------------------------------
 Attribute             Attribute                                      Attribute
@@ -43,7 +43,7 @@ ext_zone              an external zone indicator; if the zone         Integer
 
 This file contains geographic information about each zone. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 -------------------------------------------------------------------------------------
 Attribute             Attribute                                      Attribute
@@ -82,7 +82,7 @@ area_in_sq_miles 		the area of the zone in square miles         Float
 
 This file contains information for the various external zone size term calculations. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 ------------------------------------------------------------------------------------------
 Attribute                Attribute                                      Attribute
@@ -126,12 +126,12 @@ ovDCSizePercentOth 		 same as ovDCSizePercentRec, only for tour
 
 </p></details>
 
-[DayVisitorZonalData](../reference/model_data/visitor/synpop/daDayVisitorZonalData_Summer.csv)
+[DayVisitorZonalData](../reference/model_data/zonal/DayVisitorZonalData_Summer.csv)
 
 This file contains information for the day visitor synthetic population generator. There is a separate file for each 
 season. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 ------------------------------------------------------------------------------------------
 Attribute                Attribute                                      Attribute
@@ -156,7 +156,7 @@ percentThru 			 the percentage of day visitors to use as
 This file contains information for the day visitor synthetic population generator. There is a separate file for each 
 season. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 ------------------------------------------------------------------------------------------
 Attribute                	 Attribute                                      Attribute
@@ -183,7 +183,7 @@ college_enrollment 			  the college enrollment, including community
 
 This file contains the socioeconomic data for the region. There is a separate file for each season. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 ------------------------------------------------------------------------------------------
 Attribute                	 Attribute                                      Attribute
@@ -235,7 +235,7 @@ emp_other 					 the total other employment
 
 This file gives information about the overnight visitor capacities; i.e. how many overnight visitors each zone could maximally hold. It also contains information concerning the beaches in zones. There is a separate file for each season. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 -------------------------------------------------------------------------------------
 Attribute             Attribute                                      Attribute
@@ -274,7 +274,7 @@ beach 				  the relative attractiveness of beaches in the
 
 This file gives information concerning the actual occupancy levels of the overnight visitor stay types. This is used, in conjunction with OvernightVisitorZonalData_[Summer/Winter].csv to generate a overnight visitor synthetic population. There is a separate file for each season. It is a CSV format plain text file.
 
-<details><summary><font size="3">click for details</font></summary><p>
+<details><summary>click for details</summary><p>
 
 -----------------------------------------------------------------------------------------------
 Attribute                	 Attribute                                      Attribute
