@@ -11,7 +11,7 @@
 
 
 
-<title>GISDK Code Reference</title>
+<title>Frequently Asked Questions</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,14 +25,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.2/htmlwidgets.js"></script>
-<script src="site_libs/d3-3.3.8/d3.min.js"></script>
-<script src="site_libs/dagre-0.4.0/dagre-d3.min.js"></script>
-<link href="site_libs/mermaid-0.3.0/dist/mermaid.css" rel="stylesheet" />
-<script src="site_libs/mermaid-0.3.0/dist/mermaid.slim.min.js"></script>
-<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
-<script src="site_libs/chromatography-0.1/chromatography.js"></script>
-<script src="site_libs/DiagrammeR-binding-1.0.0/DiagrammeR.js"></script>
 <link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
 <script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
 <script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
@@ -349,129 +341,103 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">GISDK Code Reference</h1>
+<h1 class="title toc-ignore">Frequently Asked Questions</h1>
 
 </div>
 
 
-<p>GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the main GISDK code, <a href="../reference/code/TahoeModelToolbox_rev.rsc">TahoeModelToolbox_rev.rsc</a> and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as “Macros”, and that terminology will be used for the ramining part of this document.</p>
-<p>The most important Macros are documented below, it shows the name of the Macro, the function performed by the Macro and finally the output files orcreated by the Macros.</p>
-<div id="model-run-macro-flowchart" class="section level1">
-<h1>Model Run Macro Flowchart</h1>
-<div id="high-level-flow" class="section level3">
-<h3>High level flow</h3>
-<div id="htmlwidget-4bfd1ad76ea0e1510be7" style="width:672px;height:200px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4bfd1ad76ea0e1510be7">{"x":{"diagram":"\ngraph LR\nA[PreModelRunner]-->B[SaveLinkData]\nB-->C{Feedback Loop}\nC-->D[CreateTripMatrices]\nD-->E[TransitAssignment]\n"},"evals":[],"jsHooks":[]}</script>
-</div>
-<div id="premodelrunner-steps" class="section level3">
-<h3>PreModelRunner steps</h3>
-<div id="htmlwidget-26310c0f0b919813830d" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-26310c0f0b919813830d">{"x":{"diagram":"\ngraph TD\nB[UpdateFFSpeeds]-->C[CreateDriveNetwork]\nC-->D[CopyBaseTripTables]\nD-->E[CreateTripMatrices]\nE-->F[TrafficAssignment]\nF-->G[BandsRun]\nG-->H[TransitSkimmer]\nH-->I[JavaPreModelCode]\n"},"evals":[],"jsHooks":[]}</script>
-</div>
-<div id="inside-the-feedback-loop" class="section level3">
-<h3>Inside the feedback loop</h3>
-<div id="htmlwidget-09c26a81d92e34a956ac" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-09c26a81d92e34a956ac">{"x":{"diagram":"\ngraph TD\nL[ClearLastFile]-->M[RunJavaModel]\nM-->N[CreateTripMatrices]\nN-->O[TrafficAssignment]\nO-->P[MSAAssignmentResults]\nP-->Q[RunTransitSkims]\nQ-->R[SaveLinkData]\nR-->S[TripSummarizer]\n"},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-<div id="macro-reference" class="section level1">
-<h1>Macro Reference</h1>
-<table>
-<colgroup>
-<col width="24%" />
-<col width="54%" />
-<col width="21%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Macro Name</th>
-<th align="left">Macro Description</th>
-<th align="left">Output files from the Macro</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">PreModelRunner</td>
-<td align="left">This Macro is the first Macro that is run when the “Run Model” button is clicked. It is outside the global feedback loop and runs several other Macros listed below. <code>UpdateFFSpeeds</code><br/> <code>CreateDriveNetwork</code><br/> <code>CopyBaseTripTables</code><br/> <code>CreateTripMatrices</code><br/> <code>TrafficAssignment</code><br/> <code>BandsRun</code><br/> <code>TransitSkimmer</code><br/> <code>JavaPreModelCode</code><br/></td>
-<td align="left">Refer to the outputs of Macros that are called by this Macro</td>
-</tr>
-<tr class="even">
-<td align="left">UpdateFFSpeeds</td>
-<td align="left">Updates the link free flow speed in the input network based on a specific formula.</td>
-<td align="left">FullStreets.bin</td>
-</tr>
-<tr class="odd">
-<td align="left">CreateDriveNetwork</td>
-<td align="left">Creates the Tahoe Drive Network</td>
-<td align="left">Tahoe_Drive_Network.net</td>
-</tr>
-<tr class="even">
-<td align="left">CopyBaseTripTables</td>
-<td align="left">Creates a copy of the base trip table so that it can be used to create the base trip matrices</td>
-<td align="left">Trips_#PRD#.csv for all time periods</td>
-</tr>
-<tr class="odd">
-<td align="left">CreateTripMatrices</td>
-<td align="left">Converts each of the four CSV trip tables created in the previous step into transcad trip matrices in the .mtx format</td>
-<td align="left">Trips_#PRD#.mtx for all time periods</td>
-</tr>
-<tr class="even">
-<td align="left">TrafficAssignment</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">BandsRun</td>
-<td align="left">This macro creates long and short walk bands for the Tahoe region (by Season)</td>
-<td align="left">WalkAccess_#SEASON#.csv</td>
-</tr>
-<tr class="even">
-<td align="left">TransitSkimmer</td>
-<td align="left">Creates transit skims by skimming the transit network. Also calls the macro JavaSkimConverter, which converts the transit skims in transcad matrix format into *.zmx formats - so that it can be read later by the Java program.</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">JavaPreModelCode</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">SaveLinkData</td>
-<td align="left">This Macro saves the link data from the network file to fullstreets.bin with the feedback loop iteration suffixed to the file</td>
-<td align="left">Fullstreets.bin</td>
-</tr>
-<tr class="odd">
-<td align="left">ClearLastFile</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">RunJavaModel</td>
-<td align="left">Runs the main Java model, the demand model. It runs the followings demand sub-modules: resident, external workers and visitors.</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">MSAAssignmentResults</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">RunTransitSkims</td>
-<td align="left"></td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">TripSummarizer</td>
-<td align="left">Calls the TahoeResultsSummarizer (an external Python executable) to create summary reports</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">TransitAssignment</td>
-<td align="left">Runs transit assignment</td>
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
+<div id="model-related-questions" class="section level1">
+<h1>Model Related Questions</h1>
+<ul>
+<li>How does the model estimate the total number of visitors? What are the data sources?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>How is the ‘vmt_summary’ file computed? (ie Why is the total VMT in the ‘vmt_summary’ file much greater than the total VMT found on the roadway network?)</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>What data sources were used to develop our network file? (eg speeds, lanes, etc)</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>Does the ‘shared auto’ mode include rideshare (uber/lyft)?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>Explain how trip lengths are computed (eg average trip length)? (Also, what is the relation between the ‘trip_length_summary’ file and the ‘DriveDistanceSkim’ files?)</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>Is our model designed to be able to accurately model at the project level (eg a new event center or a highway realignment?) if we wanted to model a project, how would we go about changing the expected visitation?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>For overnight visitors. do we include their trips coming into the basin or just after that reach their overnight destination?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>How is census data allocated to the TAZs? (TAZs are smaller than census geometries)?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>Is there a GIS file of the external zones?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>All of the residential submodels are calibrated using a Household Travel survey. Where is this survey data?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>The external workers model is based upon the North Tahoe/Truckee Employer Commute survey. Where is this survey data?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>How does the model incorporate vacation rentals?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>How is the ‘model summary’ file computed?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>What is the difference between the 3 versions of ‘tour_length’ and ‘trip_length’ files in the reports folder?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
+<ul>
+<li>How can we annualize our peak day VMT?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question is this</p>
+</blockquote>
 </div>
 
 <br>

@@ -1,0 +1,68 @@
+---
+title: "Frequently Asked Questions"
+output: html_document
+---
+
+# Model Related Questions
+
+
+* How does the model estimate the total number of visitors? What are the data sources?
+
+> Answer to the this question is this
+
+* How is the 'vmt_summary' file computed? (ie Why is the total VMT in the 'vmt_summary' file much greater than the total VMT found on the roadway network?)
+
+> Answer to the this question is this
+    
+    
+* What data sources were used to develop our network file? (eg speeds, lanes, etc)
+
+> Answer to the this question is this
+    
+* Does the 'shared auto' mode include rideshare (uber/lyft)?
+
+> Answer to the this question is this
+    
+* Explain how trip lengths are computed (eg average trip length)? (Also, what is the relation between the 'trip_length_summary' file and the 'DriveDistanceSkim' files?)
+
+> Answer to the this question is this
+    
+* Is our model designed to be able to accurately model at the project level (eg a new event center or a highway realignment?) if we wanted to model a project, how would we go about changing the expected visitation?
+  
+> Answer to the this question is this
+      
+* For overnight visitors. do we include their trips coming into the basin or just after that reach their overnight destination?
+
+> Answer to the this question is this
+    
+* How is census data allocated to the TAZs? (TAZs are smaller than census geometries)?
+
+> Answer to the this question is this
+    
+* Is there a GIS file of the external zones?
+
+> Answer to the this question is this
+    
+* All of the residential submodels are calibrated using a Household Travel survey. Where is this survey data?
+
+> Answer to the this question is this
+    
+* The external workers model is based upon the North Tahoe/Truckee Employer Commute survey. Where is this survey data?
+
+> Answer to the this question is this
+    
+* How does the model incorporate vacation rentals?
+
+> Answer to the this question is this
+    
+* How is the 'model summary' file computed?
+
+> Answer to the this question is this
+    
+* What is the difference between the 3 versions of 'tour_length' and 'trip_length' files in the reports folder?
+
+> Answer to the this question is this
+    
+* How can we annualize our peak day VMT?
+
+> Answer to the this question is this

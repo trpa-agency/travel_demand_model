@@ -1,0 +1,37 @@
+---
+title: "Resident Model"
+output: html_document
+---
+
+
+#  Tahoe Resident Model Structure
+
+The resident model is actually a series of models that attempt to capture multiple aspects of household, person and tour level travel making decisions. When applied these components essentially take the place of trip generation, trip distribution and model split that are the more familiar steps from the aggregate 4-step model. However because this is an activity-based model, the components cannot be grouped the same way since "trip generation" is done on a person-by-person basis with "trip distribution" and "modal split" integrated along the way. 
+
+Instead of calculating a matrix of home-based work or home-based other trips based on generalized household trip rates, each person in the model area gets to explicitly choose whether to leave the house on the model day and if so whether to go to work and/or school (mandatory tours) or do some other kind of non-mandatory travel (joint and/or individual non-mandatory tours). If work/school travel is chosen, the person then decides where to go to work (Destination choice), when to go to work, how long to stay and when to return home (Time-of-day choice) and how to get to and from work (Mode choice). At the end of the daily activity pattern and mandatory DTM components, trip generation, distribution and modal split for home-based work trips has been done. 
+
+With the knowledge of everyone in the households' schedule, it can now be determined if there is an opportunity for anyone in the household to take a tour together – perhaps to shop or eat dinner (joint tour frequency). If there are several people at home at the same time, it is determined who will make up the tour party (kids and adults, just adults) and who will ultimately participate in the joint tour (joint tour composition and tour participation). Finally for each joint tour, the destination, time of day and mode choice is chosen. The set of joint-tour components generates home-based other trips that are behaviourally consistent with observed data. 
+
+Each time a person makes a choice regarding when to leave, how long to stay and when to return, her daily schedule is updated to reflect the decision. However as in all households no matter how busy everyone is, someone still has to find time to go to the grocery store or the post office or take themselves to the doctor. These decisions are made in the individual non-mandatory tours model. First, it is determined whether the household needs someone to run the household errands on the model day and how many errands there are (maintenance frequency). If so, schedules are checked and the person most available is most likely chosen to run the errand/s (maintenance allocation). Next each person in the household decides to make or not make "discretionary tours" doctor visit, seeing friends, etc (discretionary frequency). In addition, persons at work choose whether to leave work during the day to eat or shop before returning to work to finish up their day (at-work frequency). As before, the destination, time of day and mode for any tours that were chosen most now be 
+decided (non-mandatory DTM and at-work DTM). 
+
+The final set of models (stop frequency, stop location and stop mode) determines whether stops are made along the way, where they are made and how they are made for each of the main tour types chosen above (mandatory, joint, non-mandatory and at-work). These stops make up what is thought of as the non-home-based” other trips in the four step process. The benefit of the activity-based models is that so much is known about the travel that occurs immediately before this non-home-based trip and after, that a much more reliable trip matrix can be produced. 
+
+### Model Flow
+```{r,echo=F,,out.height=200}
+library(DiagrammeR)
+mermaid('
+graph TD
+A[Daily Activity Pattern Model]-->B[Mandatory]
+A-->C[Non-mandatory]
+A-->D[At-Home]
+B-->E[Primary Destination]
+E-->F[Mode Choice]
+F-->G[Joint Tour Generation and Participation]
+G-->H[Joint Tour - Destination, TOD, Mode]
+H-->I[Maintenance Tour frequency and allocation]
+I-->J[Discretionary and At-work tour frequency]
+J-->K[Maintenance/Discretionary Tour - Destination, TOD, Mode ]
+K-->L[Stop Generation, Destination, TOD, Mode  <a href="https://www.w3schools.com">Visit W3Schools.com!</a>]
+')
+```

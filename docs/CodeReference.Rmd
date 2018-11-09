@@ -52,51 +52,71 @@ R-->S[TripSummarizer]
 
 # Macro Reference
 
--------------------------------------------------------------------------------------
-Macro              Macro                                          Output files from
-Name               Description                                    the Macro
------------------- ---------------------------------------------- -------------------
-PreModelRunner     This Macro is the first Macro that is run      Refer to the outputs 
-                   when the "Run Model" button is clicked.        of Macros that are
-                   It is outside the global feedback loop and     called by this Macro  
-                   runs several other Macros listed below. 
-                   `UpdateFFSpeeds`<br/>
-                   `CreateDriveNetwork`<br/>
-                   `CopyBaseTripTables`<br/>
-                   `CreateTripMatrices`<br/>
-                   `TrafficAssignment`<br/>
-                   `BandsRun`<br/>
-                   `TransitSkimmer`<br/>
-                   `JavaPreModelCode`<br/>
-                   
-  
-UpdateFFSpeeds     Updates the link free flow speed in the 
-                   input network based on a specific formula.     FullStreets.bin
-                  
-CreateDriveNetwork Creates the Tahoe Drive Network                Tahoe_Drive_Network.net 
+---------------------------------------------------------------------------------------
+Macro                Macro                                          Output files from
+Name                 Description                                    the Macro
+-------------------- ---------------------------------------------- -------------------
+PreModelRunner       This Macro is the first Macro that is run      Refer to the outputs 
+                     when the "Run Model" button is clicked.        of Macros that are
+                     It is outside the global feedback loop and     called by this Macro  
+                     runs several other Macros listed below. 
+                     `UpdateFFSpeeds`<br/>
+                     `CreateDriveNetwork`<br/>
+                     `CopyBaseTripTables`<br/>
+                     `CreateTripMatrices`<br/>
+                     `TrafficAssignment`<br/>
+                     `BandsRun`<br/>
+                     `TransitSkimmer`<br/>
+                     `JavaPreModelCode`<br/>
+                     
+                     
+UpdateFFSpeeds       Updates the link free flow speed in the 
+                     input network based on a specific formula.     FullStreets.bin
+                     
+CreateDriveNetwork   Creates the Tahoe Drive Network                Tahoe_Drive_Network.net 
+                     
+CopyBaseTripTables   Creates a copy of the base trip table so that  Trips_#PRD#.csv for
+                     it can be used to create the base trip         all time periods
+                     matrices
+                     
+CreateTripMatrices   Converts each of the four CSV trip tables      Trips_#PRD#.mtx for
+                     created in the previous step into transcad     all time periods
+                     trip matrices in the .mtx format
+                     
+TrafficAssignment    
+                     
+BandsRun             This macro creates long and short walk bands    WalkAccess_#SEASON#.csv
+                      for the Tahoe region (by Season)
+                     
+TransitSkimmer       Creates transit skims by skimming the 
+                      transit network. Also calls the macro
+                      JavaSkimConverter, which converts the 
+                      transit skims in transcad matrix format into
+                      *.zmx formats - so that it can be read later
+                      by the Java program.
+                      
+                     
+JavaPreModelCode     
+                     
+SaveLinkData         This Macro saves the link data from the         Fullstreets.bin  
+                     network file to fullstreets.bin with the
+                     feedback loop iteration suffixed to the
+                     file
+                     
+ClearLastFile        
+                     
+RunJavaModel         Runs the main Java model, the demand model. 
+                      It runs the followings demand sub-modules:
+                      resident, external workers and visitors.
+                     
+MSAAssignmentResults 
 
-CopyBaseTripTables Creates a copy of the base trip table so that  Trips_#PRD#.csv for
-                   it can be used to create the base trip         all time periods
-                   matrices
+RunTransitSkims                   
 
-CreateTripMatrices Converts each of the four CSV trip tables      Trips_#PRD#.mtx for
-                   created in the previous step into transcad     all time periods
-                   trip matrices in the .mtx format
-
-TrafficAssignment
-
-BandsRun
-
-TransitSkimmer
-
-JavaPreModelCode
-
-SaveLinkData       This Macro saves the link data from the         Fullstreets.bin  
-                   network file to fullstreets.bin with the
-                   feedback loop iteration suffixed to the
-                   file
-                   
-
+TripSummarizer        Calls the TahoeResultsSummarizer (an external
+                        Python executable) to create summary reports
+                        
+TransitAssignment     Runs transit assignment
 
 ----------------------------------------------------------------------------------
 
