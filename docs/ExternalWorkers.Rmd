@@ -2,3 +2,114 @@
 title: "External Worker Model"
 output: html_document
 ---
+
+# Introduction
+
+The external workers model concerns itself with people living outside of the Tahoe basin but who work within its boundaries. Partly because of the small size of the basin, and partly because of the economics of living in the region, a significant number of the employment within the basin is filled by persons living outside of the basin ridge. According to the results of the residential travel demand model (which itself is based on the U.S. Census and household travel survey), external workers fill just over 25% of the employment in the basin. 
+
+Because the household travel survey only targeted households living within the basin, no information concerning the external workers' characteristics was obtained. Therefore, the formulation, calibration, and validation of the 
+external workers model was carried out using data derived from the following sources: 
+
+* The outputs of the residential travel demand model 
+
+* The region's socio-economic data 
+
+* Count data for the region's external stations 
+
+* The North Tahoe/Truckee Employer Commute Survey (2002) 
+
+The first two data sources were used to determine how many external workers are in the region on the model day, and where they work. The second two sources were used to determine where the workers originated, and when they made their trips. 
+
+The external workers model consists of three steps: 
+
+1. A synthesis of the external worker population; determining its size and workplace distribution. 
+
+2. An *origin-choice* model (sometimes referred to as a *reverse* destination choice model) which determines which external station each external worker originates from. 
+
+3. A time-of-day model which determines when each external worker tour is made. 
+
+For simplicity, and because there was little or no data to back up such additions, neither intra-tour stops nor work-based sub-tours were included in the external workers model. 
+
+# External Workers Population Synthesis
+
+The external worker population synthesis is a very simple model based on the results of the [residential population travel demand model](ResidentModel.html#MandModels). The residential mandatory work tour destination choice model used demand constraints (shadow pricing) to ensure that no zones employment was over-filled (beyond a very small percentage). Because of this, determining the number of external workers required for each zone is just a matter of subtracting the number of residents working in it from its employment: 
+
+X~i~ = max(E~i~,R~i~ ,0) 
+
+where X~i~ is the number of external workers working in zone i 
+
+ E~i~ is the total employment in zone i 
+ 
+ R~i~ is the number of residents working in zone i 
+ 
+ The *max* function is required because there is a small percentage of low-employment zones where employment may be slightly over-filled.
+ 
+On a given day in the basin region, all of a zone's employment does not necessarily translate into a work trip. This can be due to a multitude of factors, including: 
+
+* Part-time workers do not work every weekday 
+
+* Some jobs (especially recreation/tourism based ones) may require weekend work and thus the workers' *weekends* may occur during a weekday 
+
+* Workers may take vacation, or be sick 
+
+In theory, the residential model accounts for such *shrinkage* among the residential population implicitly via the daily activity pattern model. However, just filling up the *unfilled* employment in a zone with external workers will nullify such effects. Thus, in order to account for this, an *unfilled employment factor* is used to ensure that the 
+zonal employment is not completely filled up. This has the effect of slightly shrinking the external worker population. The number used for the unfilled employment factor in the model is 0.005. 
+
+The formula for total unfilled employment is determined by: 
+
+ U = E$\sigma$
+
+where U is the unfilled employment in the region 
+
+ E is the total employment in the region 
+
+ $\sigma$ is the unfilled employment factor 
+
+Given this, each unfilled employment spot is randomly removed from the external worker population. This removal process is essentially a monte-carlo selection process where every external worker employment spot is equally likely to be removed. 
+
+After the unfilled employment procedure, the size of the external worker employment population in each zone is fixed. Given this information, the external worker population is easily synthesized by creating one worker for each employment spot. Each worker essentially has only one defining characteristic: the zone that he/she works in.
+ 
+# External Workers Origin Choice Model 
+
+While most location choice models start with a known origin location (typically *home*) and choose a destination (i.e. *workplace*), the external workers location choice mode does the exact opposite: the workplace location is known based on the population synthesis, and the origin/home (i.e. external station) is chosen. The origin choice model is a simple multinomial logit choice model where each external zone is an available alternative. The only variables included in the model are distance, a size term, and a shadow price. The distribution of external worker origins amongst the seven external zones has been determined based on analysis of traffic counts and the North Tahoe/Truckee Employer Commute Survey, which asked a selection of employers in and around the basin region where their employees lived. Because both the survey and counts were seasonal in nature, different distributions for summer and winter were calculated. From this distribution, a size term is calculated for each external station as the natural log of the number of external workers that should originate in that station (the percentage from Table 12.2 times the total number of external workers). Because of distance variations, the distribution of external workers across external stations will not necessarily be matched, so a shadow price variable is added and the model iteratively run until the distribution is matched within an allowable error. This process is analogous to the residential mandatory work destination choice model. 
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Origin Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/external_worker/uec/ExternalWorkerOC.xls)
+
+The model is not stratified.
+
+</font>
+</p></details>
+
+# External Workers Time-Of-Day Choice Model
+
+The external workers time-of-day (TOD) model is a multinomial choice model where each skim period is an available alternative as a start and end of the tour. The skim periods are same as that in residential TOD models as shown below.
+
+-------------------------------------------------------------------
+Skim                Start             End Time       Duration        
+Period                 Time                                    
+------------------- ----------------- -------------- ------------- 
+AM Peak (AM)         7:00 AM          10:00 AM       3 hours 
+ 
+Midday (MD)         10:00 AM          4:00 PM        6 hours 
+ 
+PM Peak (PM)         4:00 PM          7:00 PM        3 hours 
+ 
+Late Night (LN)      7:00 PM          7:00 AM        12 hours
+
+----------------------------------------------------------------------------------
+
+Unlike the residential model, one-hour granularity of tour start and end times was not modeled (mainly due to data limitations). Given the four skim periods, there are sixteen available start/end skim period pair permutations.
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Time-of-Day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/external_worker/uec/ExternalWorkerTOD.xls)
+
+The model is not stratified.
+
+</font>
+</p></details>
+
