@@ -237,7 +237,7 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 <font size="3">
 
 
-[Destination choice model](../reference/model_data/resident/uec/Dest_Choice.xls)
+[Destination choice model](reference/model_data/resident/uec/Dest_Choice.xls)
 
 **escorting** tab used for escorting tours
 
