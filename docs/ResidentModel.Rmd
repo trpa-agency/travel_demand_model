@@ -237,7 +237,7 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 <font size="3">
 
 
-[Destination choice model](reference/model_data/resident/uec/Dest_Choice.xls)
+[Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
 
 **escorting** tab used for escorting tours
 
@@ -251,7 +251,7 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 
 **atwork** tab used for At-work sub-tours
 
-[Time-of-day Model](../reference/model_data/resident/uec/TOD_Choice.xls)
+[Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
 
 **escorting** tab used for escorting tours
 
@@ -259,7 +259,7 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 
 **atwork** tab used for At-work sub-tours
 
-[Mode Choice Model](../reference/model_data/resident/uec/Mode_Choice.xls)
+[Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
 
 
 
