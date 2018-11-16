@@ -25,6 +25,14 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="site_libs/d3-3.3.8/d3.min.js"></script>
+<script src="site_libs/dagre-0.4.0/dagre-d3.min.js"></script>
+<link href="site_libs/mermaid-0.3.0/dist/mermaid.css" rel="stylesheet" />
+<script src="site_libs/mermaid-0.3.0/dist/mermaid.slim.min.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/chromatography-0.1/chromatography.js"></script>
+<script src="site_libs/DiagrammeR-binding-1.0.0/DiagrammeR.js"></script>
 <link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
 <script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
 <script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
@@ -359,6 +367,56 @@ div.tocify {
 <h2>Visitor Data Sources and Visitor</h2>
 <p>The bulk of the visitor data came from the results of overnight and day-visitor travel surveys produced by NuStats (see “Tahoe_report_final_winter[summer].pdf” for more details) These surveys were taken during both the summer and winter seasons, and attempted to capture the travel behavior of non-residents in the region. Seasonal residents, a population that is modeled along with the overnight-visitors, were surveyed during the resident surveys. It was hard to define exactly what constituted a “seasonal resident” since they come in various forms (2nd home-owners, regular visitors, monthly renters, time share owners, etc.). In the end, the surveyors asked the interviewee if he/she considered him/herself a seasonal resident and if so the data was thus marked. The last data source was external station traffic counts, which were used to help determine the flow of visitors into and out of the region during the travel day.</p>
 </div>
+<div id="visitor-model-flow" class="section level2">
+<h2>Visitor Model Flow</h2>
+<p>The basic unit of visitors is the <em>travel party</em>. This is a group of people who travel together throughout the day, each enjoying the same activities. Almost all travel decisions are made at the travel party level, and therefore for this model, travel decisions made at a more granular level (e.g. individual or joint tours from the resident model) were not allowed. As much as possible, the visitor model was kept consistent with the resident model. It is therefore a micro-simulated, activity-based travel demand model. Due to data availability limitations, the overnight and day-visitor models are more sophisticated and detailed than the thru-visitor model. Furthermore, the survey data for the overnight-visitor model was more detailed than the day-visitor, so a large part of the tour models for the day-visitors was combined with the overnight-visitors to create more robust model estimation results.</p>
+<div id="htmlwidget-734425d9655e55de1d61" style="width:672px;height:700px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-734425d9655e55de1d61">{"x":{"diagram":"\ngraph TD\nA[Overnight-Visitor Population Synthesis]-->B[Day-Visitor Population Synthesis]\nB-->C[Overnight- and Day-Visitor Daily Activity Pattern Models]\nC-->D[Visitor Tour Destination, Time-of-Day, and Mode Choice Models]\nD-->E[Visitor Tour Stop Model]\nE-->F[Thru-Visitor Population Synthesis]\nF-->G[Thru-Visitor Destination and Time-of-Day Choice Models]\n        click A \"#OvntVstrPopSyn\" \"An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region\"\n        click B \"#DayVstrPopSyn\" \"A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population\"\n        click C \"#VisitorDAP\" \"The daily travel behavior for each travel party is determined in these two parallel but separate models\"\n        click D \"#VisitorDTM\" \"Each travel party tours destination, time, and mode is determined in this single model\"\n        click E \"#VisitorStops\" \"The location and mode for tour stops is determined in this single model\"\n        click F \"#ThrgVstrPopSyn\" \"A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population\"\n        click G \"#ThrgVstrDT\" \"Each thru-visitor tours destination and time is chosen in this model\"\nclassDef orange fill:#f96,stroke:#333,stroke-width:4px;\nclass A,B,C,D,E,F,G orange\n"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="OvntVstrPopSyn" class="section level1">
+<h1>Overnight-visitor synthetic population</h1>
+<p>The overnight-visitor synthetic population is used to represent persons who visit the Tahoe basin on a non-permanent basis (i.e. are not permanent residents) but who are not just visiting for the day. This population includes not only people who do not claim any residence in the region (<em>vacationers</em>), but also seasonal residents, who own or rent a residence in the region and reside in it on a regular, though not permanent, basis. The synthetic population is micro-simulated using occupancy rates (which can vary by scenario) and actual records from the overnight-visitor survey and residential travel survey. The base unit of the synthetic population is the <em>travel party</em>, which can be considered analogous to the household unit of the residential travel model. The reason overnight-visitors are not referred to as households is two-fold:</p>
+<ol style="list-style-type: decimal">
+<li><p>Often travel parties may consist of multiple households (both within and across families). Thus, referring to the party as a household (as it is used in other parts of this model/documentation) would be misleading.</p></li>
+<li><p>The level of information available for each party is extremely limited: essentially where they stayed and some basic compositional data. The use of the term household - both in terms of the residential model and activity-based models as a whole - implies a deeper level of data than what is known. The use of the more generic and broad sounding <em>travel party</em> helps to underline this.</p></li>
+</ol>
+<p>The overnight-visitor population is stratified by their <em>stay-type</em>, or the type of accommodation used during their stay. The reason for this is partly due to the observation that people staying at campgrounds make different travel decisions than people staying in a resort hotel than do people staying in a rental cabin for example. In addition, stratifying the population provides the user more control over the overnight-visitor population in a specific scenario.</p>
+<p>There are six stay-type stratifications for the overnight-visitor population:</p>
+<ul>
+<li><p>Seasonal - For seasonal residents</p></li>
+<li><p>Hotel/Motel - For visitors staying in a hotel or motel</p></li>
+<li><p>Casino - For visitors staying in a casino-based hotel</p></li>
+<li><p>Resort - For visitors staying in a higher-end (non-casino) resort</p></li>
+<li><p>House - For visitors who are not seasonal residents but who are staying in some type of an attached or detached residence</p></li>
+<li><p>Campground - For visitors staying at a campsite</p></li>
+</ul>
+<p>For each of these stay-types, the synthetic population model requires the user to specify the number of units that are occupied on the model day for each zone. These <em>vacancies</em> are then <em>filled</em> by visitor parties during the synthesis procedure. A description of what form the inputs must take and how the information is used to synthesize the population is described below.</p>
+<p>For Hotel/Motel, Casino, Resort, and Campground stay-types, the number of available units per zone is a scenario-specific input. The other required input is the occupation percentage, by zone, for each of these stay-types. By multiplying these two values, the number of occupied units is determined. (As a note, the winter Campground occupation rate is globally set to zero, as winter camping rarely, if ever, occurs in the basin).</p>
+<p>For the Seasonal and House stay-types, the number of available units is derived from the socio-economic data used in the resident model. That data includes both the number of available housing units and the number of (full-time) occupied units. The difference between these numbers provides the number of units available for the Seasonal and House overnight-visitor stay-types. The user inputs are then the percentages of available units that are filled, and the percentage of those units that are seasonal. From this the number of filled housing units can be determined:</p>
+</div>
+<div id="DayVstrPopSyn" class="section level1">
+<h1>Day-Visitor Population Synthesis</h1>
+</div>
+<div id="VisitorDAP" class="section level1">
+<h1>Overnight- and Day-Visitor Daily Activity Pattern Models</h1>
+<p>asdasd</p>
+</div>
+<div id="VisitorDTM" class="section level1">
+<h1>Visitor Tour Destination, TOD, and Mode Choice Models</h1>
+<p>asdasd</p>
+</div>
+<div id="VisitorStops" class="section level1">
+<h1>Visitor Tour Stop Model</h1>
+<p>asdasd</p>
+</div>
+<div id="ThrgVstrPopSyn" class="section level1">
+<h1>Thru-Visitor Population Synthesis</h1>
+<p>asdasd</p>
+</div>
+<div id="ThrgVstrDT" class="section level1">
+<h1>Thru-Visitor Destination and TOD Models</h1>
+<p>asdasd</p>
 </div>
 
 <br>
