@@ -370,8 +370,8 @@ div.tocify {
 <div id="visitor-model-flow" class="section level2">
 <h2>Visitor Model Flow</h2>
 <p>The basic unit of visitors is the <em>travel party</em>. This is a group of people who travel together throughout the day, each enjoying the same activities. Almost all travel decisions are made at the travel party level, and therefore for this model, travel decisions made at a more granular level (e.g. individual or joint tours from the resident model) were not allowed. As much as possible, the visitor model was kept consistent with the resident model. It is therefore a micro-simulated, activity-based travel demand model. Due to data availability limitations, the overnight and day-visitor models are more sophisticated and detailed than the thru-visitor model. Furthermore, the survey data for the overnight-visitor model was more detailed than the day-visitor, so a large part of the tour models for the day-visitors was combined with the overnight-visitors to create more robust model estimation results.</p>
-<div id="htmlwidget-4e0f251687c30ba1c267" style="width:672px;height:700px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4e0f251687c30ba1c267">{"x":{"diagram":"\ngraph TD\nA[Overnight-Visitor Population Synthesis]-->B[Day-Visitor Population Synthesis]\nB-->C[Overnight- and Day-Visitor Daily Activity Pattern Models]\nC-->D[Visitor Tour Destination, Time-of-Day, and Mode Choice Models]\nD-->E[Visitor Tour Stop Model]\nE-->F[Thru-Visitor Population Synthesis]\nF-->G[Thru-Visitor Destination and Time-of-Day Choice Models]\n        click A \"#OvntVstrPopSyn\" \"An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region\"\n        click B \"#DayVstrPopSyn\" \"A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population\"\n        click C \"#VisitorDAP\" \"The daily travel behavior for each travel party is determined in these two parallel but separate models\"\n        click D \"#VisitorDTM\" \"Each travel party tours destination, time, and mode is determined in this single model\"\n        click E \"#VisitorStops\" \"The location and mode for tour stops is determined in this single model\"\n        click F \"#ThrgVstrPopSyn\" \"A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population\"\n        click G \"#ThrgVstrDT\" \"Each thru-visitor tours destination and time is chosen in this model\"\nclassDef orange fill:#f96,stroke:#333,stroke-width:4px;\nclass A,B,C,D,E,F,G orange\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e0ca2857858e3d8fc33f" style="width:672px;height:700px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e0ca2857858e3d8fc33f">{"x":{"diagram":"\ngraph TD\nA[Overnight-Visitor Population Synthesis]-->B[Day-Visitor Population Synthesis]\nB-->C[Overnight- and Day-Visitor Daily Activity Pattern Models]\nC-->D[Visitor Tour Destination, Time-of-Day, and Mode Choice Models]\nD-->E[Visitor Tour Stop Model]\nE-->F[Thru-Visitor Population Synthesis]\nF-->G[Thru-Visitor Destination and Time-of-Day Choice Models]\n        click A \"#OvntVstrPopSyn\" \"An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region\"\n        click B \"#DayVstrPopSyn\" \"A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population\"\n        click C \"#VisitorDAP\" \"The daily travel behavior for each travel party is determined in these two parallel but separate models\"\n        click D \"#VisitorDTM\" \"Each travel party tours destination, time, and mode is determined in this single model\"\n        click E \"#VisitorStops\" \"The location and mode for tour stops is determined in this single model\"\n        click F \"#ThrgVstrPopSyn\" \"A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population\"\n        click G \"#ThrgVstrDT\" \"Each thru-visitor tours destination and time is chosen in this model\"\nclassDef orange fill:#f96,stroke:#333,stroke-width:4px;\nclass A,B,C,D,E,F,G orange\n"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="OvntVstrPopSyn" class="section level1">
@@ -381,6 +381,8 @@ div.tocify {
 <li><p>Often travel parties may consist of multiple households (both within and across families). Thus, referring to the party as a household (as it is used in other parts of this model/documentation) would be misleading.</p></li>
 <li><p>The level of information available for each party is extremely limited: essentially where they stayed and some basic compositional data. The use of the term household - both in terms of the residential model and activity-based models as a whole - implies a deeper level of data than what is known. The use of the more generic and broad sounding <em>travel party</em> helps to underline this.</p></li>
 </ol>
+<div id="population-stratification" class="section level2">
+<h2>Population Stratification</h2>
 <p>The overnight-visitor population is stratified by their <em>stay-type</em>, or the type of accommodation used during their stay. The reason for this is partly due to the observation that people staying at campgrounds make different travel decisions than people staying in a resort hotel than do people staying in a rental cabin for example. In addition, stratifying the population provides the user more control over the overnight-visitor population in a specific scenario.</p>
 <p>There are six stay-type stratifications for the overnight-visitor population:</p>
 <ul>
@@ -393,30 +395,696 @@ div.tocify {
 </ul>
 <p>For each of these stay-types, the synthetic population model requires the user to specify the number of units that are occupied on the model day for each zone. These <em>vacancies</em> are then <em>filled</em> by visitor parties during the synthesis procedure. A description of what form the inputs must take and how the information is used to synthesize the population is described below.</p>
 <p>For Hotel/Motel, Casino, Resort, and Campground stay-types, the number of available units per zone is a scenario-specific input. The other required input is the occupation percentage, by zone, for each of these stay-types. By multiplying these two values, the number of occupied units is determined. (As a note, the winter Campground occupation rate is globally set to zero, as winter camping rarely, if ever, occurs in the basin).</p>
-<p>For the Seasonal and House stay-types, the number of available units is derived from the socio-economic data used in the resident model. That data includes both the number of available housing units and the number of (full-time) occupied units. The difference between these numbers provides the number of units available for the Seasonal and House overnight-visitor stay-types. The user inputs are then the percentages of available units that are filled, and the percentage of those units that are seasonal. From this the number of filled housing units can be determined:</p>
+<p>For the Seasonal and House stay-types, the number of available units is derived from the socio-economic data used in the resident model. That data includes both the number of available housing units and the number of (full-time) occupied units. The difference between these numbers provides the number of units available for the Seasonal and House overnight-visitor stay-types. The user inputs are then the percentages of available units that are filled, and the percentage of those units that are seasonal. From this the number of filled housing units can be determined.</p>
+</div>
+<div id="sample-source" class="section level2">
+<h2>Sample Source</h2>
+<p>The synthetic population consists of actual travel parties sampled from the overnight-visitor and resident surveys. This is analogous to the use of the PUMS records to generate the resident synthetic population. Because there were two sources for the population, and because the samples would be merged to form the full overnight-visitor population, the data in the sample from each source had to be identical. Furthermore, the <a href="#DayVstrPopSyn">day visitor population</a> would also be merged with this population later in the model stream, so the limited data collected during the day visitor survey determined what data could be retained/used from all the surveys. The resulting travel party characteristics were used in the models:</p>
+<ul>
+<li><p>travel party size</p></li>
+<li><p>number of children (age &lt; 18) in the party</p></li>
+<li><p>presence of an adult female</p></li>
+<li><p>stay-type of the party</p></li>
+<li><p>season during which the survey was taken (summer, winter, or seasonal for seasonal residents)</p></li>
+</ul>
+<p>For the non-seasonal resident overnight-visitors, the overnight-visitor survey records are sampled. For example, when populating campgrounds with overnight-visitors, the sample set is all surveyed visitors that stayed at a campground. However not all of the stay-types had enough survey records to provide a robust sample set and were therefore combined with other stay-types. For the same reasons, stratification by season or location could not be made. Table below summarizes the sample source for each stay-type.</p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="23%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stay-Type Available</th>
+<th align="right">Sample Records</th>
+<th align="left">Stay-Types Used for Population Sample</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hotel/Motel</td>
+<td align="right">231</td>
+<td align="left">Hotel/Motel, Casino, Resort</td>
+</tr>
+<tr class="even">
+<td>Casino</td>
+<td align="right">224</td>
+<td align="left">Hotel/Motel, Casino, Resort</td>
+</tr>
+<tr class="odd">
+<td>Resort</td>
+<td align="right">22</td>
+<td align="left">Hotel/Motel, Casino, Resort</td>
+</tr>
+<tr class="even">
+<td>House</td>
+<td align="right">294</td>
+<td align="left">House</td>
+</tr>
+<tr class="odd">
+<td>Campground</td>
+<td align="right">81</td>
+<td align="left">Campground</td>
+</tr>
+</tbody>
+</table>
+<p>For seasonal-residents, the sample source is the residential household survey. NuStats was able to survey 229 households that self-identified as <em>seasonal</em>.</p>
+</div>
+<div id="population-synthesis" class="section level2">
+<h2>Population Synthesis</h2>
+<p>Given the number of units to be filled by zone and stay-type, and the sample records corresponding to each stay-type, the population synthesis is a straightforward procedure. For each stay-type unit to be filled in a zone, a travel party is randomly selected from the available population sample records for that stay-type. Along with the sample data described above, the stay location (zone) is recorded and will be used as that travel party’s origin/home TAZ.</p>
+</div>
 </div>
 <div id="DayVstrPopSyn" class="section level1">
 <h1>Day-Visitor Population Synthesis</h1>
+<p>The day-visitor synthetic population is used to represent persons who visit the Tahoe basin only for the day and do not stay overnight. Technically this population includes thru-visitors, but as these are handled in a <a href="#ThrgVstrPopSyn">separate model</a>, further restrictions are made: day-visitors are those described above who also make at least one stop and exit the region using the same external station they entered. Like the overnight-visitor population, the day-visitors are micro-simulated using a sample drawn from the day-visitor survey records, and the base decision making unit is again the <em>travel party</em>. However, in contrast to the overnight-visitor population, there is no quantity analogous to occupation rates that can accurately constrain the population size. Instead, external station counts (which day-visitors must be a part of) were used to calibrate the day-visitor population size, which was then indexed to the overnight-visitor population.</p>
+<div id="sample-source-1" class="section level2">
+<h2>Sample Source</h2>
+<p>As described above, the day-visitor synthetic population consists of a sample of actual travel parties from the day-visitor surveys. This is analogous to the use of the PUMS records to generate the resident synthetic population. As described in Chapter 14, the day and overnight-visitor populations are merged later in the visitor model stream, and this forced the requirement that the two populations needed to contain equivalent data. As such, the following variables are included in the day-visitor sample records:</p>
+<ul>
+<li><p>The travel party size</p></li>
+<li><p>The number of children (age &lt; 18) in the party</p></li>
+<li><p>The season during which the survey was taken (summer or winter)</p></li>
+</ul>
+<p>As a note, the presence of an adult female in the travel party variable included in the overnight-visitor population was not available from the day-visitor survey. However, this variable is not used once the two populations are merged, and therefore its elimination does not affect the model. From the day-visitor survey, 597 sample records were put together to form the day-visitor sample.</p>
+</div>
+<div id="day-visitor-rates" class="section level2">
+<h2>Day-visitor Rates</h2>
+<p>To synthesize the day-visitor population, the number of day-visitors originating at each external station must be known. To determine this, external station counts (in each direction) for the base scenario and mode results from the residential and external worker models are used. Subtracting the residential and external worker trips which use the external stations from the external station counts gives the amount of flow that the day-visitor and thru visitor trips must make up. During validation, the split between the day-visitor and thru visitor trips is determined and, given this, the specific number of day-visitors per external station is known for the base scenario. To make the day-visitors vary correctly with scenarios, two assumptions are made:</p>
+<ol style="list-style-type: decimal">
+<li><p>That the day-visitors rise and fall at the same rate that overnight-visitors do; that is, that day-visitor rates can be linearly modeled from overnight-visitors</p></li>
+<li><p>That the distribution of day-visitors between the external stations is constant across scenarios</p></li>
+</ol>
+<p>Assumption 2 is probably more controversial and less <em>realistic</em> than 1, but it is required as there is little to no information as to what drives the day-visitor external station distributions</p>
+<p>Given the above assumptions, the number of day-visitors for each external station is calculated using a simple linear formula:</p>
+<p>D<sub>e</sub> = O<span class="math inline">\(\sigma\)</span><sub>e</sub></p>
+<p>where D<sub>e</sub> is the number of day-visitors coming in through external station e O is the number of overnight-visitors <span class="math inline">\(\sigma\)</span><sub>e</sub> is the day-visitor rate factor for external station e</p>
+<p>The values for <span class="math inline">\(\sigma\)</span><sub>e</sub> are given in Tables below for the two seasons. Summing all of the rate factors shows that the number of day-visitors is roughly equal to 78% of the number of overnight-visitors for the summer, and 58% for the winter.</p>
+<table style="width:86%;">
+<caption>Day-visitor external station rate factors, summer</caption>
+<colgroup>
+<col width="36%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">External Station</th>
+<th>Overnight to Day-visitor Rate Factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Reno</td>
+<td>0.0031</td>
+</tr>
+<tr class="even">
+<td align="left">Carson City</td>
+<td>0.1100</td>
+</tr>
+<tr class="odd">
+<td align="left">Kingsbury Grade</td>
+<td>1.127E-05</td>
+</tr>
+<tr class="even">
+<td align="left">Kirkwood</td>
+<td>0.0456</td>
+</tr>
+<tr class="odd">
+<td align="left">Placerville</td>
+<td>0.1986</td>
+</tr>
+<tr class="even">
+<td align="left">Squaw</td>
+<td>0.3106</td>
+</tr>
+<tr class="odd">
+<td align="left">Truckee</td>
+<td>0.1160</td>
+</tr>
+</tbody>
+</table>
+<table style="width:86%;">
+<caption>Day-visitor external station rate factors, winter</caption>
+<colgroup>
+<col width="36%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">External Station</th>
+<th>Overnight to Day-visitor Rate Factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Reno</td>
+<td>1.570E-04</td>
+</tr>
+<tr class="even">
+<td align="left">Carson City</td>
+<td>0.0119</td>
+</tr>
+<tr class="odd">
+<td align="left">Kingsbury Grade</td>
+<td>3.719E-04</td>
+</tr>
+<tr class="even">
+<td align="left">Kirkwood</td>
+<td>0.0373</td>
+</tr>
+<tr class="odd">
+<td align="left">Placerville</td>
+<td>0.3143</td>
+</tr>
+<tr class="even">
+<td align="left">Squaw</td>
+<td>0.1883</td>
+</tr>
+<tr class="odd">
+<td align="left">Truckee</td>
+<td>0.0298</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="population-synthesis-1" class="section level1">
+<h1>Population Synthesis</h1>
+<p>Given the number of day-visitor travel parties per external station, and the day-visitor survey sample records, generating the day-visitor synthetic population is a straightforward procedure. Essentially, for each external station, a travel party is randomly selected from the available day-visitor sample records until the required number of parties is achieved. Along with the sample data described above, the external station is recorded and will be used as that travel party’s origin/home TAZ.</p>
 </div>
 <div id="VisitorDAP" class="section level1">
-<h1>Overnight- and Day-Visitor Daily Activity Pattern Models</h1>
-<p>asdasd</p>
+<h1>Overnight and Day-Visitor DAP Models</h1>
+<p>The daily activity pattern for visitors describes the travel behavior for travel parties. It holds the information concerning how many tours were made, what types the tours were, and how many stops were made. This is in contrast to the resident daily activity pattern model, which only describes the basic travel behavior of residents; the residential tour type and frequency models are not explicitly specified in the visitor travel demand model, but instead are wrapped in the daily activity pattern. The overnight and day-visitor daily activity pattern models are completely separate models, but they share the same overall structure and so are discussed together.</p>
+<div id="daily-activity-pattern-alternatives" class="section level2">
+<h2>Daily Activity Pattern Alternatives</h2>
+<p>For both the day-visitor and overnight-visitor daily activity pattern models, a set of possible daily activity patterns has been specified. These were selected from the patterns found in the overnight and day-visitor surveys. Each pattern begins and ends at the <em>home</em> or external station location (H) and can have a most one stop going to and one stop coming from the primary destination. There are 4 main tour types - recreation, gaming, shopping, and other. Each pattern specifies how many tours (H x H x H = 2 tours), the primary purpose and the number of stops that occur in the party’s daily travel. For example, the pattern HOHTGH says that the travel party left home to participate in an <em>other</em> activity and went back home (HOH). Later the same day the same travel party made a quick stop (T) on the way to a <em>gaming</em> activity (G) before returning directly home (H). Because day-visitors are not staying in the region, their daily activity patterns consist of only one tour. The abbreviations used in the patterns for each of the destinations are described in table below.</p>
+<table style="width:86%;">
+<caption>Visitor daily activity pattern destination abbreviations</caption>
+<colgroup>
+<col width="22%" />
+<col width="63%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Symbol</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">H</td>
+<td align="left">Home/Origin</td>
+</tr>
+<tr class="even">
+<td align="left">R</td>
+<td align="left">Recreation tour</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Gaming tour</td>
+</tr>
+<tr class="even">
+<td align="left">S</td>
+<td align="left">Shopping tour</td>
+</tr>
+<tr class="odd">
+<td align="left">O</td>
+<td align="left">Other tour</td>
+</tr>
+<tr class="even">
+<td align="left">T</td>
+<td align="left">Stop</td>
+</tr>
+</tbody>
+</table>
+<details><summary><font size="3">click for alternatives details</font></summary>
+<p>
+<p><font size="3"></p>
+<table style="width:90%;">
+<caption>Overnight-visitor daily activity pattern alternatives</caption>
+<colgroup>
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Alternatives</th>
+<th align="left">Alternatives (contd.)</th>
+<th align="left">Alternatives (contd.)</th>
+<th align="left">Alternatives (contd.)</th>
+<th align="left">Alternatives (contd.)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>H</td>
+<td align="left">HOHSH</td>
+<td align="left">HRHSTH</td>
+<td align="left">HTGH</td>
+<td align="left">HTRTHTGH</td>
+</tr>
+<tr class="even">
+<td>HGH</td>
+<td align="left">HOHSHRH</td>
+<td align="left">HRHTGH</td>
+<td align="left">HTGHGH</td>
+<td align="left">HTSH</td>
+</tr>
+<tr class="odd">
+<td>HGHGH</td>
+<td align="left">HOHSHSH</td>
+<td align="left">HRHTRH</td>
+<td align="left">HTGHGTH</td>
+<td align="left">HTSHGH</td>
+</tr>
+<tr class="even">
+<td>HGHGTH</td>
+<td align="left">HOHTGH</td>
+<td align="left">HRHTRTH</td>
+<td align="left">HTGHOH</td>
+<td align="left">HTSHOH</td>
+</tr>
+<tr class="odd">
+<td>HGHRH</td>
+<td align="left">HOHTGTH</td>
+<td align="left">HRHTSTH</td>
+<td align="left">HTGTH</td>
+<td align="left">HTSHTOH</td>
+</tr>
+<tr class="even">
+<td>HGHRHOH</td>
+<td align="left">HOHTOTH</td>
+<td align="left">HRTH</td>
+<td align="left">HTGTHGH</td>
+<td align="left">HTSHTSTH</td>
+</tr>
+<tr class="odd">
+<td>HGHTRH</td>
+<td align="left">HOHTRH</td>
+<td align="left">HRTHGH</td>
+<td align="left">HTGTHOH</td>
+<td align="left">HTSTH</td>
+</tr>
+<tr class="even">
+<td>HGHTRTH</td>
+<td align="left">HOHTRTH</td>
+<td align="left">HRTHOH</td>
+<td align="left">HTGTHTGH</td>
+<td align="left">HTSTHOH</td>
+</tr>
+<tr class="odd">
+<td>HGTH</td>
+<td align="left">HOHTSTH</td>
+<td align="left">HRTHRH</td>
+<td align="left">HTOH</td>
+<td align="left">HTSTHRH</td>
+</tr>
+<tr class="even">
+<td>HGTHGH</td>
+<td align="left">HOTH</td>
+<td align="left">HRTHRTH</td>
+<td align="left">HTOHRTH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HGTHOH</td>
+<td align="left">HOTHSTH</td>
+<td align="left">HRTHTGTH</td>
+<td align="left">HTOTH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HGTHTGH</td>
+<td align="left">HOTHTGH</td>
+<td align="left">HRTHTRH</td>
+<td align="left">HTOTHGH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOH</td>
+<td align="left">HRH</td>
+<td align="left">HSH</td>
+<td align="left">HTOTHRH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHGH</td>
+<td align="left">HRHGH</td>
+<td align="left">HSHOH</td>
+<td align="left">HTRH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHOH</td>
+<td align="left">HRHGHGH</td>
+<td align="left">HSHOHGH</td>
+<td align="left">HTRHGH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHOHGH</td>
+<td align="left">HRHGTH</td>
+<td align="left">HSHOHOH</td>
+<td align="left">HTRHGTH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHOHGHGH</td>
+<td align="left">HRHOH</td>
+<td align="left">HSHRH</td>
+<td align="left">HTRHOH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHOHOH</td>
+<td align="left">HRHOHGH</td>
+<td align="left">HSHRHGH</td>
+<td align="left">HTRHOTH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHOHRH</td>
+<td align="left">HRHOHOH</td>
+<td align="left">HSHRHOH</td>
+<td align="left">HTRHRH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHOHRHRHOH</td>
+<td align="left">HRHOHRH</td>
+<td align="left">HSHRTH</td>
+<td align="left">HTRHRTH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHOHSH</td>
+<td align="left">HRHRH</td>
+<td align="left">HSHSH</td>
+<td align="left">HTRHSH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHOTH</td>
+<td align="left">HRHRHGH</td>
+<td align="left">HSHSTH</td>
+<td align="left">HTRHTGH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHRH</td>
+<td align="left">HRHRHOH</td>
+<td align="left">HSHTRH</td>
+<td align="left">HTRHTGTH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHRHGH</td>
+<td align="left">HRHRHRH</td>
+<td align="left">HSHTRTH</td>
+<td align="left">HTRHTRTH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHRHRH</td>
+<td align="left">HRHSH</td>
+<td align="left">HSTH</td>
+<td align="left">HTRTH</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td>HOHRHSH</td>
+<td align="left">HRHSHOH</td>
+<td align="left">HSTHGH</td>
+<td align="left">HTRTHGH</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td>HOHRTH</td>
+<td align="left">HRHSHOHOH</td>
+<td align="left">HSTHOH</td>
+<td align="left">HTRTHOH</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:72%;">
+<caption>Day-visitor daily activity pattern alternatives</caption>
+<colgroup>
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Alternatives</th>
+<th align="left">Alternatives (contd.)</th>
+<th align="left">Alternatives (contd.)</th>
+<th align="left">Alternatives (contd.)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HGH</td>
+<td align="left">HOH</td>
+<td align="left">HTRTH</td>
+<td align="left">HTRTH</td>
+</tr>
+<tr class="even">
+<td>HGTH</td>
+<td align="left">HTGH</td>
+<td align="left">HTSH</td>
+<td align="left">HTRTH</td>
+</tr>
+<tr class="odd">
+<td>HTGTH</td>
+<td align="left">HTGTH</td>
+<td align="left">HRH</td>
+<td align="left">HRTH</td>
+</tr>
+<tr class="even">
+<td>HTGTH</td>
+<td align="left">HTGTH</td>
+<td align="left">HRTH</td>
+<td align="left">HSH</td>
+</tr>
+<tr class="odd">
+<td>HGTH</td>
+<td align="left">HOTH</td>
+<td align="left">HRTH</td>
+<td align="left">HTGH</td>
+</tr>
+<tr class="even">
+<td>HTRH</td>
+<td align="left">HTOTH</td>
+<td align="left">HRTH</td>
+<td align="left">HTGTH</td>
+</tr>
+<tr class="odd">
+<td>HTRTH</td>
+<td align="left">HTRH</td>
+<td align="left">HTRTH</td>
+<td align="left">HSTH</td>
+</tr>
+<tr class="even">
+<td>HGTH</td>
+<td align="left">HTRTH</td>
+<td align="left">HTRTH</td>
+<td align="left">HTRH</td>
+</tr>
+</tbody>
+</table>
+</font>
+</p>
+<p></details></p>
+<p>The daily activity pattern models are multinomial logit models where each pattern is an alternative. Information specific to both the travel parties and the patterns are considered during model prediction.</p>
+</div>
 </div>
 <div id="VisitorDTM" class="section level1">
-<h1>Visitor Tour Destination, TOD, and Mode Choice Models</h1>
-<p>asdasd</p>
+<h1>Visitor Tour DTM Models</h1>
+<p>For each tour in a travel party’s pattern, the visitor tour destination, time-of-day, and mode choice model (DTM) determines where that tour will go (the destination), when the tour will happen (the time-of-day), and how the person will travel during the tour (the mode). When the model is applied, each travel party is treated as a separate and independent decision making unit. The order that the DTM model is applied to each tour in the travel party’s daily activity pattern is the same as the order in the pattern.</p>
+<div id="destination-choice-sub-model" class="section level2">
+<h2>Destination Choice Sub-model</h2>
+<p>The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. Each zone’s attractiveness is calculated from a utility function, where the utility consists of variables such as distance, stay-type, and area type. To provide a measure of a zone’s attractiveness based on tour-specific characteristics, a size term is included in the utility expression. The size terms are stratified by tour type and are calculated as the natural logarithm of a sum of variables. Also included in the utility expression is the logsum from the mode choice model, which provides an index of accessibilities for a destination zone.</p>
+</div>
+<div id="time-of-day-choice-sub-model" class="section level2">
+<h2>Time-of-Day Choice Sub-model</h2>
+<p>The time-of-day sub-model is a multinomial logit model in which start/stop hour pairs make up the alternatives. The earliest allowed start/stop time is 5:00 am (corresponding to the 5:00-6:00 hour), and the latest allowed is midnight (corresponding to the 12:00am-1:00am hour). As far as skim periods are concerned, the following definitions are used:</p>
+<table style="width:94%;">
+<colgroup>
+<col width="27%" />
+<col width="25%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Skim Period</th>
+<th align="left">Start Time</th>
+<th align="left">End Time</th>
+<th align="left">Duration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">AM Peak (AM)</td>
+<td align="left">7:00 AM</td>
+<td align="left">10:00 AM</td>
+<td align="left">3 hours</td>
+</tr>
+<tr class="even">
+<td align="left">Midday (MD)</td>
+<td align="left">10:00 AM</td>
+<td align="left">4:00 PM</td>
+<td align="left">6 hours</td>
+</tr>
+<tr class="odd">
+<td align="left">PM Peak (PM)</td>
+<td align="left">4:00 PM</td>
+<td align="left">7:00 PM</td>
+<td align="left">3 hours</td>
+</tr>
+<tr class="even">
+<td align="left">Late Night (LN)</td>
+<td align="left">7:00 PM</td>
+<td align="left">7:00 AM</td>
+<td align="left">12 hours</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="mode-choice-sub-model" class="section level2">
+<h2>Mode Choice Sub-model</h2>
+<p>The mode choice model is a multinomial logit model in which each mode is an alternative. For overnight tours, the following alternatives are available:</p>
+<ul>
+<li><p>Drive</p></li>
+<li><p>Shuttle</p></li>
+<li><p>Walk to transit</p></li>
+<li><p>Drive to transit</p></li>
+<li><p>Non-motorized</p></li>
+</ul>
+<p>The shuttle mode represents tour buses and commercial shuttles. Day-visitors are forced to use the drive mode. The primary component of the mode choice model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor can transfer dollar costs into time, for which a utility can be calculated using the travel time coefficient.</p>
+</div>
 </div>
 <div id="VisitorStops" class="section level1">
 <h1>Visitor Tour Stop Model</h1>
-<p>asdasd</p>
+<p>Each visitor tour may have up to two stops: an outbound stop and an inbound stop. The determination of whether or not stops are made on a given tour is made in the visitor pattern model: for each tour, the presence of an inbound and/or outbound stop is fixed by the pattern structure. The visitor stops model concerns itself with choosing the location and mode of each tour stop. The time-of-day choice for the stop is pre-determined by the time-of-day choice for the tour that the stop occurs in. The stop location and mode choice models treat each stop independently.</p>
+<p>The stop location choice model is a multinomial logit model in which each potential destination zone is an alternative. The model is partially stratified by season. Each zone’s attractiveness is calculated from a utility function, where the utility consists of zonal and travel-party specific information. The distance the stop adds to the overall tour distance is used as a penalty in the utility. This penalty is calculated as both the absolute (actual) difference and relative difference, the latter of which is the absolute difference divided by the tour distance without the stop.</p>
+<p>To provide a measure of a zone’s attractiveness based on tour-specific characteristics, a size term is included in the utility expression. The size terms are stratified by season and are calculated as the natural logarithm of a sum of variables.</p>
+<p>The stop mode choice model is used to determine if certain tour legs should be non-motorized. For a tour half (outbound or inbound), the mode choice model takes the shortest leg (to the stop or from the stop) and compares the travel time of the tour mode versus the walk mode. The mode with the shorter travel time is the one assigned to that leg. For tour modes other than non-motorized or walk-to-transit, only the second leg for outbound trips (from the stop) or the first leg for inbound trips (to the stop) can be walk to transit or non-motorized. The first and last trip must be the previously chosen tour mode.</p>
 </div>
 <div id="ThrgVstrPopSyn" class="section level1">
 <h1>Thru-Visitor Population Synthesis</h1>
-<p>asdasd</p>
+<p>Thru-visitors are persons or parties that travel into the Tahoe basin through an external station, they do not stop and they leave through a different external station. These “visitors” include not only recreational travel, but also commercial traffic. Because of their transient nature, very little information about this population is known; its existence can generally only be inferred through traffic count analysis. In spite of these limitations, a simple, disaggregate approach was developed to model the flow of thru-visitors. This was done both for flexibility and to remain consistent with the other population travel demand models. The model flow follows that used for the other models: first a population is synthesized, then a destination is chosen, and finally a time-of-day for the tour/trip is chosen.</p>
+<div id="population-synthesis-2" class="section level2">
+<h2>Population Synthesis</h2>
+<p>The population synthesis for the thru-visitor population is very simple and closely tied to the day-visitor population synthesis (Chapter 15). Essentially, the number of thru-visitors originating at each external station is indexed to the number of overnight-visitors in the region in the scenario. This implies that there is a linear relationship between the number of overnight-visitors and the number of thru-visitors on any given day. The formula for calculating the number of thru-visitors is:</p>
+<p>T<sub>e</sub> = O<span class="math inline">\(\lambda\)</span><sub>e</sub></p>
+<p>where T<sub>e</sub> is the number of thru-visitors coming in through external station e O is the number of overnight-visitors <span class="math inline">\(\lambda\)</span><sub>e</sub> is the thru-visitor rate factor for external station e</p>
+<p>The rate factors were initially set such that the number of thru-visitors equals 2% of overnight-visitors. These factors changed slightly as the model was validated against external counts.</p>
+<table style="width:86%;">
+<caption>Thru-visitor external station rate factors, summer</caption>
+<colgroup>
+<col width="36%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">External Station</th>
+<th>Overnight to Thru-Visitor Rate Factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Reno</td>
+<td>0.0201</td>
+</tr>
+<tr class="even">
+<td align="left">Carson City</td>
+<td>0.0201</td>
+</tr>
+<tr class="odd">
+<td align="left">Kingsbury Grade</td>
+<td>0.0006</td>
+</tr>
+<tr class="even">
+<td align="left">Kirkwood</td>
+<td>0.0201</td>
+</tr>
+<tr class="odd">
+<td align="left">Placerville</td>
+<td>0.0201</td>
+</tr>
+<tr class="even">
+<td align="left">Squaw</td>
+<td>0.0201</td>
+</tr>
+<tr class="odd">
+<td align="left">Truckee</td>
+<td>0.0201</td>
+</tr>
+</tbody>
+</table>
+<table style="width:86%;">
+<caption>Thru-visitor external station rate factors, winter</caption>
+<colgroup>
+<col width="36%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">External Station</th>
+<th>Overnight to Thru-Visitor Rate Factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Reno</td>
+<td>0.0001</td>
+</tr>
+<tr class="even">
+<td align="left">Carson City</td>
+<td>0.0100</td>
+</tr>
+<tr class="odd">
+<td align="left">Kingsbury Grade</td>
+<td>0.0003</td>
+</tr>
+<tr class="even">
+<td align="left">Kirkwood</td>
+<td>0.0060</td>
+</tr>
+<tr class="odd">
+<td align="left">Placerville</td>
+<td>0.0100</td>
+</tr>
+<tr class="even">
+<td align="left">Squaw</td>
+<td>0.0100</td>
+</tr>
+<tr class="odd">
+<td align="left">Truckee</td>
+<td>0.0100</td>
+</tr>
+</tbody>
+</table>
+<p>Each travel party only contains one identifying characteristic: its origin external station.</p>
+</div>
 </div>
 <div id="ThrgVstrDT" class="section level1">
 <h1>Thru-Visitor Destination and TOD Models</h1>
-<p>asdasd</p>
+<div id="thru-visitor-destination-choice-model" class="section level2">
+<h2>Thru-Visitor Destination Choice Model</h2>
+<p>The thru-visitor destination choice model is a very simple multinomial logit model where every external station is an alternative. Because so little information concerning the thru-visitors is known, only alternative specific constants were specified for the model. Distance was not included as a variable because there is no indication that a thru-visitor travel party is more inclined to prefer shorter (or longer) trips through the region.</p>
+</div>
+<div id="thru-visitor-time-of-day-choice-model" class="section level2">
+<h2>Thru-Visitor Time-of-Day Choice Model</h2>
+<p>The thru-visitor time-of-day (TOD) choice model is a simple multinomial logit model where each skim period is an alternative. Since a thru-trip has no stops, the TOD choice sets the beginning and end time for the tour. Because so little information concerning the thru-visitors is known, only alternative specific constants were specified for the model.</p>
+</div>
 </div>
 
 <br>
