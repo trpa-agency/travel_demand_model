@@ -2,3 +2,21 @@
 title: "Visitor Model"
 output: html_document
 ---
+
+# Introduction
+
+Understanding and forecasting visitor travel is an important part of modeling travel demand in the Tahoe basin. The visitor models deals with three types of visitors: 
+
+* Overnight-visitors - those who stay overnight in the region 
+
+* Day-visitors - those who enter and leave the region during the travel day using the same external station 
+
+* Thru-visitors - those who enter and leave the region during the travel day using different external stations to enter and exit 
+
+The goal of the Tahoe visitor model is provide the analyst with a way to specify the population size, populate the region and then model the travel produced by this population accurately. 
+
+
+## Visitor Data Sources and Visitor
+
+The bulk of the visitor data came from the results of overnight and day-visitor travel surveys produced by NuStats (see "Tahoe_report_final_winter[summer].pdf" for more details) These surveys were taken during both the summer and winter seasons, and attempted to capture the travel behavior of non-residents in the region. Seasonal residents, a population that is modeled along with the overnight-visitors, were surveyed during the resident surveys. It was hard to define exactly what constituted a "seasonal resident" since they come in various forms (2nd home-owners, regular visitors, monthly renters, time share owners, etc.). In the end, the surveyors asked the interviewee if he/she considered him/herself a seasonal resident and if so the data was thus marked. The last data source was external station traffic counts, which were used to help determine the flow of visitors into and out of the region during the travel day.
+
