@@ -22,7 +22,9 @@ navbar:
         - text: "Data Dictionary"
           href: DataDictionary.html
         - text: "GISDK Reference"
-          href: CodeReference.html          
+          href: CodeReference.html  
+        - text: "FAQ"
+          href: FAQ.html  		  
   right:
     - icon: fa-github fa-lg
       href: https://github.com/trpa-agency/travel_demand_model
