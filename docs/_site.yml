@@ -24,7 +24,9 @@ navbar:
         - text: "GISDK Reference"
           href: CodeReference.html  
         - text: "FAQ"
-          href: FAQ.html  		  
+          href: FAQ.html  	
+        - text: "Folder Structure"
+          href: FolderStructure.html           
   right:
     - icon: fa-github fa-lg
       href: https://github.com/trpa-agency/travel_demand_model
