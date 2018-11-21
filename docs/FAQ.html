@@ -183,7 +183,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3",
+      selectors: "h1,h2",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
@@ -322,6 +322,12 @@ div.tocify {
     <li>
       <a href="CodeReference.html">GISDK Reference</a>
     </li>
+    <li>
+      <a href="FAQ.html">FAQ</a>
+    </li>
+    <li>
+      <a href="FolderStructure.html">Folder Structure</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -346,14 +352,53 @@ div.tocify {
 </div>
 
 
-<div id="model-related-questions" class="section level1">
-<h1>Model Related Questions</h1>
+<div id="high-level-questions" class="section level1">
+<h1>High Level Questions</h1>
 <ul>
-<li>How does the model estimate the total number of visitors? What are the data sources?</li>
+<li>How does the model incorporate VHRs (vacation home rentals)?</li>
 </ul>
 <blockquote>
-<p>Answer to the this question is this</p>
+<p>Answer to the this question</p>
 </blockquote>
+<ul>
+<li>Can the model be used to estimate project level VMT? (eg a new event center or a highway realignment)</li>
+</ul>
+<blockquote>
+<p>Answer to the this question</p>
+</blockquote>
+<ul>
+<li>How does the model acount for rideshare (uber/lyft)?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question</p>
+</blockquote>
+<ul>
+<li>How does the model use traffic counts to inform the VMT estimate?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question</p>
+</blockquote>
+<ul>
+<li>How does the model estimate the average trip length?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question</p>
+</blockquote>
+<ul>
+<li>For overnight visitors, does the model include the trips/distances of their trips going to their overnight destinantion from their permanent home or just after they reach their overnight destination?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question</p>
+</blockquote>
+<ul>
+<li>How does the model estimate the total number of day visitors and overnight visitors?</li>
+</ul>
+<blockquote>
+<p>Answer to the this question</p>
+</blockquote>
+</div>
+<div id="technical-questions" class="section level1">
+<h1>Technical Questions</h1>
 <ul>
 <li>How is the ‘vmt_summary’ file computed? (ie Why is the total VMT in the ‘vmt_summary’ file much greater than the total VMT found on the roadway network?)</li>
 </ul>
@@ -385,12 +430,6 @@ div.tocify {
 <p>Answer to the this question is this</p>
 </blockquote>
 <ul>
-<li>For overnight visitors. do we include their trips coming into the basin or just after that reach their overnight destination?</li>
-</ul>
-<blockquote>
-<p>Answer to the this question is this</p>
-</blockquote>
-<ul>
 <li>How is census data allocated to the TAZs? (TAZs are smaller than census geometries)?</li>
 </ul>
 <blockquote>
@@ -410,12 +449,6 @@ div.tocify {
 </blockquote>
 <ul>
 <li>The external workers model is based upon the North Tahoe/Truckee Employer Commute survey. Where is this survey data?</li>
-</ul>
-<blockquote>
-<p>Answer to the this question is this</p>
-</blockquote>
-<ul>
-<li>How does the model incorporate vacation rentals?</li>
 </ul>
 <blockquote>
 <p>Answer to the this question is this</p>
