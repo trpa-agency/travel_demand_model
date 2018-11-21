@@ -60,6 +60,13 @@ The number of autos available to a household is an important variable for explai
 
 The model predicts each household to be having one of these auto ownership levels.
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Auto Ownership Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/1_Car_ownership.xls)
+
+</font>
+</p></details>
 
 # Daily Activity Pattern {#DAPModels}
 
@@ -87,6 +94,26 @@ The DAP model used in Tahoe AB Model is a coordinated DAP model. This means that
 
 * **Full day at home / absent**
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+Segmented by Person Type
+
+[Full Time Worker DAP](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/FT_DAP.xls)
+
+[Part Time Worker DAP](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/PT_DAP.xls)
+
+[Non Worker DAP](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/NonWork_DAP.xls)
+
+[Driving Age Student DAP](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Driver_DAP.xls)
+
+[Pre-driving Age Student DAP](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Predriver_DAP.xls)
+
+[Pre-school Child DAP](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Preschool_DAP.xls)
+
+</font>
+</p></details>
+
 # Mandatory Tour Models {#MandModels}
 
 If a person in a household chooses a daily activity pattern with a work or school component, then that person is said to be making a 'mandatory tour'. The mandatory tour destination (D), time-of-day(T), and mode choice model (M)
@@ -96,6 +123,21 @@ individual includes both school and work, then the school tour is processed firs
 ## Destination Choice Sub-model
 
 The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. The probability of each zone being chosen is calculated from a utility function, where the utility consists of variables such as distance, income level, and area type. To provide a measure of a zone's attractiveness based on tour-specific characteristics, a size term is included in the utility expression. Also included in the utility expression is the logsum from the mode choice model, which provides accessibility indices for a destination zone - the higher the logsum, the more "accessible" (by auto, transit, walking) a zone is.
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+
+[Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
+
+* **workSummer** tab used for work destination in summer scenarios
+
+* **workWinter** tab used for work destination in winter scenarios
+
+* **school**  tab used for school destination
+
+</font>
+</p></details>
 
 ### Demand Constraints and Shadow Pricing
 
@@ -123,6 +165,18 @@ Late Night (LN)      7:00 PM          7:00 AM        12 hours
 
 ----------------------------------------------------------------------------------
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
+
+* **work** tab used for escorting tours
+
+* **school** tab used for non-escorting individual non-mandatory tours
+
+</font>
+</p></details>
+
 ## Mode Choice Sub-model
 
 The mode choice model is a multinomial logit model in which each mode is an alternative. For the mandatory tours, the following alternatives are available: 
@@ -140,6 +194,18 @@ The mode choice model is a multinomial logit model in which each mode is an alte
 * School bus (school trips made by a child only) 
 
 The primary component of the model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor can transfer dollar costs into time, for which a utility can be calculated using the travel time coefficient. 
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
+
+* **work** tab used for work tours
+
+* **school** tab used for school tours
+
+</font>
+</p></details>
 
 # Joint Tour Models {#JTModels}
 
@@ -182,6 +248,16 @@ least one is not a preschool child):
     + Discretionary / Eating out 
     + Eating out / Eating out 
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Joint Tour Frequency Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/JointTours.xls)
+
+* **31_Frequency** tab 
+
+</font>
+</p></details>
+
 ### Travel Party Composition Choice Sub-model
 
 This sub-model is applied to each of the joint tour generated by the joint tour frequency sub-model. The alternatives of this sub-model are the following:
@@ -189,17 +265,59 @@ This sub-model is applied to each of the joint tour generated by the joint tour 
 * Travel party including **adults only** (available only for households with at least 2 adults not staying at home) 
 * **Mixed travel party** including at least one adult and at least one child (available only for households with at least 1 adult not staying at home and at least 1 child not staying at home) 
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Joint Tour Party Composition Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/JointTours.xls)
+
+* **32_Party_composition** tab 
+
+</font>
+</p></details>
+
 ### Person Participation in Joint Tours Choice Model
 
 It is applied to each joint tour listed in combination with each household member suitable for the travel party and not staying at home. The model has only two alternatives: the person participates in the joint tour and the person does not participate in the joint tour. This sub-model has different eligibility rules and iterations to make sure that the model comes up with prediction that is consistent with the travel party composition sub-model.
 
 At the end of the above three joint tour generation sub-models, the number of joint tours undertaken by each household and the compistion (persons) of each of them is known. The model still needs to predict the characteristics of these joint tours (destinaion, TOD and mode). This is done in the next model component, the Joint Tour DTM Component.
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Joint Tour person Participation Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/JointTours.xls)
+
+* **33_Person_participation** tab 
+
+</font>
+</p></details>
+
 ## Joint Tour DTM Component
 
 If a household chooses to make a joint tour, the joint tour destination, time-of-day, and mode choice model (DTM) determines where that tour will go (the destination), when the tour will happen (the time-of-day), and how the tour participants will travel during the tour (the mode). When the model is applied, each tour party making a joint tour is treated as a separate and independent decision making unit. 
 
 The DTM models for the joint tours are very similar to the mandatory tour's DTM. One important difference is that joint tour destination choice models does not have demand constraining/shadow pricing. This is because, unlike mandatory tours, joint tours (which are non-mandatory) do not have destination constraints. 
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
+
+* **jointShop** tab used for joint shopping tours
+
+* **jointMaint**   tab used for joint maintenance tours
+
+* **jointDisc**  tab used for joint discretionary tours
+
+* **jointEat**   tab used for joint eating tours
+
+[Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
+
+* **joint** tab used for all joint tours
+
+[Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
+
+</font>
+</p></details>
 
 # Individual Non-mandatory tour Models {#INMModels}
 
@@ -241,25 +359,25 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 
 [Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
 
-**escorting** tab used for escorting tours
+* **escorting** tab used for escorting tours
 
-**indShop**   tab used for shopping tours
+* **indShop**   tab used for shopping tours
 
-**indMaint**  tab used for maintenance tours
+* **indMaint**  tab used for maintenance tours
 
-**indDisc**   tab used for discretionary tours
+* **indDisc**   tab used for discretionary tours
 
-**indEat**    tab used for eat-out tours
+* **indEat**    tab used for eat-out tours
 
-**atwork** tab used for At-work sub-tours
+* **atwork** tab used for At-work sub-tours
 
 [Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
 
-**escorting** tab used for escorting tours
+* **escorting** tab used for escorting tours
 
-**individual** tab used for non-escorting individual non-mandatory tours
+* **individual** tab used for non-escorting individual non-mandatory tours
 
-**atwork** tab used for At-work sub-tours
+* **atwork** tab used for At-work sub-tours
 
 [Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
 
@@ -283,21 +401,21 @@ stop is a sub-tour, the distance the stop adds to the tour is used as a distance
 
 [Stop Frequency model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/StopFrequency.xls)
 
-**81_stopfreq_ind_mand** tab used for mandatory tours
+* **81_stopfreq_ind_mand** tab used for mandatory tours
 
-**81_stopfreq_ind_nonmand**   tab used for individual non-mandatory tours
-
-**81_stopfreq_joint**  tab used for joint tours
-
-**81_stopfreq_atwork**   tab used for at-work tours
+* **81_stopfreq_ind_nonmand**   tab used for individual non-mandatory tours
+ 
+* **81_stopfreq_joint**  tab used for joint tours
+ 
+* **81_stopfreq_atwork**   tab used for at-work tours
 
 [Stop Location Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
 
-The model is stratified by trip type (12 categories), tour mode (Auto or Transit), and stop type (Inbound or Outbound). 
+* The model is stratified by trip type (12 categories), tour mode (Auto or Transit), and stop type (Inbound or Outbound). 
 
 [Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
 
-This model is applied only to transit tours.
+* This model is applied only to transit tours.
 
 </font>
 </p></details>
