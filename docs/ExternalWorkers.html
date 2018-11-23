@@ -371,13 +371,13 @@ div.tocify {
 </ol>
 <p>For simplicity, and because there was little or no data to back up such additions, neither intra-tour stops nor work-based sub-tours were included in the external workers model.</p>
 </div>
-<div id="external-workers-population-synthesis" class="section level1">
-<h1>External Workers Population Synthesis</h1>
+<div id="population-synthesis" class="section level1">
+<h1>Population Synthesis</h1>
 <p>The external worker population synthesis is a very simple model based on the results of the <a href="ResidentModel.html#MandModels">residential population travel demand model</a>. The residential mandatory work tour destination choice model used demand constraints (shadow pricing) to ensure that no zones employment was over-filled (beyond a very small percentage). Because of this, determining the number of external workers required for each zone is just a matter of subtracting the number of residents working in it from its employment:</p>
-<p>X<sub>i</sub> = max(E<sub>i</sub>,R<sub>i</sub> ,0)</p>
-<p>where X<sub>i</sub> is the number of external workers working in zone i</p>
-<p>E<sub>i</sub> is the total employment in zone i</p>
-<p>R<sub>i</sub> is the number of residents working in zone i</p>
+<p><em>X<sub>i</sub></em> = max(<em>E<sub>i</sub></em> - <em>R<sub>i</sub></em> ,0)</p>
+<p>where <em>X<sub>i</sub></em> is the number of external workers working in zone i</p>
+<p><em>E<sub>i</sub></em> is the total employment in zone i</p>
+<p><em>R<sub>i</sub></em> is the number of residents working in zone i</p>
 <p>The <em>max</em> function is required because there is a small percentage of low-employment zones where employment may be slightly over-filled.</p>
 <p>On a given day in the basin region, all of a zone’s employment does not necessarily translate into a work trip. This can be due to a multitude of factors, including:</p>
 <ul>
@@ -387,16 +387,16 @@ div.tocify {
 </ul>
 <p>In theory, the residential model accounts for such <em>shrinkage</em> among the residential population implicitly via the daily activity pattern model. However, just filling up the <em>unfilled</em> employment in a zone with external workers will nullify such effects. Thus, in order to account for this, an <em>unfilled employment factor</em> is used to ensure that the zonal employment is not completely filled up. This has the effect of slightly shrinking the external worker population. The number used for the unfilled employment factor in the model is 0.005.</p>
 <p>The formula for total unfilled employment is determined by:</p>
-<p>U = E<span class="math inline">\(\sigma\)</span></p>
-<p>where U is the unfilled employment in the region</p>
-<p>E is the total employment in the region</p>
+<p><em>U</em> = <em>E</em><span class="math inline">\(\sigma\)</span></p>
+<p>where <em>U</em> is the unfilled employment in the region</p>
+<p><em>E</em> is the total employment in the region</p>
 <p><span class="math inline">\(\sigma\)</span> is the unfilled employment factor</p>
 <p>Given this, each unfilled employment spot is randomly removed from the external worker population. This removal process is essentially a monte-carlo selection process where every external worker employment spot is equally likely to be removed.</p>
 <p>After the unfilled employment procedure, the size of the external worker employment population in each zone is fixed. Given this information, the external worker population is easily synthesized by creating one worker for each employment spot. Each worker essentially has only one defining characteristic: the zone that he/she works in.</p>
 </div>
-<div id="external-workers-origin-choice-model" class="section level1">
-<h1>External Workers Origin Choice Model</h1>
-<p>While most location choice models start with a known origin location (typically <em>home</em>) and choose a destination (i.e. <em>workplace</em>), the external workers location choice mode does the exact opposite: the workplace location is known based on the population synthesis, and the origin/home (i.e. external station) is chosen. The origin choice model is a simple multinomial logit choice model where each external zone is an available alternative. The only variables included in the model are distance, a size term, and a shadow price. The distribution of external worker origins amongst the seven external zones has been determined based on analysis of traffic counts and the North Tahoe/Truckee Employer Commute Survey, which asked a selection of employers in and around the basin region where their employees lived. Because both the survey and counts were seasonal in nature, different distributions for summer and winter were calculated. From this distribution, a size term is calculated for each external station as the natural log of the number of external workers that should originate in that station (the percentage from Table 12.2 times the total number of external workers). Because of distance variations, the distribution of external workers across external stations will not necessarily be matched, so a shadow price variable is added and the model iteratively run until the distribution is matched within an allowable error. This process is analogous to the residential mandatory work destination choice model.</p>
+<div id="origin-choice-model" class="section level1">
+<h1>Origin Choice Model</h1>
+<p>While most location choice models start with a known origin location (typically <em>home</em>) and choose a destination (i.e. <em>workplace</em>), the external workers location choice mode does the exact opposite: the workplace location is known based on the population synthesis, and the origin/home (i.e. external station) is chosen. The origin choice model is a simple multinomial logit choice model where each external zone is an available alternative. The only variables included in the model are distance, a size term, and a shadow price. The distribution of external worker origins amongst the seven external zones has been determined based on analysis of traffic counts and the North Tahoe/Truckee Employer Commute Survey, which asked a selection of employers in and around the basin region where their employees lived. Because both the survey and counts were seasonal in nature, different distributions for summer and winter were calculated. From this distribution, a size term is calculated for each external station as the natural log of the number of external workers that should originate in that station. Because of distance variations, the distribution of external workers across external stations will not necessarily be matched, so a shadow price variable is added and the model iteratively run until the distribution is matched within an allowable error. This process is analogous to the residential mandatory work destination choice model.</p>
 <details><summary><font size="3">click for parameter details</font></summary>
 <p>
 <p><font size="3"></p>
@@ -406,8 +406,8 @@ div.tocify {
 </p>
 <p></details></p>
 </div>
-<div id="external-workers-time-of-day-choice-model" class="section level1">
-<h1>External Workers Time-Of-Day Choice Model</h1>
+<div id="time-of-day-choice-model" class="section level1">
+<h1>Time-Of-Day Choice Model</h1>
 <p>The external workers time-of-day (TOD) model is a multinomial choice model where each skim period is an available alternative as a start and end of the tour. The skim periods are same as that in residential TOD models as shown below.</p>
 <table style="width:94%;">
 <colgroup>
