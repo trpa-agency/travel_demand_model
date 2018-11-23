@@ -6,7 +6,7 @@ output: html_document
 
 #  Tahoe Resident Model Structure
 
-The resident model is actually a series of models that attempt to capture multiple aspects of household, person and tour level travel making decisions. When applied these components essentially take the place of trip generation, trip distribution and model split that are the more familiar steps from the aggregate 4-step model. However because this is an activity-based model, the components cannot be grouped the same way since "trip generation" is done on a person-by-person basis with "trip distribution" and "modal split" integrated along the way. 
+The resident model is actually a series of models that attempt to capture multiple aspects of household, person and tour level travel making decisions. When applied these components essentially take the place of trip generation, trip distribution and model split that are the more familiar steps from the aggregate 4-step model. However because this is an activity-based model, the components cannot be grouped the same way since *trip generation* is done on a person-by-person basis with *trip distribution* and *modal split* integrated along the way. 
 
 
 ### Model Flow
@@ -37,28 +37,22 @@ class A,B,C,D,E,F orange
 The population synthesis procedure is designed to create a list of households in each TAZ with all necessary details regarding the household and person variables used in the travel models and according to specific zonal characteristics; namely, average number of workers in a household per zone, average household size and number of households per income group. The basic idea is to set up a 3-dimensional table for each zone with 
 
 * dimension one being number of household by size (1, 2, 3, 4+), 
-
 * dimension two being number of households by number of workers (1, 2, 3+) and 
-
 * the third dimension number of households by income category (low, med and high).
 
-The cells in the table are given "seed" values based on what is given by the Census Transportation Planning Package (CTPP) data for the census tract that contains the zone. A procedure called iterative proportional fitting (IPV) or matrix-balancing is then used to adjust the seed values to match the marginal distributions in all dimensions. Once the table has been balanced, each cell is multiplied by the total number of households to give the total number of households per category (size, worker, income combination). Household records from the Public Use Micro-Sample Area (PUMA) that encompasses the zone are randomly drawn that match the given category until all of the households in the table have been accounted for. When the procedure is done for every zone, then the synthetic household and person files is written and saved for later use.
+The cells in the table are given *seed* values based on what is given by the Census Transportation Planning Package (CTPP) data for the census tract that contains the zone. A procedure called iterative proportional fitting (IPV) or matrix-balancing is then used to adjust the seed values to match the marginal distributions in all dimensions. Once the table has been balanced, each cell is multiplied by the total number of households to give the total number of households per category (size, worker, income combination). Household records from the Public Use Micro-Sample Area (PUMA) that encompasses the zone are randomly drawn that match the given category until all of the households in the table have been accounted for. When the procedure is done for every zone, then the synthetic household and person files is written and saved for later use.
 
 ## Auto Ownership
 
 The number of autos available to a household is an important variable for explaining household travel behavior. It is included in such subsequent models as tour generation, mode choice, destination choice, and stop frequency/location choice. In the Tahoe AB Model, auto ownership is considered a household-attribute variable (as in the most conventional models); thus, the auto-ownership choice model employs only household and zonal characteristics and is applied before any travel-related model. There are five naturally ordered alternatives; 
 
 * no autos, 
-
 * one auto, 
-
 * two autos, 
-
 * three autos, 
-
 * four or more autos. 
 
-The model predicts each household to be having one of these auto ownership levels.
+The model is a multinomial logit model and predicts each household to be having one of these auto ownership levels.
 
 <details><summary><font size="3">click for parameter details</font></summary><p>
 <font size="3">
@@ -70,28 +64,23 @@ The model predicts each household to be having one of these auto ownership level
 
 # Daily Activity Pattern {#DAPModels}
 
-In the Tahoe AB Model each person in the model area gets to explicitly choose whether to leave the house on the model day and if so whether to go to work and/or school (mandatory tours) or do some other kind of non-mandatory travel (joint and/or individual non-mandatory tours). This decision is modeled by a model called as the Daily Activity Pattern (DAP) model. A person's daily activity pattern (DAP) is classified by three main categories: 
+In the Tahoe AB Model each person in the model area gets to explicitly choose whether to leave the house on the model day and if so whether to go to work and/or school (mandatory tours) or do some kind of non-mandatory travel (joint and/or individual non-mandatory tours). This decision is modeled by a model called as the Daily Activity Pattern (DAP) model. A person's daily activity pattern (DAP) is classified by three main categories: 
 
 * **Mandatory pattern** that includes at least one of the two mandatory activities - work or school. This constitutes either a workday or school day, and may include additional non-mandatory activities such as separate home-based tours or intermediate stops on the mandatory tours. 
-
 * **Non-mandatory pattern** that includes only maintenance and discretionary tours. By virtue of the tour primary purpose definition, maintenance and discretionary tours cannot include travel for mandatory activities. 
-
 * **At-home pattern** that includes only in-home activities. It should be noted that for simplicity, cases with complete absence from town (business travel) were combined with this category. 
 
-The DAP model used in Tahoe AB Model is a coordinated DAP model. This means that the decisions of different individuals in a households are correlated/coordinated. The DAP model has the following alternatives in the model.
+The DAP decision is also modeled using the multinomial logit model. The DAP model used in Tahoe AB Model is a coordinated DAP model. This means that the decisions of different individuals in a households are correlated/coordinated. The DAP model has the following alternatives in the model.
 
 * **Work day** 
     + 1 work tour (not available for preschool children) 
     + 2 work tours (not available for children) 
     + Work and school tours (available for workers only) 
-
 * **School day** 
     + 1 school tour (available for children only) 
     + 2 school tours (available for school children only) 
     + School and secondary work tours (available for school children only) 
-
 * **Non-mandatory out-of-home activity **
-
 * **Full day at home / absent**
 
 <details><summary><font size="3">click for parameter details</font></summary><p>
@@ -116,13 +105,13 @@ Segmented by Person Type
 
 # Mandatory Tour Models {#MandModels}
 
-If a person in a household chooses a daily activity pattern with a work or school component, then that person is said to be making a 'mandatory tour'. The mandatory tour destination (D), time-of-day(T), and mode choice model (M)
+If a person in a household chooses a daily activity pattern with a work or school component, then that person is said to be making a *mandatory tour*. The mandatory tour destination (D), time-of-day (T), and mode choice model (M)
 (DTM) determines where that tour will go (the destination), when the tour will happen (the time-of-day), and what mode the person will use to travel during the tour (car, bus, etc). If the daily activity pattern chosen by the 
 individual includes both school and work, then the school tour is processed first, followed by the work tour. 
 
 ## Destination Choice Sub-model
 
-The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. The probability of each zone being chosen is calculated from a utility function, where the utility consists of variables such as distance, income level, and area type. To provide a measure of a zone's attractiveness based on tour-specific characteristics, a size term is included in the utility expression. Also included in the utility expression is the logsum from the mode choice model, which provides accessibility indices for a destination zone - the higher the logsum, the more "accessible" (by auto, transit, walking) a zone is.
+The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. The probability of each zone being chosen is calculated from a utility function, where the utility consists of variables such as distance, income level, and area type. To provide a measure of a zone's attractiveness based on tour-specific characteristics, a size term is included in the utility expression. Also included in the utility expression is the logsum from the mode choice model, which provides accessibility indices for a destination zone - the higher the logsum, the more *accessible* (by auto, transit, walking) a zone is.
 
 <details><summary><font size="3">click for parameter details</font></summary><p>
 <font size="3">
@@ -131,9 +120,7 @@ The destination choice model is a multinomial logit model in which each potentia
 [Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
 
 * **workSummer** tab used for work destination in summer scenarios
-
 * **workWinter** tab used for work destination in winter scenarios
-
 * **school**  tab used for school destination
 
 </font>
@@ -171,7 +158,6 @@ Late Night (LN)      7:00 PM          7:00 AM        12 hours
 [Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
 
 * **work** tab used for escorting tours
-
 * **school** tab used for non-escorting individual non-mandatory tours
 
 </font>
@@ -182,15 +168,10 @@ Late Night (LN)      7:00 PM          7:00 AM        12 hours
 The mode choice model is a multinomial logit model in which each mode is an alternative. For the mandatory tours, the following alternatives are available: 
 
 * Drive alone 
-
 * Shared auto 
-
 * Walk to transit 
-
-* Drive to transit 
-
+* Drive to transit
 * Non-motorized 
-
 * School bus (school trips made by a child only) 
 
 The primary component of the model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor can transfer dollar costs into time, for which a utility can be calculated using the travel time coefficient. 
@@ -199,9 +180,7 @@ The primary component of the model is travel time, which uses the same coefficie
 <font size="3">
 
 [Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
-
 * **work** tab used for work tours
-
 * **school** tab used for school tours
 
 </font>
@@ -212,7 +191,6 @@ The primary component of the model is travel time, which uses the same coefficie
 The joint travel types modeled explicitly in the Tahoe AB Model are limited to fully joint tours generated by shared non-mandatory activity of several household members. Joint Tour sub-models can be grouped into two aggregate categoires:
 
 * Joint Travel Generation Component
-
 * Joint Tour DTM Component
 
 These components are described in detail in the next sub-sections.
@@ -227,14 +205,10 @@ This model is applied to each household. Following are the alternatives of this 
 
 * No fully joint tours 
 * 1 fully joint tour (available only for households with at least 2 persons not staying at home of which at least one is not a preschool child): 
-
     + Shopping 
     + Other maintenance 
-    
     + Discretionary 
-    
     + Eating out 
-
 * 2 fully joint tours (available only for households with at least 2 persons not staying at home of which at 
 least one is not a preschool child): 
     + Shopping / Shopping 
@@ -303,11 +277,8 @@ The DTM models for the joint tours are very similar to the mandatory tour's DTM.
 [Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
 
 * **jointShop** tab used for joint shopping tours
-
 * **jointMaint**   tab used for joint maintenance tours
-
 * **jointDisc**  tab used for joint discretionary tours
-
 * **jointEat**   tab used for joint eating tours
 
 [Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
@@ -324,7 +295,6 @@ The DTM models for the joint tours are very similar to the mandatory tour's DTM.
 Individual non-mandatory tour models are also composed of several sub-models and can be grouped into two aggregate categoires:
 
 * Individual Non-Mandatory Tour Generation Model
-
 * Individual Non-Mandatory Tour DTM Component
 
 Each of these two components will be described next in detail.
@@ -334,13 +304,10 @@ Each of these two components will be described next in detail.
 The individual tour generation model for non-mandatory activity includes 4 choice sub-models applied successively
 
 * Model for individual tours for household maintenance (i.e. grocery shopping, mail pick-up) activities allocated to the household members. Though these tours are implemented individually, the basic need for this activity relates to the entire household. This model is in subdivided into two successively applied sub-models:
-
     + Household tour frequency choice sub-model for maintenance activities implemented individually - there are 36 alternative in this model - resulting from all combinations of allowed number of escorting, shopping and maintenance tours. Households can have 0, 1, or 2 escorting tours. 0, 1, or 2 shopping tours. 0, 1, 2, or 3 maintenance tours. 
-
     + Model for allocation of maintenance tours to a household member - the alternatives for this model is the following: Full-time workers, Part-time workers, Non-working adults, School pre-driving age children, School driving age children.
 
 * Sub-model for individual tours for personal discretionary (i.e. going to the movies, taking a drive) activities; it is assumed that these activities are generated and scheduled at the person level without significant interaction among household members. The alternatives for this model are: no individual discretionary tours, 1 individual discretionary tour, and 2 individual discretionary tours.
-
 * Model for non-home-based sub-tours at work. The alternatives for this model are: No at-work sub-tours, 1 at-work sub-tour for business-related purpose, 1 at-work sub-tour for other (maintenance) purpose, and 2 at-work sub-tours for business-related purpose.
 
 Individual tours generated by allocated maintenance activities are modeled first for each person conditional upon the chosen daily pattern and participation in joint household tours. Since these activities are generated by the entire household and then allocated to particular members, it is important to follow an underlying intra-household allocation process.
@@ -360,23 +327,16 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 [Destination choice model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Dest_Choice.xls)
 
 * **escorting** tab used for escorting tours
-
 * **indShop**   tab used for shopping tours
-
 * **indMaint**  tab used for maintenance tours
-
 * **indDisc**   tab used for discretionary tours
-
 * **indEat**    tab used for eat-out tours
-
 * **atwork** tab used for At-work sub-tours
 
 [Time-of-day Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
 
 * **escorting** tab used for escorting tours
-
 * **individual** tab used for non-escorting individual non-mandatory tours
-
 * **atwork** tab used for At-work sub-tours
 
 [Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
@@ -388,11 +348,13 @@ If a person chooses to make an individual non-mandatory tour, the individual non
 
 In any given tour up to one outbound and one inbound stop is allowed. An outbound stop is one that occurs during the trip to the primary destination, whereas an inbound stop is one that occurs on the way back to the tour origin. The structure is similar to those used for the various tour models, only without the time-of-day sub-model (when the stop occurs is fixed by the tour start/end time). In the stops model, each tour is treated as an independent entity, and once the stop frequency is chosen, each stop is treated independently. Regardless of the tour purpose, the structure of the stops model consists of the following steps: 
 
-* A stops frequency model (how many stops are made) - it is a multinomial logit model with four alternatives: 0 Stops, 1 Outbound Stop, 1 Inbound Stop and 1 Outbound and 1 Inbound stop.
-
-* A stop location model (where the stop occurred) -it is a multinomial logit model in which each potential destination zone is an alternative. Because the 
+* A stops frequency model (how many stops are made) - it is a multinomial logit model with four alternatives: 
+    + 0 Stops
+    + 1 Outbound Stop
+    + 1 Inbound Stop
+    + 1 Outbound and 1 Inbound stop
+* A stop location model (where the stop occurred) - it is a multinomial logit model in which each potential destination zone is an alternative. Because the 
 stop is a sub-tour, the distance the stop adds to the tour is used as a distance penalty in the utility. This distance is calculated as either the absolute (actual) difference or relative difference, the latter of which is the absolute difference divided by the distance without the stop. To provide a measure of a zone's attractiveness based on tour-specific characteristics, a size term is included in the utility expression. 
-
 * A mode choice (how the tour participant(s) traveled to/from the stop) - The stop mode choice model is essentially a logical determination if certain tour legs should be non-motorized. This only applies to transit tours, as it is assumed that if the tour mode is drive (alone or shared ride) or non-motorized, then that mode will be used for all trip legs.
 
 
@@ -402,18 +364,15 @@ stop is a sub-tour, the distance the stop adds to the tour is used as a distance
 [Stop Frequency model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/StopFrequency.xls)
 
 * **81_stopfreq_ind_mand** tab used for mandatory tours
-
 * **81_stopfreq_ind_nonmand**   tab used for individual non-mandatory tours
- 
 * **81_stopfreq_joint**  tab used for joint tours
- 
 * **81_stopfreq_atwork**   tab used for at-work tours
 
-[Stop Location Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/TOD_Choice.xls)
+[Stop Location Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/StopLocation.xls)
 
 * The model is stratified by trip type (12 categories), tour mode (Auto or Transit), and stop type (Inbound or Outbound). 
 
-[Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/Mode_Choice.xls)
+[Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/resident/uec/StopMode.xls)
 
 * This model is applied only to transit tours.
 
