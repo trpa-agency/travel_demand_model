@@ -376,8 +376,8 @@ div.tocify {
 <div id="visitor-model-flow" class="section level2">
 <h2>Visitor Model Flow</h2>
 <p>The basic unit of visitors is the <em>travel party</em>. This is a group of people who travel together throughout the day, each enjoying the same activities. Almost all travel decisions are made at the travel party level, and therefore for this model, travel decisions made at a more granular level (e.g. individual or joint tours from the resident model) were not allowed. As much as possible, the visitor model was kept consistent with the resident model. It is therefore a micro-simulated, activity-based travel demand model. Due to data availability limitations, the overnight and day-visitor models are more sophisticated and detailed than the thru-visitor model. Furthermore, the survey data for the overnight-visitor model was more detailed than the day-visitor, so a large part of the tour models for the day-visitors was combined with the overnight-visitors to create more robust model estimation results.</p>
-<div id="htmlwidget-da89388b0063b09b2f0b" style="width:672px;height:700px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-da89388b0063b09b2f0b">{"x":{"diagram":"\ngraph TD\nA[Overnight-Visitor Population Synthesis]-->B[Day-Visitor Population Synthesis]\nB-->C[Overnight- and Day-Visitor Daily Activity Pattern Models]\nC-->D[Visitor Tour Destination, Time-of-Day, and Mode Choice Models]\nD-->E[Visitor Tour Stop Model]\nE-->F[Thru-Visitor Population Synthesis]\nF-->G[Thru-Visitor Destination and Time-of-Day Choice Models]\n        click A \"#OvntVstrPopSyn\" \"An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region\"\n        click B \"#DayVstrPopSyn\" \"A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population\"\n        click C \"#VisitorDAP\" \"The daily travel behavior for each travel party is determined in these two parallel but separate models\"\n        click D \"#VisitorDTM\" \"Each travel party tours destination, time, and mode is determined in this single model\"\n        click E \"#VisitorStops\" \"The location and mode for tour stops is determined in this single model\"\n        click F \"#ThrgVstrPopSyn\" \"A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population\"\n        click G \"#ThrgVstrDT\" \"Each thru-visitor tours destination and time is chosen in this model\"\nclassDef orange fill:#f96,stroke:#333,stroke-width:4px;\nclass A,B,C,D,E,F,G orange\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-c65b345ed5d31ec1b360" style="width:672px;height:700px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c65b345ed5d31ec1b360">{"x":{"diagram":"\ngraph TD\nA[Overnight-Visitor Population Synthesis]-->B[Day-Visitor Population Synthesis]\nB-->C[Overnight- and Day-Visitor Daily Activity Pattern Models]\nC-->D[Visitor Tour Destination, Time-of-Day, and Mode Choice Models]\nD-->E[Visitor Tour Stop Model]\nE-->F[Thru-Visitor Population Synthesis]\nF-->G[Thru-Visitor Destination and Time-of-Day Choice Models]\n        click A \"#OvntVstrPopSyn\" \"An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region\"\n        click B \"#DayVstrPopSyn\" \"A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population\"\n        click C \"#VisitorDAP\" \"The daily travel behavior for each travel party is determined in these two parallel but separate models\"\n        click D \"#VisitorDTM\" \"Each travel party tours destination, time, and mode is determined in this single model\"\n        click E \"#VisitorStops\" \"The location and mode for tour stops is determined in this single model\"\n        click F \"#ThrgVstrPopSyn\" \"A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population\"\n        click G \"#ThrgVstrDT\" \"Each thru-visitor tours destination and time is chosen in this model\"\nclassDef orange fill:#f96,stroke:#333,stroke-width:4px;\nclass A,B,C,D,E,F,G orange\n"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="OvntVstrPopSyn" class="section level1">
@@ -908,6 +908,14 @@ div.tocify {
 </p>
 <p></details></p>
 <p>The daily activity pattern models are multinomial logit models where each pattern is an alternative. Information specific to both the travel parties and the patterns are considered during model prediction.</p>
+<details><summary><font size="3">click for parameter details</font></summary>
+<p>
+<p><font size="3"></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/DayVisitorPatternModel.xls">Day Visitor Pattern Model</a></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/OvernightVisitorPatternModel.xls">Overnight Visitor Pattern Model</a></p>
+</font>
+</p>
+<p></details></p>
 </div>
 </div>
 <div id="VisitorDTM" class="section level1">
@@ -916,6 +924,16 @@ div.tocify {
 <div id="destination-choice-sub-model" class="section level2">
 <h2>Destination Choice Sub-model</h2>
 <p>The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. Each zone’s attractiveness is calculated from a utility function, where the utility consists of variables such as distance, stay-type, and area type. To provide a measure of a zone’s attractiveness based on tour-specific characteristics, a size term is included in the utility expression. The size terms are stratified by tour type and are calculated as the natural logarithm of a sum of variables. Also included in the utility expression is the logsum from the mode choice model, which provides an index of accessibilities for a destination zone.</p>
+<details><summary><font size="3">click for parameter details</font></summary>
+<p>
+<p><font size="3"></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorDC.xls">Visitor Destination Choice</a></p>
+<ul>
+<li>This model is segmented by tour type: recreation, shopping, gaming and other tours.</li>
+</ul>
+</font>
+</p>
+<p></details></p>
 </div>
 <div id="time-of-day-choice-sub-model" class="section level2">
 <h2>Time-of-Day Choice Sub-model</h2>
@@ -962,6 +980,16 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+<details><summary><font size="3">click for parameter details</font></summary>
+<p>
+<p><font size="3"></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorTOD.xls">Visitor Time-of-day Choice Model</a></p>
+<ul>
+<li>This model is segmented by tour type: recreation, gaming and shopping/other tours.</li>
+</ul>
+</font>
+</p>
+<p></details></p>
 </div>
 <div id="mode-choice-sub-model" class="section level2">
 <h2>Mode Choice Sub-model</h2>
@@ -974,6 +1002,16 @@ div.tocify {
 <li><p>Non-motorized</p></li>
 </ul>
 <p>The shuttle mode represents tour buses and commercial shuttles. Day-visitors are forced to use the drive mode. The primary component of the mode choice model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor can transfer dollar costs into time, for which a utility can be calculated using the travel time coefficient.</p>
+<details><summary><font size="3">click for parameter details</font></summary>
+<p>
+<p><font size="3"></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorMC.xls">Visitor Mode Choice Model</a></p>
+<ul>
+<li>This model is not segmented.</li>
+</ul>
+</font>
+</p>
+<p></details></p>
 </div>
 </div>
 <div id="VisitorStops" class="section level1">
@@ -982,6 +1020,17 @@ div.tocify {
 <p>The stop location choice model is a multinomial logit model in which each potential destination zone is an alternative. The model is partially stratified by season. Each zone’s attractiveness is calculated from a utility function, where the utility consists of zonal and travel-party specific information. The distance the stop adds to the overall tour distance is used as a penalty in the utility. This penalty is calculated as both the absolute (actual) difference and relative difference, the latter of which is the absolute difference divided by the tour distance without the stop.</p>
 <p>To provide a measure of a zone’s attractiveness based on tour-specific characteristics, a size term is included in the utility expression. The size terms are stratified by season and are calculated as the natural logarithm of a sum of variables.</p>
 <p>The stop mode choice model is used to determine if certain tour legs should be non-motorized. For a tour half (outbound or inbound), the mode choice model takes the shortest leg (to the stop or from the stop) and compares the travel time of the tour mode versus the walk mode. The mode with the shorter travel time is the one assigned to that leg. For tour modes other than non-motorized or walk-to-transit, only the second leg for outbound trips (from the stop) or the first leg for inbound trips (to the stop) can be walk to transit or non-motorized. The first and last trip must be the previously chosen tour mode.</p>
+<details><summary><font size="3">click for parameter details</font></summary>
+<p>
+<p><font size="3"></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorStopsDC.xls">Visitor Stop Destination Choice Model</a></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorStopsMC.xls">Visitor Stop Mode Choice Model</a></p>
+<ul>
+<li>These models are not segmented.</li>
+</ul>
+</font>
+</p>
+<p></details></p>
 </div>
 <div id="ThrgVstrPopSyn" class="section level1">
 <h1>Thru-Visitor Population Synthesis</h1>
@@ -1086,6 +1135,17 @@ div.tocify {
 <div id="thru-visitor-destination-choice-model" class="section level2">
 <h2>Thru-Visitor Destination Choice Model</h2>
 <p>The thru-visitor destination choice model is a very simple multinomial logit model where every external station is an alternative. Because so little information concerning the thru-visitors is known, only alternative specific constants were specified for the model. Distance was not included as a variable because there is no indication that a thru-visitor travel party is more inclined to prefer shorter (or longer) trips through the region.</p>
+<details><summary><font size="3">click for parameter details</font></summary>
+<p>
+<p><font size="3"></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/ThruVisitorDC.xls">Through Visitor Destination Choice Model</a></p>
+<p><a href="https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/ThruVisitorTOD.xls">Through Visitor Time-of-Day Choice Model</a></p>
+<ul>
+<li>These models are not segmented.</li>
+</ul>
+</font>
+</p>
+<p></details></p>
 </div>
 <div id="thru-visitor-time-of-day-choice-model" class="section level2">
 <h2>Thru-Visitor Time-of-Day Choice Model</h2>

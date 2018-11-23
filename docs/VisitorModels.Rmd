@@ -318,6 +318,16 @@ HGTH         HTRTH        HTRTH        HTRH
 
 The daily activity pattern models are multinomial logit models where each pattern is an alternative. Information specific to both the travel parties and the patterns are considered during model prediction. 
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Day Visitor Pattern Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/DayVisitorPatternModel.xls)
+
+[Overnight Visitor Pattern Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/OvernightVisitorPatternModel.xls)
+
+</font>
+</p></details>
+
 # Visitor Tour DTM Models {#VisitorDTM}
 
 For each tour in a travel party's pattern, the visitor tour destination, time-of-day, and mode choice model (DTM) determines where that tour will go (the destination), when the tour will happen (the time-of-day), and how the person will travel during the tour (the mode). When the model is applied, each travel party is treated as a separate and independent decision making unit. The order that the DTM model is applied to each tour in the travel party's daily activity pattern is the same as the order in the pattern.
@@ -326,6 +336,16 @@ For each tour in a travel party's pattern, the visitor tour destination, time-of
 
 The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. Each zone's attractiveness is calculated from a utility function, where the utility consists of variables such as distance, stay-type, and area type. To provide a measure of a zone's attractiveness based on tour-specific 
 characteristics, a size term is included in the utility expression. The size terms are stratified by tour type and are calculated as the natural logarithm of a sum of variables. Also included in the utility expression is the logsum from the mode choice model, which provides an index of accessibilities for a destination zone.
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Visitor Destination Choice](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorDC.xls)
+
+* This model is segmented by tour type: recreation, shopping, gaming and other tours.
+
+</font>
+</p></details>
 
 ## Time-of-Day Choice Sub-model 
 The time-of-day sub-model is a multinomial logit model in which start/stop hour pairs make up the alternatives. The earliest allowed start/stop time is 5:00 am (corresponding to the 5:00-6:00 hour), and the latest allowed is midnight (corresponding to the 12:00am-1:00am hour). As far as skim periods are concerned, the following definitions are used: 
@@ -344,6 +364,16 @@ Late Night (LN)      7:00 PM          7:00 AM        12 hours
 
 ----------------------------------------------------------------------------------
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Visitor Time-of-day Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorTOD.xls)
+
+* This model is segmented by tour type: recreation, gaming and shopping/other tours.
+
+</font>
+</p></details>
+
 ## Mode Choice Sub-model 
 The mode choice model is a multinomial logit model in which each mode is an alternative. For overnight tours, the following alternatives are available: 
 
@@ -359,6 +389,16 @@ The mode choice model is a multinomial logit model in which each mode is an alte
 
 The shuttle mode represents tour buses and commercial shuttles. Day-visitors are forced to use the drive mode. The primary component of the mode choice model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor can transfer dollar costs into time, for which a utility can be calculated using the travel time coefficient. 
 
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Visitor Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorMC.xls)
+
+* This model is not segmented.
+
+</font>
+</p></details>
+
 # Visitor Tour Stop Model {#VisitorStops}
 
 Each visitor tour may have up to two stops: an outbound stop and an inbound stop. The determination of whether or not stops are made on a given tour is made in the visitor pattern model: for each tour, the presence of an inbound and/or outbound stop is fixed by the pattern structure. The visitor stops model concerns itself with choosing the location and mode of each tour stop. The time-of-day choice for the stop is pre-determined by the time-of-day choice for the tour that the stop occurs in. The stop location and mode choice models treat each stop independently.
@@ -368,6 +408,19 @@ The stop location choice model is a multinomial logit model in which each potent
 To provide a measure of a zone's attractiveness based on tour-specific characteristics, a size term is included in the utility expression. The size terms are stratified by season and are calculated as the natural logarithm of a sum of variables.
 
 The stop mode choice model is used to determine if certain tour legs should be non-motorized. For a tour half (outbound or inbound), the mode choice model takes the shortest leg (to the stop or from the stop) and compares the travel time of the tour mode versus the walk mode. The mode with the shorter travel time is the one assigned to that leg. For tour modes other than non-motorized or walk-to-transit, only the second leg for outbound trips (from the stop) or the first leg for inbound trips (to the stop) can be walk to transit or non-motorized. The first and last trip must be the previously chosen tour mode.
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Visitor Stop Destination Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorStopsDC.xls)
+
+[Visitor Stop Mode Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/VisitorStopsMC.xls)
+
+* These models are not segmented.
+
+</font>
+</p></details>
+
 
 # Thru-Visitor Population Synthesis {#ThrgVstrPopSyn}
 
@@ -433,6 +486,18 @@ Each travel party only contains one identifying characteristic: its origin exter
 ## Thru-Visitor Destination Choice Model
 
 The thru-visitor destination choice model is a very simple multinomial logit model where every external station is an alternative. Because so little information concerning the thru-visitors is known, only alternative specific constants were specified for the model. Distance was not included as a variable because there is no indication that a thru-visitor travel party is more inclined to prefer shorter (or longer) trips through the region. 
+
+<details><summary><font size="3">click for parameter details</font></summary><p>
+<font size="3">
+
+[Through Visitor Destination Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/ThruVisitorDC.xls)
+
+[Through Visitor Time-of-Day Choice Model](https://github.com/trpa-agency/travel_demand_model/tree/master/reference/model_data/visitor/uec/ThruVisitorTOD.xls)
+
+* These models are not segmented.
+
+</font>
+</p></details>
 
 ## Thru-Visitor Time-of-Day Choice Model
 
