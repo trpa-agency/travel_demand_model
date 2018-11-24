@@ -37,10 +37,10 @@ F-->G[Thru-Visitor Destination and Time-of-Day Choice Models]
         click A "#OvntVstrPopSyn" "An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region"
         click B "#DayVstrPopSyn" "A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population"
         click C "#VisitorDAP" "The daily travel behavior for each travel party is determined in these two parallel but separate models"
-        click D "#VisitorDTM" "Each travel party tours' destination, time, and mode is determined in this single model"
+        click D "#VisitorDTM" "Each travel party tours\' destination, time, and mode is determined in this single model"
         click E "#VisitorStops" "The location and mode for tour stops is determined in this single model"
         click F "#ThrgVstrPopSyn" "A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population"
-        click G "#ThrgVstrDT" "Each thru-visitor tours' destination and time is chosen in this model"
+        click G "#ThrgVstrDT" "Each thru-visitor tours\' destination and time is chosen in this model"
 classDef orange fill:#f96,stroke:#333,stroke-width:4px;
 class A,B,C,D,E,F,G orange
 ')
