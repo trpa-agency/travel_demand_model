@@ -3,7 +3,7 @@ title: "Folder Structure"
 output: html_document
 ---
 
-In this webpage the folder structure of the Tahoe AB model is described. It has details on where different inputs, codes, executables and output files resides. 
+In this web page the folder structure of the Tahoe AB model is described. It has details on where different inputs, codes, executables and output files reside. 
 
 # Root Folder
 
@@ -12,13 +12,13 @@ knitr::include_graphics("figs/Folder_root.PNG")
 ```
 
 
-The root folder is the top level folder of the Tahoe model instalation. This folder has three sub-folders:
+The root folder is the top level folder of the Tahoe model installation. This folder has three sub-folders:
 
 * docs - this folder contains the documentation for the model. All the RMarkdown scripts and the associated HTML pages are stored in this folder, along with figures and images used in creating the web pages. The HTML pages have a corresponding page in the Github website also.
 
 * reference - this is the main folder that contains all the programs, scripts, parameters and input data (that are not scenario specific)
 
-* scenarios - this is the folder that contains the scenario folder. Each scenario should have it's own sub folders. Each scenario sub-folder in the scenario folder originally contains scenarios specific inputs and place holder folders for outputs. Once the model has been run the scenario sub-folder will also have the output files for the specific scenario.
+* scenarios - this is the folder that contains the scenario folder. Each scenario should have its own sub folders. Each scenario sub-folder in the scenario folder originally contains scenario-specific inputs and placeholder folders for outputs. Once the model has been run the scenario sub-folder will also have the output files for the specific scenario.
 
 
 # Reference folder
@@ -27,7 +27,7 @@ The root folder is the top level folder of the Tahoe model instalation. This fol
 knitr::include_graphics("figs/Folder_reference.PNG")
 ```
 
-This folder has three sub folders. The *code* folder has all the Java programs, Python executables, and Transcad GISDK scripts/UI files. The *img* folder stores the image icons used in the Transcad UI. The *model_data* folder has the model parameters and models inputs (that are not scenario specific). The contats of each of these sub-folders will be explained in the following sub-sections.
+This folder has three sub folders. The *code* folder has all the Java programs, Python executables, and TransCAD GISDK scripts/UI files. The *img* folder stores the image icons used in the Transcad UI. The *model_data* folder has the model parameters and models inputs (that are not scenario specific). The contents of each of these sub-folders will be explained in the following sub-sections.
 
 ## Code folder
 
@@ -41,7 +41,7 @@ This folder has three sub folders. The *code* folder has all the Java programs, 
 knitr::include_graphics("figs/Folder_scenario.PNG")
 ```
 
-This folder is the folder that has scenario specific inputs and scenario outputs (once the model has been run). Each scenario has it's own sub-folder. Both summer and winter for a particular scenario is stored in a the same scenario specific sub-folder.
+This folder is the folder that has scenario-specific inputs and scenario outputs (once the model has been run). Each scenario has its own sub-folder. Both summer and winter files for a particular scenario are stored in a the same scenario-specific sub-folder.
 
 Each scenario folder has following five sub-folders:
 
@@ -51,7 +51,7 @@ Each scenario folder has following five sub-folders:
 
 * outputs_summer
 
-* output_winter
+* outputs_winter
 
 * zonal
 
@@ -59,11 +59,11 @@ The GIS, outputs (structure is same for both outputs_summer and outputs_winter) 
 
 ## GIS folder
 
-Outputs folder description
+GIS folder description
 
 ## outputs folder
 
-GIS folder description
+Outputs folder description
 
 ## zonal folder
 
