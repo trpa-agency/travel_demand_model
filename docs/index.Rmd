@@ -16,7 +16,7 @@ The sections are:
   - [Traffic Assignment](TrafficAssignment.html): Describes the Traffic Assignment step of the model.
   - [Calibration and Validation Summary](Calibration.html): Describes the model calibration results.
   - [Data Dictionary](DataDictionary.html): Data Dictionary for all the main model inputs and outputs.
-  - [GISDK Reference](CodeReference.html): This page provides documentation on the fucntions used in Tahoe GISDK scripts.
+  - [GISDK Reference](CodeReference.html): This page provides documentation on the functions used in Tahoe GISDK scripts.
   - [FAQ](FAQ.html): This page provides answers to some of the common questions users have about the Tahoe model.
   - [Folder Structure](FolderStructure.html): This page shows the folder structure used in the Tahoe model.
   
