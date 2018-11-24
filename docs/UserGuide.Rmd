@@ -352,7 +352,7 @@ explicitly or by closing the user interface). An example of a pre-formed map is 
 Example of a Pre-Formed Map of Population Density", which is a population density map created with
 five Equal Intervals categories. The map was created using the base year summer socio-economic data.
 
-![Figure 5.5.  An Example of a Pre-Formed Map of Population Density](figs/pre_form_example.png)
+![Figure 5.5.  An Example of a Pre-Formed Map of Population Density](figs/pre_form_example.PNG)
 
 # Chapter 6.  User Interface: Input Files Tab
 
