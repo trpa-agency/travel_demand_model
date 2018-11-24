@@ -360,24 +360,24 @@ div.tocify {
 </div>
 
 
-<p>GISDK is the scripting language used by Transcad. In the Tahoe model it provides a user interface to the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the main GISDK code, <a href="../reference/code/TahoeModelToolbox_rev.rsc">TahoeModelToolbox_rev.rsc</a> and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called as “Macros”, and that terminology will be used for the ramining part of this document.</p>
-<p>The most important Macros are documented below, it shows the name of the Macro, the function performed by the Macro and finally the output files orcreated by the Macros.</p>
+<p>GISDK is the scripting language used by TransCAD. In the Tahoe model it provides a user interface for the user and also ties together various sub-modules that are part of the Tahoe Model. This page documents the main GISDK code, <a href="../reference/code/TahoeModelToolbox_rev.rsc">TahoeModelToolbox_rev.rsc</a> and describes the various functions/methods that are present in the GISDK scripts. In GISDK functions/methods are called “Macros” and that terminology will be used for the remainder of this document.</p>
+<p>The most important Macros are documented below. For each Macro, the name, the function performed and the output files created will be documented.</p>
 <div id="model-run-macro-flowchart" class="section level1">
 <h1>Model Run Macro Flowchart</h1>
 <div id="high-level-flow" class="section level3">
 <h3>High level flow</h3>
-<div id="htmlwidget-5806b27a778d1cc93ab7" style="width:672px;height:200px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5806b27a778d1cc93ab7">{"x":{"diagram":"\ngraph LR\nA[PreModelRunner]-->B[SaveLinkData]\nB-->C{Feedback Loop}\nC-->D[CreateTripMatrices]\nD-->E[TransitAssignment]\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-73b8cfb7e611c93f48cc" style="width:672px;height:200px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-73b8cfb7e611c93f48cc">{"x":{"diagram":"\ngraph LR\nA[PreModelRunner]-->B[SaveLinkData]\nB-->C{Feedback Loop}\nC-->D[CreateTripMatrices]\nD-->E[TransitAssignment]\n"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="premodelrunner-steps" class="section level3">
 <h3>PreModelRunner steps</h3>
-<div id="htmlwidget-7794e019248a635648f9" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7794e019248a635648f9">{"x":{"diagram":"\ngraph TD\nB[UpdateFFSpeeds]-->C[CreateDriveNetwork]\nC-->D[CopyBaseTripTables]\nD-->E[CreateTripMatrices]\nE-->F[TrafficAssignment]\nF-->G[BandsRun]\nG-->H[TransitSkimmer]\nH-->I[JavaPreModelCode]\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3c290c6298f32bb87ef5" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3c290c6298f32bb87ef5">{"x":{"diagram":"\ngraph TD\nB[UpdateFFSpeeds]-->C[CreateDriveNetwork]\nC-->D[CopyBaseTripTables]\nD-->E[CreateTripMatrices]\nE-->F[TrafficAssignment]\nF-->G[BandsRun]\nG-->H[TransitSkimmer]\nH-->I[JavaPreModelCode]\n"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="inside-the-feedback-loop" class="section level3">
 <h3>Inside the feedback loop</h3>
-<div id="htmlwidget-84bd0c5361fb8b84edc1" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-84bd0c5361fb8b84edc1">{"x":{"diagram":"\ngraph TD\nL[ClearLastFile]-->M[RunJavaModel]\nM-->N[CreateTripMatrices]\nN-->O[TrafficAssignment]\nO-->P[MSAAssignmentResults]\nP-->Q[RunTransitSkims]\nQ-->R[SaveLinkData]\nR-->S[TripSummarizer]\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1009fd95d9717ca75821" style="width:672px;height:500px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1009fd95d9717ca75821">{"x":{"diagram":"\ngraph TD\nL[ClearLastFile]-->M[RunJavaModel]\nM-->N[CreateTripMatrices]\nN-->O[TrafficAssignment]\nO-->P[MSAAssignmentResults]\nP-->Q[RunTransitSkims]\nQ-->R[SaveLinkData]\nR-->S[TripSummarizer]\n"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="macro-reference" class="section level1">
@@ -398,8 +398,8 @@ div.tocify {
 <tbody>
 <tr class="odd">
 <td align="left">PreModelRunner</td>
-<td align="left">This Macro is the first Macro that is run when the “Run Model” button is clicked. It is outside the global feedback loop and runs several other Macros listed below. <code>UpdateFFSpeeds</code><br/> <code>CreateDriveNetwork</code><br/> <code>CopyBaseTripTables</code><br/> <code>CreateTripMatrices</code><br/> <code>TrafficAssignment</code><br/> <code>BandsRun</code><br/> <code>TransitSkimmer</code><br/> <code>JavaPreModelCode</code><br/></td>
-<td align="left">Refer to the outputs of Macros that are called by this Macro</td>
+<td align="left">This is the first Macro that is run Refer when the “Run Model” button is clicked. It is outside the global feedback loop and runs several other Macros listed below. <code>UpdateFFSpeeds</code><br/> <code>CreateDriveNetwork</code><br/> <code>CopyBaseTripTables</code><br/> <code>CreateTripMatrices</code><br/> <code>TrafficAssignment</code><br/> <code>BandsRun</code><br/> <code>TransitSkimmer</code><br/> <code>JavaPreModelCode</code><br/></td>
+<td align="left">to the outputs of Macros that are called by this Macro</td>
 </tr>
 <tr class="even">
 <td align="left">UpdateFFSpeeds</td>
@@ -418,7 +418,7 @@ div.tocify {
 </tr>
 <tr class="odd">
 <td align="left">CreateTripMatrices</td>
-<td align="left">Converts each of the four CSV trip tables created in the previous step into transcad trip matrices in the .mtx format</td>
+<td align="left">Converts each of the four CSV trip tables created in the previous step into TransCAD trip matrices in the .mtx format</td>
 <td align="left">Trips_#PRD#.mtx for all time periods</td>
 </tr>
 <tr class="even">
@@ -433,7 +433,7 @@ div.tocify {
 </tr>
 <tr class="even">
 <td align="left">TransitSkimmer</td>
-<td align="left">Creates transit skims by skimming the transit network. Also calls the macro JavaSkimConverter, which converts the transit skims in transcad matrix format into *.zmx formats - so that it can be read later by the Java program.</td>
+<td align="left">Creates transit skims by skimming the transit network. Also calls the macro JavaSkimConverter, which converts the transit skims in TransCAD matrix format into *.zmx formats - so that it can be read later by the Java program.</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
