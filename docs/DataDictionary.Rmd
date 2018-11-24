@@ -236,10 +236,10 @@ This file gives information about the overnight visitor capacities; i.e. the max
 
 <details><summary><font size="3">click for details</font></summary><p>
 
--------------------------------------------------------------------------------------
-Attribute             Attribute                                      Attribute
-Name                  Description                                    Detail
---------------------- ---------------------------------------------- -------------------
+---------------------------------------------------------------------------------------
+Attribute             Attribute                                        Attribute
+Name                  Description                                      Detail
+--------------------- ------------------------------------------------ -------------------
 taz 				  the zone number 
 
 hotelmotel 			  the number of hotel/motel (not casino or 
@@ -257,11 +257,13 @@ percentHouseSeasonal  the percentage of unoccupied houses in the zone
 						will potentially be occupied by non-seasonal 
 						overnight visitors 
                      
-beach 				  the relative attractiveness of beaches in the zone.  
-                                       If a zone has no beaches, this value is zero; since this is a relative attractiveness, 
-						the absolute value does not matter (zone A with an attractiveness of 1 and B with an 
-						attractiveness of 2 is the same as A with 2 
-						and B with 4) 
+beach 				  the relative attractiveness of beaches in the 
+                        zone. If a zone has no beaches, this value 
+                        is zero; since this is a relative 
+                        attractiveness, the absolute value does not 
+                        matter (zone A with an attractiveness of 1 
+                        and B with an attractiveness of 2 is the 
+                        same as A with 2 and B with 4) 
 
 ----------------------------------------------------------------------------------
 
