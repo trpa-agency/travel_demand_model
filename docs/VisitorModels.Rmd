@@ -7,7 +7,7 @@ output: html_document
 
 Understanding and forecasting visitor travel is an important part of modeling travel demand in the Tahoe basin. The visitor models deals with three types of visitors: 
 
-* Overnight-visitors - those who stay overnight in the region 
+* Overnight-visitors - those who stay overnight in the region (to include seasonal residents)
 
 * Day-visitors - those who enter and leave the region during the travel day using the same external station 
 
@@ -37,10 +37,10 @@ F-->G[Thru-Visitor Destination and Time-of-Day Choice Models]
         click A "#OvntVstrPopSyn" "An overnight-visitor population is micro-simulated from overnight-visitor survey records to match occupancy rates within the region"
         click B "#DayVstrPopSyn" "A day-visitor population is micro-simulated from day-visitor survey records to match calibrated expansion factors based on the overnight-visitor population"
         click C "#VisitorDAP" "The daily travel behavior for each travel party is determined in these two parallel but separate models"
-        click D "#VisitorDTM" "Each travel party tours destination, time, and mode is determined in this single model"
+        click D "#VisitorDTM" "Each travel party tours' destination, time, and mode is determined in this single model"
         click E "#VisitorStops" "The location and mode for tour stops is determined in this single model"
         click F "#ThrgVstrPopSyn" "A thru-visitor population is micro-simulated to match calibrated expansion factors based on the overnight visitor population"
-        click G "#ThrgVstrDT" "Each thru-visitor tours destination and time is chosen in this model"
+        click G "#ThrgVstrDT" "Each thru-visitor tours' destination and time is chosen in this model"
 classDef orange fill:#f96,stroke:#333,stroke-width:4px;
 class A,B,C,D,E,F,G orange
 ')
@@ -49,11 +49,11 @@ class A,B,C,D,E,F,G orange
 
 # Overnight-visitor synthetic population {#OvntVstrPopSyn}
 
-The overnight-visitor synthetic population is used to represent persons who visit the Tahoe basin on a non-permanent basis (i.e. are not permanent residents) but who are not just visiting for the day. This population includes not only people who do not claim any residence in the region (*vacationers*), but also seasonal residents, who own or rent a residence in the region and reside in it on a regular, though not permanent, basis. The synthetic population is micro-simulated using occupancy rates (which can vary by scenario) and actual records from the overnight-visitor survey and residential travel survey. The base unit of the synthetic population is the *travel party*, which can be considered analogous to the household unit of the residential travel model. The reason overnight-visitors are not referred to as households is two-fold:
+The overnight-visitor synthetic population is used to represent persons who visit the Tahoe basin on a non-permanent basis (i.e. are not permanent residents) but who are not just visiting for the day. This population includes people who do not claim any residence in the region (*vacationers*), and also seasonal residents, who own or rent a residence in the region and reside in it on a regular, though not permanent, basis. The synthetic population is micro-simulated using occupancy rates (which can vary by scenario) and actual records from the overnight-visitor survey and residential travel survey. The base unit of the synthetic population is the *travel party*, which can be considered analogous to the household unit of the residential travel model. The reason overnight-visitors are not referred to as households is two-fold:
 
 1. Often travel parties may consist of multiple households (both within and across families). Thus, referring to the party as a household (as it is used in other parts of this model/documentation) would be misleading. 
 
-2. The level of information available for each party is extremely limited: essentially where they stayed and some basic compositional data. The use of the term household - both in terms of the residential model and activity-based models as a whole - implies a deeper level of data than what is known. The use of the more generic and broad sounding *travel party* helps to underline this.
+2. The level of information available for each party is extremely limited: essentially where they stayed and some basic compositional data. The use of the term household - both in terms of the residential model and activity-based models in general - implies a deeper level of data than what is known. The use of the more generic *travel party* helps to underline this.
 
 ## Population Stratification 
 
@@ -124,7 +124,7 @@ The day-visitor synthetic population is used to represent persons who visit the 
 
 ## Sample Source
 
-As described above, the day-visitor synthetic population consists of a sample of actual travel parties from the day-visitor surveys. This is analogous to the use of the PUMS records to generate the resident synthetic population. As described in Chapter 14, the day and overnight-visitor populations are merged later in the visitor model stream, and this forced the requirement that the two populations needed to contain equivalent data. As such, the following variables are included in the day-visitor sample records: 
+As described above, the day-visitor synthetic population consists of a sample of actual travel parties from the day-visitor surveys. This is analogous to the use of the PUMS records to generate the resident synthetic population. As described earlier, the day and overnight-visitor populations are merged later in the visitor model stream, and this forced the requirement that the two populations needed to contain equivalent data. As such, the following variables are included in the day-visitor sample records: 
 
 * The travel party size 
 
@@ -132,13 +132,13 @@ As described above, the day-visitor synthetic population consists of a sample of
 
 * The season during which the survey was taken (summer or winter) 
 
-As a note, the presence of an adult female in the travel party variable included in the overnight-visitor population was not available from the day-visitor survey. However, this variable is not used once the two populations are merged, and therefore its elimination does not affect the model. From the day-visitor survey, 597 sample records were put together to form the day-visitor sample. 
+As a note, the presence of an adult female in the travel party variable included in the overnight-visitor population was not available from the day-visitor survey. However, this variable is not used once the two populations are merged, and therefore its elimination does not affect the model. From the day-visitor survey, 597 sample records were put together to form the day-visitor sample set. 
 
 ##  Day-visitor Rates
 
-To synthesize the day-visitor population, the number of day-visitors originating at each external station must be known. To determine this, external station counts (in each direction) for the base scenario and mode results from the residential and external worker models are used. Subtracting the residential and external worker trips which use the external stations from the external station counts gives the amount of flow that the day-visitor and thru visitor trips must make up. During validation, the split between the day-visitor and thru visitor trips is determined and, given this, the specific number of day-visitors per external station is known for the base scenario. To make the day-visitors vary correctly with scenarios, two assumptions are made: 
+To synthesize the day-visitor population, the number of day-visitors originating at each external station must be known. To determine this, external station counts (in each direction) for the base scenario and model results from the residential and external worker models are used. Subtracting the residential and external worker trips which use the external stations from the external station counts gives the amount of flow that the day-visitor and thru visitor trips must make up. During validation, the split between the day-visitor and thru visitor trips is determined and, given this, the specific number of day-visitors per external station is known for the base scenario. To make the day-visitors vary when running forecast scenarios, two assumptions are made: 
 
-1. That the day-visitors rise and fall at the same rate that overnight-visitors do; that is, that day-visitor rates can be linearly modeled from overnight-visitors 
+1. That the day-visitors rise and fall at the same rate that overnight-visitors do; that is, that the number of day-visitors is a function of the number of overnight-visitors 
 
 2. That the distribution of day-visitors between the external stations is constant across scenarios 
 
@@ -149,8 +149,8 @@ formula:
 
 D~e~ = O$\sigma$~e~
 
-where D~e~  is the number of day-visitors coming in through external station e 
- O is the number of overnight-visitors 
+where D~e~  is the number of day-visitors coming in through external station e   
+ O is the number of overnight-visitors   
  $\sigma$~e~ is the day-visitor rate factor for external station e 
 
  
@@ -203,10 +203,12 @@ Given the number of day-visitor travel parties per external station, and the day
 
 # Overnight and Day-Visitor DAP Models {#VisitorDAP}
 
-The daily activity pattern for visitors describes the travel behavior for travel parties. It holds the information concerning how many tours were made, what types the tours were, and how many stops were made. This is in contrast to the resident daily activity pattern model, which only describes the basic travel behavior of residents; the residential tour type and frequency models are not explicitly specified in the visitor travel demand model, but instead are wrapped in the daily activity pattern. The overnight and day-visitor daily activity pattern models are completely separate models, but they share the same overall structure and so are discussed together. 
+The daily activity pattern for visitors describes the travel behavior for travel parties. The outputs of this model are the number of tours made, the tour type, and how many stops were made during the tour. The overnight and day-visitor daily activity pattern models are run separately, but they share the same overall structure and so are discussed together. 
 
 ## Daily Activity Pattern Alternatives 
-For both the day-visitor and overnight-visitor daily activity pattern models, a set of possible daily activity patterns has been specified. These were selected from the patterns found in the overnight and day-visitor surveys. Each pattern begins and ends at the *home* or external station location (H) and can have a most one stop going to and one stop coming from the primary destination. There are 4 main tour types - recreation, gaming, shopping, and other. Each pattern specifies how many tours (H x H x H = 2 tours), the primary purpose and the number of stops that occur in the party's daily travel. For example, the pattern HOHTGH says that the travel party left home to participate in an *other* activity and went back home (HOH). Later the same day the same travel party made a quick stop (T) on the way to a *gaming* activity (G) before returning directly home (H). Because day-visitors are not staying in the region, their daily activity patterns consist of only one tour. The abbreviations used in the patterns for each of the destinations are described in table below.
+For both the day-visitor and overnight-visitor daily activity pattern models, a set of possible daily activity patterns has been specified. These were selected from the patterns found in the overnight and day-visitor surveys. Each pattern begins and ends at the *home* or external station location (H) and can have at most one stop going to and one stop coming from the primary destination.  
+
+There are 4 main tour types - recreation, gaming, shopping, and other. Each pattern specifies how many tours (H x H x H = 2 tours), the primary purpose and the number of stops that occur in the party's daily travel. For example, the pattern "HOHTGH" says that the travel party left home to participate in an *other* activity and went back home (HOH). Later the same day, the same travel party made a quick stop (T) on the way to a *gaming* activity (G) before returning directly home (H). Because day-visitors are not staying in the region, their daily activity patterns consist of only one tour. The abbreviations used in the patterns for each of the destinations are described in table below.
 
 --------------------------------------------------------------
 Symbol          Meaning 
@@ -334,8 +336,8 @@ For each tour in a travel party's pattern, the visitor tour destination, time-of
 
 ## Destination Choice Sub-model
 
-The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. Each zone's attractiveness is calculated from a utility function, where the utility consists of variables such as distance, stay-type, and area type. To provide a measure of a zone's attractiveness based on tour-specific 
-characteristics, a size term is included in the utility expression. The size terms are stratified by tour type and are calculated as the natural logarithm of a sum of variables. Also included in the utility expression is the logsum from the mode choice model, which provides an index of accessibilities for a destination zone.
+The destination choice model is a multinomial logit model in which each potential destination zone is an alternative. Each zone's attractiveness is calculated from a utility function, where the utility consists of variables such as distance, stay-type, and area type.   
+To provide a measure of a zone's attractiveness based on tour-specific characteristics, a size term is included in the utility expression. The size terms are stratified by tour type and are calculated as the natural logarithm (ln) of a sum of variables. Also included in the utility expression is the logsum from the mode choice model, which provides an index of accessibilities for a destination zone.
 
 <details><summary><font size="3">click for parameter details</font></summary><p>
 <font size="3">
@@ -387,7 +389,7 @@ The mode choice model is a multinomial logit model in which each mode is an alte
 
 * Non-motorized 
 
-The shuttle mode represents tour buses and commercial shuttles. Day-visitors are forced to use the drive mode. The primary component of the mode choice model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor can transfer dollar costs into time, for which a utility can be calculated using the travel time coefficient. 
+The shuttle mode represents tour buses and commercial shuttles. Day-visitors are assumed to use the drive mode. The primary component of the mode choice model is travel time, which uses the same coefficient across all modes. For the modes that have costs associated with them (transit has fares, auto modes have operating costs), a value of time factor was estimated; this factor converts dollar costs into time, for which a utility can be calculated using the travel time coefficient. 
 
 <details><summary><font size="3">click for parameter details</font></summary><p>
 <font size="3">
@@ -424,17 +426,17 @@ The stop mode choice model is used to determine if certain tour legs should be n
 
 # Thru-Visitor Population Synthesis {#ThrgVstrPopSyn}
 
-Thru-visitors are persons or parties that travel into the Tahoe basin through an external station, they do not stop and they leave through a different external station. These "visitors" include not only recreational travel, but also commercial traffic. Because of their transient nature, very little information about this population is known; its existence can generally only be inferred through traffic count analysis. In spite of these limitations, a simple, disaggregate approach was developed to model the flow of thru-visitors. This was done both for flexibility and to remain consistent with the other population travel demand models. The model flow follows that used for the other models: first a population is synthesized, then a destination is chosen, and finally a time-of-day for the tour/trip is chosen. 
+Thru-visitors are persons or parties that travel into the Tahoe basin through an external stationb but do not stop and they leave through a different external station. These "visitors" include not only recreational travel, but also commercial traffic. Because of their transient nature, very little information about this population is known; its existence can generally only be inferred through traffic count analysis. In spite of these limitations, a simple, disaggregate approach was developed to model the flow of thru-visitors. This was done both for flexibility and to remain consistent with the other population travel demand models. The model flow follows that used for the other models: first a population is synthesized, then a destination is chosen, and finally a time-of-day for the tour/trip is chosen. 
 
 ## Population Synthesis
 
-The population synthesis for the thru-visitor population is very simple and closely tied to the day-visitor population synthesis (Chapter 15). Essentially, the number of thru-visitors originating at each external station is indexed to the number of overnight-visitors in the region in the scenario. This implies that there is a linear relationship between the number of overnight-visitors and the number of thru-visitors on any given day. The formula for calculating the number of thru-visitors is: 
+The population synthesis for the thru-visitor population is very simple and closely tied to the day-visitor population synthesis. Essentially, the number of thru-visitors originating at each external station is indexed to the number of overnight-visitors in the region in the scenario. This implies that there is a linear relationship between the number of overnight-visitors and the number of thru-visitors on any given day. The formula for calculating the number of thru-visitors is: 
 
 T~e~ = O$\lambda$~e~
 
  
 
-where T~e~ is the number of thru-visitors coming in through external station e 
+where T~e~ is the number of thru-visitors coming in through external station e   
  O is the number of overnight-visitors 
  $\lambda$~e~ is the thru-visitor rate factor for external station e 
 

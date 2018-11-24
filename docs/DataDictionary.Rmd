@@ -153,8 +153,7 @@ percentThru 			 the percentage of day visitors to use as
 
 [SchoolEnrollment](../scenarios/scenario_base/zonal/SchoolEnrollment.csv)
 
-This file contains information for the day visitor synthetic population generator. There is a separate file for each 
-season. It is a CSV format plain text file.
+This file contains information on school enrollment within each zone. It is a CSV format plain text file.  
 
 <details><summary><font size="3">click for details</font></summary><p>
 
@@ -233,7 +232,7 @@ emp_other 					 the total other employment
 
 [OvernightVisitorZonalData_SEASON](../scenarios/scenario_base/zonal/OvernightVisitorZonalData_Summer.csv)
 
-This file gives information about the overnight visitor capacities; i.e. how many overnight visitors each zone could maximally hold. It also contains information concerning the beaches in zones. There is a separate file for each season. It is a CSV format plain text file.
+This file gives information about the overnight visitor capacities; i.e. the maximum number of overnight accomodations within each zone. It also contains information concerning the beaches in zones. There is a separate file for each season. It is a CSV format plain text file.
 
 <details><summary><font size="3">click for details</font></summary><p>
 
@@ -258,11 +257,9 @@ percentHouseSeasonal  the percentage of unoccupied houses in the zone
 						will potentially be occupied by non-seasonal 
 						overnight visitors 
                      
-beach 				  the relative attractiveness of beaches in the 
-						zone – if a zone has no beaches, this value is 
-						zero; since this is a relative attractiveness, 
-						the absolute value does not matter (zone A with 
-						an attractiveness of 1 and B with an 
+beach 				  the relative attractiveness of beaches in the zone.  
+                                       If a zone has no beaches, this value is zero; since this is a relative attractiveness, 
+						the absolute value does not matter (zone A with an attractiveness of 1 and B with an 
 						attractiveness of 2 is the same as A with 2 
 						and B with 4) 
 
@@ -305,11 +302,11 @@ seasonal 					 the occupancy rate for seasonal visitors
 
 # Output Data
 
-The outputs from the data are stored in the ouputs_SEASON folder of the scenario folder. Outputs can be divided into demand model outputs and traffic assignment outputs; these will be discussed next
+The outputs from the data are stored in the ouputs_SEASON folder of the scenario folder. Outputs can be divided into demand model outputs and traffic assignment outputs; these will be discussed next.
 
 ## Demand Model Outputs
 
-These files are the outputs from the [resident](ResidentModel.html), [external worker](ExternalWorkers.html) and the [visitor](VisitorModels.html) models. Each of the submodel discussed in the earlier sections produce their own outputs. Many of these outputs are used in performing calibration and model validation. However, they are not typically used in analysing the outputs of a run.
+These files are the outputs from the [resident](ResidentModel.html), [external worker](ExternalWorkers.html) and the [visitor](VisitorModels.html) models. Each of the submodels discussed in the earlier sections produce their own outputs. Many of these outputs are used in performing calibration and model validation; however, they are not typically used in analysing the outputs of a run.
 
 ## Traffic Assignment Outputs
 
