@@ -196,7 +196,7 @@ Truckee                     0.0298
 ----------------------------------------------------------------
 : Day-visitor external station rate factors, winter  
  
-# Population Synthesis 
+## Population Synthesis 
 
 Given the number of day-visitor travel parties per external station, and the day-visitor survey sample records, generating the day-visitor synthetic population is a straightforward procedure. Essentially, for each external station, a travel party is randomly selected from the available day-visitor sample records until the required number of parties is achieved. Along with the sample data described above, the external station is recorded and will be used as that travel party's origin/home TAZ. 
 
