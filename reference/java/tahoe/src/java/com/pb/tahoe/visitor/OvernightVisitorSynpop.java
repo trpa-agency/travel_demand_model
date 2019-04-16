@@ -176,7 +176,11 @@ public class OvernightVisitorSynpop {
             synPopShell.put(zone,new ArrayList<Integer>());
             synPopShellMap.put(zone,new ArrayList<StayType>());
             //fill each zone with random parties from staytype/zone pairs
-            for (StayType st : unitsToFill.get(zone).keySet()) {
+            
+            List<StayType> sortedKeys = new ArrayList<StayType>(unitsToFill.get(zone).keySet());
+            java.util.Collections.sort(sortedKeys);
+            
+            for (StayType st : sortedKeys) {
                 for (int i = 0; i < unitsToFill.get(zone).get(st);i++) {
                     synPopShell.get(zone).add(getRandomParty(st));
                     synPopShellMap.get(zone).add(st);

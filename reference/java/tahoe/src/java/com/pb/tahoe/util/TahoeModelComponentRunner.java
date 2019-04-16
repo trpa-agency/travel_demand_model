@@ -490,7 +490,7 @@ public class TahoeModelComponentRunner {
         OvernightVisitorSynpop ovsPop = new OvernightVisitorSynpop(unitsToFill, debug);
         pam.createPartyArray(ovsPop.buildOvernightVisitorSynPop());
         //run pattern model
-        //SeededRandom.setSeed(2002);
+        SeededRandom.setSeed(2002);
         VisitorPatternModel ovpm = new VisitorPatternModel(VisitorType.OVERNIGHT, debug);
         ovpm.runVisitorPatternModel(pam);
         pamSet = true;
@@ -509,7 +509,7 @@ public class TahoeModelComponentRunner {
         pam.createPartyArray(dvsPop.getNonThruSynpop());
         //pam.writePartyData("day.visitor.synpop.results.file");
         //run pattern model
-        //SeededRandom.setSeed(2002);
+        SeededRandom.setSeed(2002);
         VisitorPatternModel dvpm = new VisitorPatternModel(VisitorType.DAY, debug);
         dvpm.runVisitorPatternModel(pam);
 
@@ -568,9 +568,11 @@ public class TahoeModelComponentRunner {
     }
 
     private void runFullModel() throws IllegalAccessException, InvocationTargetException {
-        for (TahoeModelComponent.TahoeModelLevel tml : TahoeModelComponent.TahoeModelLevel.values()) {
+   	
+    	for (TahoeModelComponent.TahoeModelLevel tml : TahoeModelComponent.TahoeModelLevel.values()) {
             runModelLevelComponents(tml);
         }
+        
     }
 
     private void setLastComponentRun(TahoeModelComponent tmc) {
