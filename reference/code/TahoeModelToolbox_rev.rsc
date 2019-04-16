@@ -29,7 +29,10 @@ EndMacro
 Dbox "TahoeDbox" (tempStateArray) right, bottom , 50 , 31.5 title: "Tahoe Activity-Based Travel Demand Model" Toolbox NoKeyboard
     init do
         RunMacro("TCB Init")
-        shared stateArray
+        shared model_file, stateArray
+		
+        model_file = RunMacro("GetModelFilePath")
+		
         stateArray = RunMacro("LoadState")
         stateArray[1] = RunMacro("ResolvePath",stateArray[1])
         stateArray[3] = RunMacro("ResolvePath",stateArray[3])
@@ -37,6 +40,7 @@ Dbox "TahoeDbox" (tempStateArray) right, bottom , 50 , 31.5 title: "Tahoe Activi
         basePath = stateArray[3]
         referencePath = basePath + "reference\\"
         javaPath = referencePath + "code\\"
+		model_file = javaPath + "TahoeStateFile.txt"
         pathArray = RunMacro("updatePath",stateArray[3],stateArray[1])
         season_idx = stateArray[2]
         shared d_matrix_options // default options used for creating matrix editors
@@ -264,6 +268,7 @@ Dbox "TahoeDbox" (tempStateArray) right, bottom , 50 , 31.5 title: "Tahoe Activi
 
         //Run model button
         Button "Run Model" 1, 9.8, 20, 2.6 do
+
             runIt = True
             if (RunMacro("TestIfRun2",pathArray,scenario_list[scenario_idx],season_idx) = 0) then do
                 btn = MessageBox("The model has already been run for this scenario and season combination!\n" +
@@ -318,7 +323,7 @@ Dbox "TahoeDbox" (tempStateArray) right, bottom , 50 , 31.5 title: "Tahoe Activi
            else do
                RunMacro("TransitAssignment","Winter",pathArray)
            end
-            
+           
         enditem
         
         //This is just an information area
@@ -861,13 +866,13 @@ Macro "RenameMatrixCores" (matrixName)
 endMacro
 
 Macro "LoadState"
+	shared model_file
     on notfound do
-        stateArray = {"C:\\",1,"C:\\Chris_Stuff\\Tahoe\\TahoeActivityBasedModel\\Java_Code\\",50,4,""}
-        stateArray = RunDbox("configure",stateArray)
+        stateArray = RunDbox("configure")
         on notfound default
         return(stateArray)
     end
-    backupFile = OpenFile("TahoeModelRunnerBackup_V2.txt","r")
+    backupFile = OpenFile(model_file,"r")
     stateArray = ReadArray(backupFile)
     CloseFile(backupFile)
     stateArray[2] = StringToInt(stateArray[2])
@@ -883,14 +888,14 @@ Macro "CloseActions" (scenarioPath,season_idx,cr_user_iters,model_iters,scenario
 EndMacro
 
 Macro "SaveActions" (scenarioPath,season_idx,cr_user_iters,model_iters,scenario_list,scenario_idx,pathArray,vm_size)
-    shared stateArray
+    shared stateArray, model_file
     stateArray[1] = scenarioPath
     stateArray[2] = season_idx
     stateArray[4] = cr_user_iters
     stateArray[5] = model_iters
     stateArray[6] = scenario_idx
     stateArray[7] = vm_size
-    backupFile = OpenFile("TahoeModelRunnerBackup_V2.txt","w")
+    backupFile = OpenFile(model_file,"w")
     WriteArray(backupFile,stateArray)
     CloseFile(backupFile)
     scenario_file = OpenFile(pathArray[8] + "scenario_list.txt", "w")
@@ -916,7 +921,7 @@ Macro "updatePath" (basePath,scenarioPath)
     return(pathArray)
 EndMacro
 
-Dbox "configure"(stateArray)
+Dbox "configure"
     init do
         opt_idx = 0
     enditem
@@ -924,7 +929,15 @@ Dbox "configure"(stateArray)
     Text 1, 2 Variable: " (e.g. C:\\TRPA\\TahoeModel\\)"
     Button "Browse..." 18, 4 , 15, 1 do
         path = ChooseDirectory("Browse to and choose TahoeModel directory", )
-        stateArray[3] = path + "\\"
+		dim stateArray[7]
+		stateArray[1] = path + "\\scenarios\\scenario_base"					// default scenario name
+		stateArray[2] = 1                                                   // season id. summer - 1, winter - 2
+		stateArray[3] = path + "\\"                                         // model directory
+		stateArray[4] = 50                                                  // number of assignment iterations
+		stateArray[5] = 2                                                   // model iterations (feedback loop)
+		stateArray[6] = 1                                                   // index of scenario name in scenario list
+		stateArray[7] = 1000                                                // vm size
+		
         tcLogxmlPath = path + "\\reference\\"
         logxmlPath = RunMacro("GenerifyPath",tcLogxmlPath)
         RunMacro("TemplateToFile",tcLogxmlPath + "code\\" + "log4j_mine_noScenario.template.xml",tcLogxmlPath + "code\\" + "log4j_mine_noScenario.xml",logxmlPath,"empty",0)
@@ -1847,10 +1860,12 @@ endMacro
 
 //
 Macro "SaveLinkData"(pathArray,scenarioName,summer,iteration)
-    vws = GetViewNames()
-    for i = 1 to vws.length do
-        CloseView(vws[i])
-    end
+    //vws = GetViewNames()
+    //for i = 1 to vws.length do
+    //    CloseView(vws[i])
+    //end
+    RunMacro("CloseAll")
+    
     //summer is 1 if summer, 0 otherwise
     outputDirectory = pathArray[13] + "scenarios\\" + scenarioName + "\\outputs_winter\\"
     if summer = 1 then do
@@ -2074,8 +2089,8 @@ Macro "JavaCreateScenario" (pathArray,scenarioName)
                       RunMacro("GenerifyPath",pathArray[13] + "scenarios\\") + "\" \"" + 
                       scenarioName + "\" \"" +  
                       RunMacro("GenerifyPath",pathArray[13] + "reference\\scenario_base.zip") + "\""
-    //RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"c:\\program files\\java\\jdk1.5.0_22\\bin\\java.exe\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
-    RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"java\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
+    javaPath = pathArray[8] + "java\\jdk1.8.0_73\\bin\\java.exe"
+    RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"" + javaPath + "\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
 EndMacro
 
 Macro "GenerateMap" (pathArray,scenarioName)
@@ -2637,7 +2652,8 @@ Macro "JavaPreModelCode" (season, pathArray)
             pathArray[8] + "tahoe.jar\"" 
     javaVMArguments = " -Dlog4j.configuration=log4j_mine.xml"
     javaCommand = " com.pb.tahoe.dest_time_mode.DCAlternativeSet"
-    RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /wait \"java\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
+	javaPath = pathArray[8] + "java\\jdk1.8.0_73\\bin\\java.exe"
+    RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"" + javaPath + "\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
 
 endMacro
 
@@ -2651,7 +2667,8 @@ Macro "JavaSkimConverter" (season, pathArray)
             pathArray[8] + "tahoe.jar\"" 
     javaVMArguments = " -Dlog4j.configuration=log4j_mine.xml"
     javaCommand = " com.pb.tahoe.util.SkimConverter"
-    RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /wait \"java\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
+	javaPath = pathArray[8] + "java\\jdk1.8.0_73\\bin\\java.exe"
+    RunProgram("cmd /s /c \"start \"cmd\" /D" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"" + javaPath + "\"" + javaClassPath + javaVMArguments + javaCommand + "\"",)
   
 endMacro
 
@@ -2882,7 +2899,8 @@ Macro "RunJavaModelPart" (pathArray,vmSize,part)
         pathArray[8] + "synpop.jar;" + 
         pathArray[8] + "tahoe.jar\"" 
     javaVMArguments = " -Dlog4j.configuration=log4j_mine.xml -Xms" + vmSize + "m -Xmx" + vmSize + "m"
-    RunProgram("cmd /s /c \"start \"cmd\" /d" + RunMacro("GetBaseDrive",pathArray) + ":\\ /wait \"java\"" + javaClassPath + javaVMArguments + " com.pb.tahoe.util.TahoeModelComponentRunner " + part + "\"",)
+	javaPath = pathArray[8] + "java\\jdk1.8.0_73\\bin\\java.exe"
+    RunProgram("cmd /s /c \"start \"cmd\" /d" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"" + javaPath + "\"" + javaClassPath + javaVMArguments + " com.pb.tahoe.util.TahoeModelComponentRunner " + part + "\"",)
 EndMacro
 
 Macro "RunPopulationTransfer" (pathArray,scenarioName,summer)
@@ -3135,3 +3153,16 @@ Macro "AggregateTransitAssignment" (tAggArray)
     end
 
 endMacro
+
+Macro "GetModelFilePath"
+    program = GetInterface()
+    uipaths = SplitPath(program)	
+    model_file = uipaths[1]
+    
+    paths = ParseString(uipaths[2], "\\")
+    for i = 1 to (paths.length - 1) do				//leave the last element, which is the interface folder name
+    	model_file = model_file + "\\" + paths[i]
+    end
+    model_file = model_file + "\\TahoeStateFile.txt"
+	return(model_file)
+EndMacro
