@@ -11,14 +11,21 @@ Model installation
 
 3. Edit the file to update the model directory location. For example if the model is installed in the directory C:\TahoeModelFolder, then this file should have the following lines.
 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\Utilities.rsc 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\Macro.rsc 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisUtilities.rsc 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisNetwork.rsc 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisIntrazonal.rsc 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisTrips.rsc 
-C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\TahoeAQuaVis.rsc 
-C:\TahoeModelFolder\reference\code\install\..\TahoeModelToolbox_rev.rsc 
+C:\TahoeModelFolder\reference\code\emfac\gisdk\Utilities.rsc 
+
+C:\TahoeModelFolder\reference\code\emfac\gisdk\Macro.rsc 
+
+C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisUtilities.rsc 
+
+C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisNetwork.rsc 
+
+C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisIntrazonal.rsc 
+
+C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisTrips.rsc 
+
+C:\TahoeModelFolder\reference\code\emfac\gisdk\TahoeAQuaVis.rsc 
+
+C:\TahoeModelFolder\reference\code\TahoeModelToolbox_rev.rsc 
 
 4. Compile the .lst file updated above. To do this follow the following steps
 
