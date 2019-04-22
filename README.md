@@ -5,25 +5,33 @@ https://trpa-agency.github.io/travel_demand_model
 
 Model installation
 
-1. Download the repo to any location in the computer
+1. Download the repo to any location in the computer.
 
-2. Create the file TahoeModelRunnerBackup_V2.txt in the transcad directory with following contents
+2. Navigate to the folder reference\code and open the file TahoeModel.lst in a text editor.
 
-C:\Temp\trpa_model\scenarios\scenario_base\
-1
-C:\Temp\trpa_model\
-50
-1
-5
-1000
+3. Edit the file to update the model directory location. For example if the model is installed in the directory C:\TahoeModelFolder, then this file should have the following lines.
 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\Utilities.rsc 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\Macro.rsc 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisUtilities.rsc 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisNetwork.rsc 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisIntrazonal.rsc 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\AQuaVisTrips.rsc 
+C:\TahoeModelFolder\reference\code\install\..\emfac\gisdk\TahoeAQuaVis.rsc 
+C:\TahoeModelFolder\reference\code\install\..\TahoeModelToolbox_rev.rsc 
 
-3. Tools > Setup > addins (Open transcad in admin mode)
+4. Compile the .lst file updated above. To do this follow the following steps
 
-Type = MAcro
+* Click on Tools > GISDK Developer's Kit
+* In the GISDK toolkit click "Compile to UI" button
+* Navigate to reference\code folder and select the .lst file updated in step 3.
+* Save As window will open up. Navigate to reference\code\ui and save as tahoemodelui.dbd
+
+5. (Open transcad in admin mode) Setup the TransCAD UI - Tools > Setup > addins  - Click add button
+
+Type = Macro
+Description = TahoeModel
 Name = TahoeABModel
-UI = C:\Temp\trpa_model\reference\code\ui\tahoemodelui.dbd
+UI = Browse to reference\code\ui\tahoemodelui.dbd
 
-4. Gitignore files - PUMS data need to be copied if not already present
-
-5. Computer should have the JAva path already set. Both "java" command and "javac" command should work. That is the java location should be a JDK.
+6. Gitignore files - PUMS data need to be copied if not already present
