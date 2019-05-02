@@ -11,7 +11,18 @@ scen_name = args[1]
 scenFolder <- paste0('../../../scenarios/',scen_name)
 print(scenFolder)
 
-includeExtDist <- 0
+propFile  <- readLines(paste0(scenFolder,"/code/tahoe_summer.properties"))
+
+checkReqString <- function(inpStr) {
+    condCheck <- ifelse(substr(inpStr,1,min(34,nchar(inpStr)))=="include.externalDistance.in.report",1,0)
+    if(condCheck==1){
+        return(substr(inpStr,38,41))
+    }
+}
+check <- map(propFile,checkReqString) %>% unlist()
+
+includeExtDist <- 1*(check=='true')
+print(includeExtDist)
 
 PartyArray <- read_csv(paste0(scenFolder,"/outputs_summer/PartyArray_afterThruVisitors.pam"))
 
