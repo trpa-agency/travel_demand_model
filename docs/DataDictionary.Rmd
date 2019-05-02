@@ -7,6 +7,9 @@ This page documents the data dictionary of the all the major inputs and outputs 
 
 # Input Data
 
+## Generic Data
+
+These are input data that are not specific to a partcilar scenario. They are stored under the /reference/model_data directory.
 
 [TAZ_District](../reference/model_data/zonal/TAZ_District.csv)
 
@@ -126,7 +129,7 @@ ovDCSizePercentOth 		 same as ovDCSizePercentRec, only for tour
 
 </p></details>
 
-[DayVisitorZonalData](../reference/model_data/visitor/synpop/daDayVisitorZonalData_Summer.csv)
+[DayVisitorZonalData](../reference/model_data/visitor/synpop/DayVisitorZonalData_Summer.csv)
 
 This file contains information for the day visitor synthetic population generator. There is a separate file for each 
 season. It is a CSV format plain text file.
@@ -149,6 +152,10 @@ percentThru 			 the percentage of day visitors to use as
 
 </p>
 </details>
+
+## Scenario Data
+
+These are input data that are specific to a partcilar scenario. They are stored under the /scenarios/SCENARIO_NAME directory.
 
 
 [SchoolEnrollment](../scenarios/scenario_base/zonal/SchoolEnrollment.csv)
@@ -301,6 +308,9 @@ seasonal 					 the occupancy rate for seasonal visitors
 
 </p></details>
 
+[External Distance Matrix](../scenarios/scenario_base/gis/Skims/Data_Files/ExternalDistanceMatrix.mtx)
+
+ExternalDistanceMatrix.mtx is a transcad matrix file and has the distance to the seven external stations from all TAZ nodes (in addition to the network coded distance). The external zone Node IDs are 12562, 12563, 12564, 12565, 12566, 12567, 12568. During the highway skimming step this distance is added to the network skimmed distance to get the total drive distance for each TAZ pair.
 
 # Output Data
 
@@ -308,13 +318,218 @@ The outputs from the data are stored in the ouputs_SEASON folder of the scenario
 
 ## Demand Model Outputs
 
-These files are the outputs from the [resident](ResidentModel.html), [external worker](ExternalWorkers.html) and the [visitor](VisitorModels.html) models. Each of the submodels discussed in the earlier sections produce their own outputs. Many of these outputs are used in performing calibration and model validation; however, they are not typically used in analysing the outputs of a run.
+These files are the outputs from the [resident](ResidentModel.html), [external worker](ExternalWorkers.html) and the [visitor](VisitorModels.html) models. Each of the submodels discussed in the earlier sections produce their own outputs. Many of these outputs are used in performing calibration and model validation; however, they are not typically used in analysing the outputs of a run. The table below describes the contents of each of these files and the associated module (resident/external worker/visitor).
 
-## Traffic Assignment Outputs
+
+----------------------------------------------------------------------------------------------------------
+Output File                      Output File                                                   Category
+Name                             Description                                    
+-------------------------------- ------------------------------------------------------------- -----------
+AccessibilityToEmployment.csv    Zonal Accessibility Files                                     Resident
+
+AtWorkDTMChoice.csv              At-Work Tour Destination, Time-of-Day and Mode Choice Model   Resident
+                                 Results                                                       
+                                                                                               
+At-WorkStopFrequency.csv         At-Work Stop Frequency Model Results                          Resident
+                                                                                               
+At-WorkStopLocation.csv          At-Work Stop Location Model Results                           Resident
+                                                                                               
+At-WorkStopMode.csv              At-Work Stop Mode Choice Model Results                        Resident
+                                                                                               
+DiscFrequency_Children.csv       Discretionary Frequency Model Results - Children              Resident
+                                                                                               
+DiscFrequency_Nonworkers.csv     Discretionary Frequency Model Results - Nonworkers            Resident
+                                                                                               
+DiscFrequency_Workers.csv        Discretionary Frequency Model Results - Workers               Resident
+                                                                                               
+ExternalWorkerSynpopWithOT.csv   External Worker Population Synthesis Results                  External 
+																							   Worker
+                                                                                               
+Final_Targets.csv                Final Control Totals for Resident Population                  Resident
+                                 Population Synthesis                                          
+                                                                                               
+IndivAtWorkFreq.csv              Individual At-Work Tour Frequency Model Results               Resident
+                                                                                               
+JointDTMChoice.csv               Joint Tour Destination, Time-of-Day and Mode Choice Model     Resident
+                                 Results                                                       
+                                                                                               
+JointStopFrequency.csv           Joint Tour Stop Frequency Model Results                       Resident
+                                                                                               
+JointStopLocation.csv            Joint Tour Stop Location Model Results                        Resident
+                                                                                               
+JointStopMode.csv                Joint Tour Stop Mode Choice Model Results                     Resident
+                                                                                               
+JointTourComposition.csv         Joint Tour Composition Details                                Resident
+                                                                                               
+JointTourGeneration.csv          Joint Tour Generation Intermediate Variables                  Resident
+                                                                                               
+JointTourParticipation.csv       Joint Tour Participation Details                              Resident
+                                                                                               
+MaintenanceAllocation.csv        Allocation of maintenance tours to a household member         Resident
+                                                                                               
+MaintenanceFrequency.csv         Household Tour Frequency Model for maintenance                Resident
+								 activities
+
+MandatoryDTMChoice.csv           Mandatory Tour Destination, Time-of-Day and Mode Choice       Resident
+                                 Model Results                                                 
+                                                                                               
+MandatoryStopFrequency.csv       Mandatory Tour Stop Frequency Model Results                   Resident
+                                                                                               
+MandatoryStopLocation.csv        Mandatory Tour Stop Location Model Results                    Resident
+                                                                                               
+MandatoryStopMode.csv            Mandatory Tour Stop Mode Choice Model Results                 Resident
+                                                                                               
+MergedZonalData.csv              Merged Zonal Data with employment and household data          Generic
+                                                                                               
+NonMandatoryDTMChoice.csv        Non-Mandatory Tour Destination, Time-of-Day and Mode Choice   Resident
+                                 Model Results                                                 
+                                                                                               
+Non-MandatoryStopFrequency.csv   Non-Mandatory Tour Stop Frequency Model Results               Resident
+                                                                                               
+Non-MandatoryStopLocation.csv    Non-Mandatory Tour Stop Location Model Results                Resident
+                                 
+Non-MandatoryStopMode.csv        Non-Mandatory Tour Stop Mode Choice Model Results             Resident
+                                                                                               
+SocioEconWithLaborForce.csv      Merged Zonal Socio-Economic Data                              Generic
+                                                                                               
+SynPopH_Full.csv                 Synthesized Resident Population - Household Level - Detailed  Resident
+                                                                                               
+SynPopHPlusAutoOwnership.csv     Synthesized Resident Population - Household Level             Resident
+                                                                                               
+SynPopP.csv                      Synthesized Resident Population - Person Level                Resident
+
+trip_file.csv                    Trip File for all the Trips                                   Generic
+                                                                                               
+UrbanType.csv                    Zonal Population Density Data                                 Generic
+                                                                                               
+VisitorReportData.csv            Visitor Model Outputs for all the Visitors                    Visitor
+                                                                                               
+---------------------------------------------------------------------------------------------- 
+
+Among these output, the most important output is the trip file and the fields of this file is described in detail in the table below.
+
+-----------------------------------------------------------------------------------------------
+Attribute                	 Attribute                                      Attribute
+Name                     	 Description                                    Detail
+---------------------------- ---------------------------------------------- -------------------
+tripID                       Unique Trip ID
+
+tourID                       Unique Tour ID
+
+partyTypeID                  The party segment                              0. Resident <br/>
+                                                                            1. Overnight Visitor <br/>
+                                                                            2. Day Visitor <br/>
+                                                                            3. Through Visitor <br/>
+                                                                            9. External Worker <br/>
+																			
+partyType                    The party segment string
+
+partyID                      Party ID - unique for residents, external 
+							 workers, and visitors
+							 
+persons                      Number of persons in the trip
+
+personList                   Person List
+
+tripTypeID                   Trip Type - seperate mapping for residents, 
+							 and visitors. See tripType attribute
+							 
+tripType                     Trip Purpose fo residents and overnight and
+							 day visitors.
+							 
+leg                          Inbound/outbound/intermediate leg of the trip
+
+startTaz                     Origin TAZ
+
+endTaz                       Destination TAZ
+
+time                         Tour start hour
+
+skim                         Trip start skim period
+
+mode                         Mode of the trip
+-----------------------------------------------------------------------------------------------
+: trip_file.csv
+					                                                                           
+## Traffic Assignment Outputs                                                                  
 
 These files are outputs from the traffic assignment module. It has the network link volumes and other network related outputs. 
+
+------------------------------------------------------------------------------------------------------------
+Field Name                 Field Description                                                   
+-------------------------- ---------------------------------------------------------------------------------
+AB/BA_[PRD]_Cap            Capacity of the Link (In AB or BA direction) for the Time-of-Day Period PRD
+						   
+AB/BA_[PRD]_Flow           Flow of the Link (In AB or BA direction) for the Time-of-Day Period PRD
+
+AB/BA_[PRD]_IVTT           In-Vehicle Travel Time of the Link (In AB or BA direction) for the Time-of-Day 
+							Period PRD
+							
+AB/BA_[PRD]_VMT            Vehicle Miles Traveled of the Link (In AB or BA direction) for the Time-of-Day 
+							Period PRD
+
+AB/BA_[PRD]_VOC            Volume over capacity of the Link (In AB or BA direction) for the Time-of-Day 
+							Period PRD
+
+AB/BA_Speed			       Speed of the link in Miles/hr
+
+AB/BA_FF_TravelTime	       Computed Free Flow Speed Travel Time in minutes
+
+AB/BA_TT_Multiplier	       Travel Time Multiplier used to get the free flow speed
+
+AB/BA_Lanes			       Number of lanes
+
+AB/BA_FC				   Facility Type
+
+AB/BA_WalkTime			   Walk Time in minutes
+
+AB/BA_Cap			       Lane Per Hour Capacity
+
+-------------------------------------------------------------------------------------------------------------
 
 ## Report Files
 
 The report files are also generated along with the outputs and various different summaries that can be used by a user to understand the model result.
+
+------------------------------------------------------------------------------------------------------------
+Field Name                 Field Description                                                   
+-------------------------- ---------------------------------------------------------------------------------
+atworkStopsFull.csv        At-work subtour stops summary
+
+indDTMFull.csv             Individual Non-mandatory tour DTM summary
+
+indTourFull.csv            Individual Non-mandatory tour frequency summary
+
+jointDTMFull.csv           Joint Non-mandatory tour DTM summary
+
+jointStopsFull.csv         Joint tour stops summary
+
+jtFull.csv                 Joint Tour frequency summary
+
+mandSchoolFull.csv         Mandatory Tour DTM summary
+
+mandStopsFull.csv          Mandatory tour stops summary
+
+mandWorkFull.csv           Mandatory Tour frequency summary
+
+nonmandStopsFull.csv       Mandatory Tour DTM summary - detailed
+
+visitorDTMFull.csv         Visitor tour DTM summary
+
+visitorPatternFull.csv     Visitor pattern full summary
+
+visitorStopsFull.csv       Visitor tour stops summary
+
+autoocc_summary.csv        Auto Occupancy summary for different market segments
+
+tour_length_summary.csv    Tour length summary for different market segments
+
+trip_length_summary.csv    Trip length summary for different market segments
+
+vmt_summary.csv            VMT Summary for different market segments
+
+modelSummary.txt           Aggregate summary for all the demand models
+-------------------------------------------------------------------------------------------------------------
+
+In addition to the above summaries, VMT summary from the highway assignment output is created on the fly when the "Assignment Summary" button is clicked from the graphical interface.
 

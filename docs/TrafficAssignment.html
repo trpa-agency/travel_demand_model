@@ -443,7 +443,7 @@ div.tocify {
 </table>
 <p>In addition to this, the number of lanes and the speed limit of each link are recorded in the network. From the latter, a free flow travel time is determined for each link by taking the time it takes to traverse the link at its speed limit times a “travel-time multiplier.” The travel-time multiplier is initially set to one, but was changed for some links during validation to help match observed counts. Also associated with each link is a volume-delay function (VDF), which is used in the actual traffic assignment procedure. The VDF provides a travel-time for each link given its free-flow travel time, capacity, and assigned volume.</p>
 <p><img src="figs/VDF_formula.PNG" width="450px" /></p>
-<p>A different value for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>$ are used for each link depending on its speed limit, number of lanes, and urban-type location (see Appendix I[TODO TODO] for a discussion of the urban type definitions). These values are summarized in the following table:</p>
+<p>A different value for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are used for each link depending on its speed limit, number of lanes, and urban-type location (urban type definitions follows). These values are summarized in the following table:</p>
 <table style="width:69%;">
 <caption>BPR function coefficients specifications</caption>
 <colgroup>
@@ -619,6 +619,20 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+<p>In order to quantify geographic differences between the various zones, an urban type model was developed. This model maps each zone into one of four urban type categories:</p>
+<ul>
+<li>Rural</li>
+<li>Suburban</li>
+<li>Urban</li>
+<li>External</li>
+</ul>
+<p>The latter category is assigned if a zone is an external zone. The other three categories are designated by using the following model structure:</p>
+<ul>
+<li>if WP &lt; 600 then urban type = Rural</li>
+<li>if 600 <span class="math inline">\(\leq\)</span> WP &lt; 7500 then urban type = Suburban</li>
+<li>if 7500 <span class="math inline">\(\leq\)</span> WP then urban type = Urban</li>
+</ul>
+<p>WP is the sum of the employment and population densities, where the area is measured in square miles.</p>
 </div>
 <div id="traffic-assignment" class="section level1">
 <h1>Traffic Assignment</h1>
