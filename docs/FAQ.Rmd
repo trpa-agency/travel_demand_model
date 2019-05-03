@@ -3,4 +3,4 @@ title: "Frequently Asked Questions"
 output: html_document
 ---
 
-Under Construction......
+This page is under construction
