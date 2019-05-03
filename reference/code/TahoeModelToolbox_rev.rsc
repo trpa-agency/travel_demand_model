@@ -934,7 +934,7 @@ Dbox "configure"
 		stateArray[2] = 1                                                   // season id. summer - 1, winter - 2
 		stateArray[3] = path + "\\"                                         // model directory
 		stateArray[4] = 50                                                  // number of assignment iterations
-		stateArray[5] = 2                                                   // model iterations (feedback loop)
+		stateArray[5] = 3                                                   // model iterations (feedback loop)
 		stateArray[6] = 1                                                   // index of scenario name in scenario list
 		stateArray[7] = 1000                                                // vm size
 		

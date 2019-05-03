@@ -52,11 +52,11 @@ R-->S[TripSummarizer]
 
 # Macro Reference
 
----------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 Macro                Macro                                          Output files from
 Name                 Description                                    the Macro
--------------------- ---------------------------------------------- -------------------
-PreModelRunner       This is the first Macro that is run      Refer to the outputs 
+-------------------- ---------------------------------------------- -----------------------
+PreModelRunner       This is the first Macro that is run            Refer to the outputs 
                      when the "Run Model" button is clicked.        of Macros that are
                      It is outside the global feedback loop and     called by this Macro  
                      runs several other Macros listed below. 

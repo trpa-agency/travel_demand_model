@@ -58,7 +58,7 @@ In addition to this, the number of lanes and the speed limit of each link are re
 knitr::include_graphics("figs/VDF_formula.PNG")
 ```
 
-A different value for $\alpha$ and $\beta$$ are used for each link depending on its speed limit, number of lanes, and urban-type location (see Appendix I[TODO TODO] for a discussion of the urban type definitions). These values are summarized in the following table:
+A different value for $\alpha$ and $\beta$ are used for each link depending on its speed limit, number of lanes, and urban-type location (urban type definitions follows). These values are summarized in the following table:
 
 ------------------------------------------------
  Area Type  Speed     Lanes   $\alpha$   $\beta$
@@ -110,6 +110,20 @@ Urban      25         Any       1.30      5
 ---------------------------------------------------
 : BPR function coefficients specifications
 
+In order to quantify geographic differences between the various zones, an urban type model was developed. This model maps each zone into one of four urban type categories: 
+
+* Rural 
+* Suburban 
+* Urban 
+* External 
+
+The latter category is assigned if a zone is an external zone.  The other three categories are designated by using the following model structure:
+
+* if WP < 600 then urban type = Rural 
+* if 600 $\leq$ WP < 7500 then urban type = Suburban 
+* if 7500 $\leq$ WP then urban type = Urban 
+
+WP is the sum of the employment and population densities, where the area is measured in square miles.
 
 # Traffic Assignment
 
