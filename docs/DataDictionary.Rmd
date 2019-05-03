@@ -431,22 +431,49 @@ persons                      Number of persons in the trip
 
 personList                   Person List
 
-tripTypeID                   Trip Type - seperate mapping for residents, 
-							 and visitors. See tripType attribute
+tripTypeID                   Trip Type - seperate mapping for residents,    
+							 and visitors. See tripType attribute           
+							                                                
+																			
 							 
-tripType                     Trip Purpose fo residents and overnight and
-							 day visitors.
-							 
-leg                          Inbound/outbound/intermediate leg of the trip
+tripType                     Trip Purpose fo residents and overnight and    Gaming, Other Recreation
+							 day visitors.                                  and Shopping for day visitors
+							                                                and overnight visitors.<br/>
+																			AtWorkOther,Discretionary,
+																			Eat, Escort, Maintenance,
+																			School, Shop and Work for
+																			Residents. <br/>
+																			External Work of External
+																			workers. <br/>
+																			Thru for Through visitors.
 
+							 
+leg                          Inbound/outbound/intermediate leg of the trip  ij = Outbound Origin-Destination <br/>
+                             Origin refer to Tour Origin                    is = Outbound Origin-Stop        <br/>
+							 Destination refer to Tour Destination			sj = Outbound Stop-Destination   <br/>
+																			ji = Inbound Destination-Origin  <br/>
+																			js = Inbound Destination-Stop    <br/>
+																			si = Inbound Stop-Origin         <br/>
+																			t = Through trip
+																			
 startTaz                     Origin TAZ
 
 endTaz                       Destination TAZ
 
-time                         Tour start hour
+time                         Tour start hour                                5 = 5 AM to 6 AM <br/>
+                                                                            6 = 6 AM to 7 AM <br/>
+																			...              <br/>
+																			22 = 10 PM to 11 PM <br/>
+																			23 = 11 PM to 5 AM <br/>
+																			-1 = Model that doesn't have hourly 
+																			resolution: Through trips and 
+																			external worker trips.
 
-skim                         Trip start skim period
-
+skim                         Trip start skim period                         1 = AM ( 7:00 AM to 10:00 AM) <br/>                                                           
+                                                                            2 = PM ( 4:00 PM to  7:00 PM) <br/>    
+																			3 = MD (10:00 AM to  4:00 PM) <br/>																			 
+                                                                            4 = LN ( 7:00 PM to  7:00 AM) 
+																			
 mode                         Mode of the trip
 -----------------------------------------------------------------------------------------------
 : trip_file.csv
