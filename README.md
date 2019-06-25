@@ -42,3 +42,8 @@ Name = TahoeABModel
 UI = Browse to reference\code\ui\tahoemodelui.dbd
 
 6. Gitignore files - PUMS data need to be copied if not already present
+
+7. Update the model shortcut icon
+
+* Right click the "Tahoe Activity Based Travel Demand Model" icon and click properties
+* Update the Target field with your local directory information
