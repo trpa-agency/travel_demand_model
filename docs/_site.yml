@@ -23,8 +23,8 @@ navbar:
           href: DataDictionary.html
         - text: "GISDK Reference"
           href: CodeReference.html  
-        - text: "FAQ"
-          href: FAQ.html  	
+        - text: "Base Year 2018 Zonal Inputs"
+          href: base_2018.html  	
         - text: "Folder Structure"
           href: FolderStructure.html           
   right:
