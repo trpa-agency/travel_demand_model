@@ -1,6 +1,8 @@
 ---
 title: "Tahoe Model 2018 Base Year - Zonal Inputs"
-output: html_document
+output: 
+  html_document:
+    toc: no
 ---
 
 ```{css, echo=FALSE}
