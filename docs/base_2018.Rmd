@@ -1,0 +1,150 @@
+---
+title: "Tahoe Model 2018 Base Year - Zonal Inputs"
+output: html_document
+---
+
+```{css, echo=FALSE}
+div.sourceCode {
+    overflow: hidden;
+}
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+\
+The Tahoe model utilizes a variety of land use and socioeconomic data inputs, which are summarized for each of the region's 282 transportation analysis zones. There are four separate input files, which the model user must populate for each model run. This dashboard displays all of the input data that was developed as part of establishing the 2018 model base year. These datasets were developed using myriad data sources, including the US Census, local & state governments, and TRPA. The data is in draft form and will be finalized in December 2019. For questions and comments, please contact Reid Haefer (rhaefer@trpa.org) Modeling Program Coordinator at TRPA.
+\
+\
+```{r, warning=FALSE, message=FALSE, echo=FALSE, include=F}
+library(pacman)
+p_load(tidycensus, tidyverse,leaflet, geojsonio, sf, tmap, tmaptools, DT, xfun, tmap, leaflet)
+
+socio18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/socio.csv') %>% select(-X1) %>%
+  mutate(employment_total=case_when(emp_total < 100 ~ "low",
+                                          between(emp_total,100, 499) ~ "medium",
+                                          between(emp_total, 500,999 ) ~ "high",
+                                          emp_total >= 1000 ~ "very high"))
+socio18[is.na(socio18)] = 0
+school18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/school.csv')  %>% select(-X1)
+school18[is.na(school18)] = 0
+overnight_zonal18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/overnight_zonal.csv')  %>% select(-X1) %>% rename(rec_attractiveness=beach) %>%
+  mutate(percentHouseSeasonal=case_when(percentHouseSeasonal < 0 ~ 0, TRUE ~ as.numeric(percentHouseSeasonal)))
+overnight_zonal18[is.na(overnight_zonal18)] = 0
+overnight_rates18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/overnight_rates.csv')  %>% select(-X1)
+overnight_rates18[is.na(overnight_rates18)] = 0
+
+taz<-st_read("H:/model/model_update_2019/data_inputs/model_taz","taz_sde") %>%
+      st_transform(crs=4326)
+```
+
+
+```{r, message=F, warning=F, echo=F, out.width='130%', out.height='500px'}
+tmap_mode("view")
+
+inputs <- taz %>%
+  left_join(socio18, by=c("TAZ"="taz")) %>%
+  left_join(school18, by=c("TAZ"="taz")) %>%
+  left_join(overnight_zonal18, by=c("TAZ"="taz")) %>%
+  left_join(overnight_rates18, by=c("TAZ"="taz")) %>%
+  dplyr::select(-c(OBJECTID_1,AREA_,PERIMETER,ELTAZ_,ELTAZ_ID,GISAcres,Shape_STAr,Shape_STLe,emp_srvc,emp_rec,emp_retail,emp_gaming,emp_other)) %>%
+  rename(hotel_motel_units=hotelmotel.x, resort_units=resort.x, casino_units=casino.x, campsites=campground.x,
+         hotelmotel_occupancy=hotelmotel.y, resort_occupancy=resort.y, casino_occupancy=casino.y, campground_occupancy=campground.y)
+
+popup1 <- paste0("<div class='leaflet-popup-scrolled' style='max-width:700px;max-height:120px'>",
+                 "<strong>TAZ: </strong>", inputs$TAZ,
+                 "<br><strong>Residential Units: </strong>", inputs$total_residential_units,
+                 "<br><strong>Residential Occupancy: </strong>", round(inputs$census_occ_rate,2),
+                 "<br><strong>Low Income Units: </strong>", inputs$occ_units_low_inc,
+                 "<br><strong>Medium Income Units: </strong>", inputs$occ_units_med_inc,
+                 "<br><strong>High Income Units:: </strong>", inputs$occ_units_high_inc,
+                 "<br><strong>Persons Per Occupied Unit: </strong>", round(inputs$persons_per_occ_unit,2),
+                 "<br><strong>Population: </strong>", inputs$total_persons,
+                 "<br><strong>Employment Level: </strong>", inputs$employment_total,
+                 "<br><strong>College Enrollment: </strong>", inputs$college_enrollment,
+                 "<br><strong>Elementary School Enrollment: </strong>", inputs$elementary_school_enrollment,
+                 "<br><strong>Middle School Enrollment: </strong>", inputs$middle_school_enrollment,
+                 "<br><strong>High School Enrollment: </strong>", inputs$high_school_enrollment,
+                 "<br><strong>Hotel/Motel Units: </strong>", inputs$hotel_motel_units,
+                 "<br><strong>Resort Units: </strong>", inputs$resort_units,
+                 "<br><strong>Casino Units: </strong>", inputs$casino_units,
+                 "<br><strong>Campground Sites: </strong>", inputs$campsites,
+                 "<br><strong>PercentHouseSeasonal </strong>", round(inputs$percentHouseSeasonal,2),
+                 "<br><strong>Hotel/Motel Occupancy: </strong>", round(inputs$hotelmotel_occupancy,2),
+                 "<br><strong>Resort Occupancy: </strong>", round(inputs$resort_occupancy,2),
+                 "<br><strong>Casino Occupancy: </strong>", round(inputs$casino_occupancy,2),
+                 "<br><strong>Campground Occupancy: </strong>", round(inputs$campground_occupancy,2),
+                 "<br><strong>Seasonal Unit Occupancy: </strong>", round(inputs$seasonal,2),
+                 "<br><strong>Short Term Rental Occupancy: </strong>", round(inputs$house,2),
+                 "</div>") 
+#tm_shape(inputs) + 
+ # tm_polygons( col="#A80902", alpha=0.3, border.col="white") +
+  #tm_view(set.view=c(-120.020493,39.041803,10)) +
+  #tm_basemap(leaflet::providers$OpenStreetMap)
+leaflet(inputs) %>% 
+  addPolygons(popup = popup1 ,color="white", opacity=1,fillColor = "#bc0114",
+                   weight=2, fillOpacity = .3,
+              highlightOptions = highlightOptions(
+                color = "white", opacity = 1,fillColor = "#bc0114", weight = 4, fillOpacity = 0.2,
+                bringToFront = TRUE, sendToBack = TRUE)) %>% 
+  addProviderTiles("Wikimedia") %>% 
+  setView(-120.020493,39.041803,zoom=10)
+```
+
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Socio-Econ
+
+```{r, message=F, warning=F, echo=F}
+datatable(socio18  %>% arrange(taz) %>%
+            mutate(census_occ_rate=round(census_occ_rate,2),
+                   total_occ_units=round(total_occ_units,0),
+                   persons_per_occ_unit=round(persons_per_occ_unit,2)) %>% 
+            select(-c(emp_srvc,emp_rec,emp_retail,emp_gaming,emp_other,emp_total)), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+#### School Enrollment
+
+```{r, message=F, warning=F, echo=F}
+datatable(school18 %>% arrange(taz), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+#### Overnight Units
+
+```{r, message=F, warning=F, echo=F}
+datatable(overnight_zonal18 %>% arrange(taz) %>%
+            mutate(percentHouseSeasonal=round(percentHouseSeasonal,2)), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+#### Overnight Occupancy
+
+```{r, message=F, warning=F, echo=F}
+datatable(overnight_rates18 %>% arrange(taz) %>%
+            mutate(hotelmotel=round(hotelmotel,2),
+                   resort=round(resort,2),
+                   casino=round(casino,2),
+                   campground=round(campground,2),
+                    house=round(house,2),
+                    seasonal=round(seasonal,2)), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
