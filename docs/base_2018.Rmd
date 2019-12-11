@@ -39,12 +39,16 @@ overnight_rates18[is.na(overnight_rates18)] = 0
 
 taz<-st_read("H:/model/model_update_2019/data_inputs/model_taz","taz_sde") %>%
       st_transform(crs=4326)
+
+roads<-st_read("H:/model/model_update_2019/data_inputs/street_network","model_network") %>%
+      st_transform(crs=4326)
 ```
 
+### {.tabset .tabset-fade .tabset-pills}
+
+#### TAZs 
 
 ```{r, message=F, warning=F, echo=F, out.width='130%', out.height='500px'}
-tmap_mode("view")
-
 inputs <- taz %>%
   left_join(socio18, by=c("TAZ"="taz")) %>%
   left_join(school18, by=c("TAZ"="taz")) %>%
@@ -90,6 +94,30 @@ leaflet(inputs) %>%
               highlightOptions = highlightOptions(
                 color = "white", opacity = 1,fillColor = "#bc0114", weight = 4, fillOpacity = 0.2,
                 bringToFront = TRUE, sendToBack = TRUE)) %>% 
+  addProviderTiles("Wikimedia") %>% 
+  setView(-120.020493,39.041803,zoom=10)
+```
+
+#### Roadway
+
+```{r, message=F, warning=F, echo=F, out.width='130%', out.height='500px'}
+#tm_shape(inputs) + 
+ # tm_polygons( col="#A80902", alpha=0.3, border.col="white") +
+  #tm_view(set.view=c(-120.020493,39.041803,10)) +
+  #tm_basemap(leaflet::providers$OpenStreetMap)
+popup2 <- paste0("<div class='leaflet-popup-scrolled' style='max-width:700px;max-height:120px'>",
+                 "<strong>Name: </strong>", roads$NAME,
+                 "<br><strong>AB Lanes: </strong>", roads$AB_LANES,
+                 "<br><strong>BA Lanes: </strong>", roads$BA_LANES,
+                 "<br><strong>AB Speed: </strong>", roads$AB_SPEED,
+                 "<br><strong>BA Speed: </strong>", roads$BA_SPEED,
+                 "</div>") 
+roads %>% filter(CENTROID != 1) %>%
+  leaflet() %>% 
+  addPolylines(fillOpacity = 1, opacity = 1, color="black", weight=3, popup=popup2,
+              highlightOptions = highlightOptions(
+                color = "white", opacity = 1,  weight = 4, fillOpacity = 0.5,
+                bringToFront = TRUE, sendToBack = TRUE)) %>%
   addProviderTiles("Wikimedia") %>% 
   setView(-120.020493,39.041803,zoom=10)
 ```
