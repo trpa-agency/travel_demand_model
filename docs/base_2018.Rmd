@@ -105,21 +105,27 @@ leaflet(inputs) %>%
  # tm_polygons( col="#A80902", alpha=0.3, border.col="white") +
   #tm_view(set.view=c(-120.020493,39.041803,10)) +
   #tm_basemap(leaflet::providers$OpenStreetMap)
-popup2 <- paste0("<div class='leaflet-popup-scrolled' style='max-width:700px;max-height:120px'>",
-                 "<strong>Name: </strong>", roads$NAME,
+popup2 <- paste0("<strong>Name: </strong>", roads$NAME,
                  "<br><strong>AB Lanes: </strong>", roads$AB_LANES,
                  "<br><strong>BA Lanes: </strong>", roads$BA_LANES,
                  "<br><strong>AB Speed: </strong>", roads$AB_SPEED,
-                 "<br><strong>BA Speed: </strong>", roads$BA_SPEED,
-                 "</div>") 
-roads %>% filter(CENTROID != 1) %>%
-  leaflet() %>% 
-  addPolylines(fillOpacity = 1, opacity = 1, color="black", weight=3, popup=popup2,
-              highlightOptions = highlightOptions(
-                color = "white", opacity = 1,  weight = 4, fillOpacity = 0.5,
-                bringToFront = TRUE, sendToBack = TRUE)) %>%
-  addProviderTiles("Wikimedia") %>% 
-  setView(-120.020493,39.041803,zoom=10)
+                 "<br><strong>BA Speed: </strong>", roads$BA_SPEED) 
+tmap_mode("view")
+roads %>% filter(CENTROID != 1) %>% filter(AB_LANES < 6) %>% tm_shape() + 
+  tm_lines(lwd=3,popup.vars=c("Name"="NAME", 
+                        "AB Lanes"="AB_LANES", 
+                        "BA Lanes"="BA_LANES",
+                        "AB Speeds"="AB_SPEED",
+                        "BA Speeds"="BA_SPEED")) +
+  tm_basemap(leaflet::providers$OpenStreetMap)
+
+  #leaflet() %>% 
+  #addPolylines(fillOpacity = 1, opacity = 1, color="black", weight=3, popup=popup2,
+             # highlightOptions = highlightOptions(
+             #   color = "white", opacity = 1,  weight = 4, fillOpacity = 0.5,
+               # bringToFront = TRUE, sendToBack = TRUE)) %>%
+ # addProviderTiles("Wikimedia") %>% 
+  #setView(-120.020493,39.041803,zoom=10)
 ```
 
 ### {.tabset .tabset-fade .tabset-pills}
