@@ -40,8 +40,8 @@ overnight_rates18[is.na(overnight_rates18)] = 0
 taz<-st_read("H:/model/model_update_2019/data_inputs/model_taz","taz_sde") %>%
       st_transform(crs=4326)
 
-roads<-st_read("H:/model/model_update_2019/data_inputs/street_network","model_network") %>%
-      st_transform(crs=4326)
+roads<-st_read("H:/model/model_update_2019/data_inputs/street_network","roads2") %>%
+  st_set_crs(st_crs(4326))
 ```
 
 ### {.tabset .tabset-fade .tabset-pills}
