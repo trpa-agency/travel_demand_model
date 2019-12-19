@@ -1,8 +1,7 @@
 ---
-title: "Tahoe Model 2018 Base Year - Zonal Inputs"
-output: 
-  html_document:
-    toc: no
+title: "Tahoe Model 2018 Base Year - Inputs"
+output: html_document
+
 ---
 
 ```{css, echo=FALSE}
@@ -16,12 +15,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 \
-The Tahoe model utilizes a variety of land use and socioeconomic data inputs, which are summarized for each of the region's 282 transportation analysis zones. There are four separate input files, which the model user must populate for each model run. This dashboard displays all of the input data that was developed as part of establishing the 2018 model base year. These datasets were developed using myriad data sources, including the US Census, local & state governments, and TRPA. The data is in draft form and will be finalized in December 2019. For questions and comments, please contact Reid Haefer (rhaefer@trpa.org) Modeling Program Coordinator at TRPA.
+The Tahoe model utilizes a variety of land use and socioeconomic data inputs, which are summarized for each of the region's 282 transportation analysis zones. There are four separate input files, which the model user must populate for each model run. This dashboard displays all of the input data that was developed as part of establishing the 2018 model base year. For questions and comments, please contact Reid Haefer (rhaefer@trpa.org) Modeling Program Coordinator at TRPA.
 \
 \
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, include=F}
 library(pacman)
-p_load(tidycensus, tidyverse,leaflet, geojsonio, sf, tmap, tmaptools, DT, xfun, tmap, leaflet)
+p_load(tidycensus, tidyverse,leaflet, geojsonio, sf, tmap, tmaptools, DT, xfun, tmap, leaflet, xfun)
 
 socio18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/socio.csv') %>% select(-X1) %>%
   mutate(employment_total=case_when(emp_total < 100 ~ "low",
@@ -40,15 +39,21 @@ overnight_rates18[is.na(overnight_rates18)] = 0
 taz<-st_read("H:/model/model_update_2019/data_inputs/model_taz","taz_sde") %>%
       st_transform(crs=4326)
 
-roads<-st_read("H:/model/model_update_2019/data_inputs/street_network","model_network") %>%
-      st_transform(crs=4326)
+roads<-st_read("H:/model/model_update_2019/data_inputs/street_network","roads2") %>%
+  st_set_crs(st_crs(4326))
 ```
 
-### {.tabset .tabset-fade .tabset-pills}
+# Inputs
 
-#### TAZs 
+***
 
-```{r, message=F, warning=F, echo=F, out.width='130%', out.height='500px'}
+## TAZs
+
+```{r echo=FALSE}
+xfun::embed_file('figs/taz_sde.zip', text="Download TAZs")
+```
+
+```{r, message=F, warning=F, echo=F, out.width='100%', out.height='500px'}
 inputs <- taz %>%
   left_join(socio18, by=c("TAZ"="taz")) %>%
   left_join(school18, by=c("TAZ"="taz")) %>%
@@ -98,9 +103,83 @@ leaflet(inputs) %>%
   setView(-120.020493,39.041803,zoom=10)
 ```
 
-#### Roadway
+***
 
-```{r, message=F, warning=F, echo=F, out.width='130%', out.height='500px'}
+## Socio-Econ
+
+```{r, message=F, warning=F,  echo=F, out.width='300px'}
+datatable(socio18  %>% arrange(taz) %>%
+            mutate(census_occ_rate=round(census_occ_rate,2),
+                   total_occ_units=round(total_occ_units,0),
+                   persons_per_occ_unit=round(persons_per_occ_unit,2)) %>% 
+            select(-c(emp_srvc,emp_rec,emp_retail,emp_gaming,emp_other,emp_total)), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 15, dom = 'Bfrtip',buttons = c('csv','pdf'), scrollX=TRUE,
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+***
+
+## School Enrollment
+
+```{r, message=F, warning=F, echo=F, out.width='100%'}
+datatable(school18 %>% arrange(taz), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 15, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+***
+
+## Lodging Units
+
+```{r, message=F, warning=F, echo=F, out.width='100%'}
+datatable(overnight_zonal18 %>% arrange(taz) %>%
+            mutate(percentHouseSeasonal=round(percentHouseSeasonal,2)), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 15, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+***
+
+## Lodging Occupancy
+
+```{r, message=F, warning=F, echo=F, out.width='100%'}
+datatable(overnight_rates18 %>% arrange(taz) %>%
+            mutate(hotelmotel=round(hotelmotel,2),
+                   resort=round(resort,2),
+                   casino=round(casino,2),
+                   campground=round(campground,2),
+                    house=round(house,2),
+                    seasonal=round(seasonal,2)), 
+          extensions = 'Buttons',
+rownames=F,options=list(pageLength = 15, dom = 'Bfrtip',buttons = c('csv','pdf'), 
+          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
+  class = 'cell-border stripe')
+
+```
+
+***
+
+# Input Methodology
+
+<object data="figs/TRPA_Model_Methodology.pdf" width="750px" height="750px">
+    <embed src="figs/TRPA_Model_Methodology.pdf">
+    </embed>
+</object>
+
+***
+
+# Street Network
+
+```{r, message=F, warning=F, echo=F, out.width='100%', out.height='500px'}
 #tm_shape(inputs) + 
  # tm_polygons( col="#A80902", alpha=0.3, border.col="white") +
   #tm_view(set.view=c(-120.020493,39.041803,10)) +
@@ -128,59 +207,4 @@ roads %>% filter(CENTROID != 1) %>% filter(AB_LANES < 6) %>% tm_shape() +
   #setView(-120.020493,39.041803,zoom=10)
 ```
 
-### {.tabset .tabset-fade .tabset-pills}
 
-#### Socio-Econ
-
-```{r, message=F, warning=F, echo=F}
-datatable(socio18  %>% arrange(taz) %>%
-            mutate(census_occ_rate=round(census_occ_rate,2),
-                   total_occ_units=round(total_occ_units,0),
-                   persons_per_occ_unit=round(persons_per_occ_unit,2)) %>% 
-            select(-c(emp_srvc,emp_rec,emp_retail,emp_gaming,emp_other,emp_total)), 
-          extensions = 'Buttons',
-rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
-          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
-  class = 'cell-border stripe')
-
-```
-
-#### School Enrollment
-
-```{r, message=F, warning=F, echo=F}
-datatable(school18 %>% arrange(taz), 
-          extensions = 'Buttons',
-rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
-          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
-  class = 'cell-border stripe')
-
-```
-
-#### Overnight Units
-
-```{r, message=F, warning=F, echo=F}
-datatable(overnight_zonal18 %>% arrange(taz) %>%
-            mutate(percentHouseSeasonal=round(percentHouseSeasonal,2)), 
-          extensions = 'Buttons',
-rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
-          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
-  class = 'cell-border stripe')
-
-```
-
-#### Overnight Occupancy
-
-```{r, message=F, warning=F, echo=F}
-datatable(overnight_rates18 %>% arrange(taz) %>%
-            mutate(hotelmotel=round(hotelmotel,2),
-                   resort=round(resort,2),
-                   casino=round(casino,2),
-                   campground=round(campground,2),
-                    house=round(house,2),
-                    seasonal=round(seasonal,2)), 
-          extensions = 'Buttons',
-rownames=F,options=list(pageLength = 25, dom = 'Bfrtip',buttons = c('csv','pdf'), 
-          columnDefs = list(list(className = 'dt-center', targets = 0:1))), 
-  class = 'cell-border stripe')
-
-```
