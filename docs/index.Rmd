@@ -17,6 +17,7 @@ The sections are:
   - [Calibration and Validation Summary](Calibration.html): Describes the model calibration results.
   - [Data Dictionary](DataDictionary.html): Data Dictionary for all the main model inputs and outputs.
   - [GISDK Reference](CodeReference.html): This page provides documentation on the functions used in Tahoe GISDK scripts.
-  - [Base Year 2018 Inputs](base_2018.html): This page displays the zonal inputs for the 2018 model base year
+  - [Base Year 2018 Inputs](base_2018.html): This page displays the zonal inputs for the 2018 model base year.
+  - [Model Day](model_day.html): Background information on the model time period.
   - [Folder Structure](FolderStructure.html): This page shows the folder structure used in the Tahoe model.
   
