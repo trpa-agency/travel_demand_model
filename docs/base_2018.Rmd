@@ -23,17 +23,21 @@ library(pacman)
 p_load(tidycensus, tidyverse,leaflet, geojsonio, sf, tmap, tmaptools, DT, xfun, tmap, leaflet, xfun)
 
 socio18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/socio.csv') %>% select(-X1) %>%
+  mutate(taz=taz+100) %>%
   mutate(employment_total=case_when(emp_total < 100 ~ "low",
                                           between(emp_total,100, 499) ~ "medium",
                                           between(emp_total, 500,999 ) ~ "high",
                                           emp_total >= 1000 ~ "very high"))
 socio18[is.na(socio18)] = 0
-school18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/school.csv')  %>% select(-X1)
+school18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/school.csv')  %>% select(-X1) %>%
+  mutate(taz=taz+100)
 school18[is.na(school18)] = 0
-overnight_zonal18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/overnight_zonal.csv')  %>% select(-X1) %>% rename(rec_attractiveness=beach) %>%
+overnight_zonal18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/overnight_zonal.csv') %>%
+  mutate(taz=taz+100)  %>% select(-X1) %>%
   mutate(percentHouseSeasonal=case_when(percentHouseSeasonal < 0 ~ 0, TRUE ~ as.numeric(percentHouseSeasonal)))
 overnight_zonal18[is.na(overnight_zonal18)] = 0
-overnight_rates18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/overnight_rates.csv')  %>% select(-X1)
+overnight_rates18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/overnight_rates.csv')%>%
+  mutate(taz=taz+100)  %>% select(-X1)
 overnight_rates18[is.na(overnight_rates18)] = 0
 
 taz<-st_read("H:/model/model_update_2019/data_inputs/model_taz","taz_sde") %>%
