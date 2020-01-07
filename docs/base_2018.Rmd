@@ -48,7 +48,7 @@ transit_network<-st_read("F:/GIS/GIS_DATA/Transportation/Transit/Spatial Files/A
 
 ```
 
-# Inputs
+# Input Data
 
 ***
 
@@ -175,10 +175,139 @@ rownames=F,options=list(pageLength = 15, dom = 'Bfrtip',buttons = c('csv','pdf')
 
 # Input Methodology
 
-<object data="figs/TRPA_Model_Methodology.pdf" width="750px" height="750px">
-    <embed src="figs/TRPA_Model_Methodology.pdf">
-    </embed>
-</object>
+***
+
+## Employment
+
+The base year employment data was sourced from official Quarterly Census of Employment and Wages (QCEW) reported data, which was purchased from the California Economic Development Department (EDD)[^1] and provided by the Nevada Department of Employment Training and Rehabilitation (DETR).[^2]
+For the EDD data, the average number of monthly employees at each business was aggregated for each TAZ-employment type category. The data was averaged for June, August, and September of 2018 to align with the model time period.
+
+The Nevada data from DETR provided totals for the Nevada portions of the Lake Tahoe Region, not number of employees at each business. Therefore, TRPA used these total figures, and modeled the TAZ-level and employment-type categories based on the distribution of businesses from other TRPA sources (e.g., accounting of commercial floor area, permit data), local jurisdiction data (e.g., business licensing, tax records, Secretary of State filings) and prior analyses (e.g., 2017 RTP distribution of employees from InfoGroup for the 2014 base year). The DETR data included average employment in Nevada’s Q4 2018 (April, May, June 2018) and Q1 2019 (July, August, September 2018) data, which generally aligns with the model time period.
+
+**Employment Totals:**
+
+* Nevada - 11,108
+* California - 17,512
+* Total - 28,620
+
+[^1]: California Economic Development Department, 2018 Quarterly Census of Employment Wages, 2019, Quarterly Employees Per Business, Staff Request
+[^2]: Nevada Department of Employment, Training, and Rehabilitation, 2018 Quarterly Census of Employment Wages, 2019, Total Employees, Staff Request
+
+***
+
+## School Enrollment
+
+Individual school enrollment was acquired from the California and Nevada departments of education for all public and private schools in the region.[^3][^4][^5][^6] The individual school enrollments were aggregated by TAZ and broken down by school type (elementary, middle, and high school and the two colleges). Enrollment was averaged for the spring and fall quarters of 2018 to align with the model time period.
+
+**Total Enrollment by Category:**
+
+* Elementary School - 3,119
+* Middle School - 1,613
+* High School - 2,045
+* College - 1,890
+* Total - 8,667
+
+[^3]: Nevada Department of Education, Enrollment for Public Schools, 17-18 School Year, http://www.doe.nv.gov/DataCenter/Enrollment/, 2019
+[^4]: Nevada Department of Education, Private School Directory and Status, http://www.doe.nv.gov/Private_Schools/, 2019
+[^5]: California Department of Education, 2017-2018 Enrollment for Charter and Non-Charter Schools, https://dq.cde.ca.gov/dataquest/dqcensus/EnrCharterLevels.aspx?cds=3166944&agglevel=district&year=2017-18, 2019
+[^6]: California Department of Education, Private School Directory 2017-2018, https://www.cde.ca.gov/ds/si/ps/, 2019
+
+***
+
+## Residential Units
+
+The total number of residential units was determined using parcel-level TRPA tracking data, enhanced by a variety of other datasets (TRPA and MOU Partner permit data, assessor’s records, LIDAR, Zillow). The number of occupied and unoccupied units were determined by applying occupancy rates from the US Census American Community Survey (ACS)[^7] to the total residential units. Within the ACS, occupied units are units that are occupied by people who make their primary residence in the region. 
+
+*occupied units* = *(total residential units)* X *(census occupancy rates)*
+
+*unoccupied units* = *(total residential units)* - *(occupied units)*
+
+**Residential Unit Totals:**
+
+*	Residential Units - 47,651
+*	Occupied Residential Units – 21,620	
+*	Unoccupied Residential Units – 26,031
+
+[^7]: United States Census, American Community Survey (ACS), 2012-2017 Five Year Estimate, 2019
+
+***
+
+## Residential Population
+
+The residential population was calculated by applying occupancy status, income, and household size statistics from the ACS to the TRPA residential unit dataset. The proportion of occupied units and number of persons per household were adjusted in accordance with ACS trends to ensure the total persons aligned with the most recent population ACS estimate for the region.[^8]
+
+*total residents* = *(occupied residential units)* X *(average household size)*
+
+**Residential Population Total:**
+
+*	Total Persons – 51,631
+
+[^8]: United States Census, American Community Survey (ACS), 2012-2017 Five Year Estimate, Total Population, https://monitoring.laketahoeinfo.org/socioecon, 2019
+
+***
+
+## Seasonal Units and STRs (Short-Term Rentals)
+
+The unoccupied residential units calculated above are then categorized as seasonal resident, STR, or other unoccupied by first using the ACS estimate of the unoccupied units that are labeled as Seasonal/Recreational/Occasional Units. The number of STRs was provided by each jurisdiction for the summer of 2018. The number of reported STRs was subtracted from the total number of the Seasonal/Recreational/Occasional Units to estimate the number of seasonal or other unoccupied units.
+
+*total seasonal units* = *(total unoccupied units)* - *(STRs + other unoccupied units)*
+
+Occupancy rates were determined by analyzing observed Short-Term Rental transient occupancy tax (TOT) reporting statistics from local jurisdictions.[^9][^10][^11][^12] No observed occupancy rate data was available for seasonable units, so it was assumed that the STR occupancy rate was the same as the seasonal rate. The occupancy rate data consisted of an average of monthly or quarterly rates from June thru September. The number of occupied STRs and seasonal units were determined by multiplying the total number of units of each by the occupancy rate.
+
+*STR occupancy rates* = *(rooms occupied)* / *(rooms available)*
+
+**Seasonal/STR Totals:**
+
+*	Unoccupied Residential Units - 26,031
+*	STRs - 6,005	
+*	Seasonal Units - 17,121
+*	Other Unoccupied Units - 2,905
+
+[^9]: Washoe County Monthly Hotel Statistics FY 18-19, 2019
+[^10]: Douglas County Monthly Room Tax Reports 18-19, 2019
+[^11]: Placer County Statistical Data Report, Department of Revenue Services, Staff Request 2019
+[^12]: City of South Lake Tahoe Transient Occupancy Tax Reports, https://www.cityofslt.us/588/TOT-Reports
+
+***
+
+## Overnight Lodging Units
+
+The location and number of visitor overnight lodging units is based upon data from TRPA sources (e.g., accounting of Tourist Accommodation Units, permit data), local jurisdiction data (e.g., county assessor data, TOT reports) and prior analyses (e.g., TRPA Annual Reports, 2017 RTP). Units are aggregated by TAZ and lodging unit category (casino, resort, hotel/motel, & campground). Casino units refer to overnight accommodations that are located on properties that have casinos. A resort is typically the primary provider of the guest experience and will generally have one signature amenity or attraction such as a wellness spa, golf course, mountain/skiing or beach access.[^13]
+
+The number of occupied overnight lodging units was determined by multiplying the total number of units by the reported occupancy rate. The occupancy rates were calculated using TOT reported rooms occupied divided by rooms available for the model time period. This data was collected at various levels of granularity depending on the jurisdiction. For campgrounds, occupancy rates were determined using an average of the occupancy reported by campground operators.
+
+*	Placer County - Occupancy per unit type for each of Placer County’s five TOT reporting areas in Tahoe, aggregated by TAZ[^14]
+*	City of South Lake Tahoe - Occupancy per unit type for all reporting businesses, aggregated by TAZ[^15]
+*	El Dorado County - Business level data was not available, so the rates for CSLT were applied to the El Dorado County TAZs that contained lodging units, aggregated by TAZ
+*	Douglas County - Occupancy per casino and non-casino units, aggregated by TAZ [^16]
+*	Washoe County - Occupancy for all units within the Tahoe portion of Washoe County, aggregated by TAZ[^17]
+
+*lodging occupancy rates* = *(rooms occupied)* / *(rooms available)*
+
+*occupied lodging units* = *(total lodging units)* X *(lodging unit occupancy rates)*
+
+**Lodging Unit Totals:**
+
+*	Total Lodging Units - 11,107
+*	Occupied Lodging Units - 6,765
+  +	Hotel/Motel - 2,132
+  +	Resort - 2,214
+  +	Casino - 2,419
+*	Campground Sites - 2,104
+
+[^13]: Brey, E. (2009). Resort definitions and classifications: A summary report to research participants. [PDF] University of Memphis: Center for Resort and Hospitality Business. Retrieved from http://caribbeanhotelassociation.com/source/Members/DataCenter/Research-UofMemphis.pdf
+[^14]: Placer County Statistical Data Report, Department of Revenue Services, Staff Request 2019
+[^15]: City of South Lake Tahoe Transient Occupancy Tax Reports, https://www.cityofslt.us/588/TOT-Reports
+[^16]: Douglas County Monthly Room Tax Reports 18-19, 2019
+[^17]: Washoe County Monthly Hotel Statistics FY 18-19, 2019
+
+***
+
+## Occupancy Rate Adjustment
+
+While the Tahoe model is designed to represent a typical summer weekday when school is in session (early/late summer), much of the occupancy input data is only available at a monthly or quarterly time frame.  In order to only represent the occupancy rates during the model day, the occupancy data were adjusted based upon observed 2018 traffic counts. Using the traffic count data, ratios were created that represent the relationship between monthly (or quarterly) counts to the model time period counts (early/late summer weekday). The average daily traffic counts for early/late summer weekdays (Monday-Thursday) are divided by the average daily counts for all days in the month or quarter. Because the average daily counts for all days of the monthly are typically higher than Monday through Thursday, the ratio factor decreases the observed occupancy. This adjustment methodology was applied to all occupancy rates (hotel/motel, STR, campground).
+
+*Adjustment Ratio* = *Model Day Average Count* / *All Monthly or Quarterly Day Count*
 
 ***
 
