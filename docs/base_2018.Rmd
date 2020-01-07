@@ -1,7 +1,10 @@
 ---
 title: "Tahoe Model 2018 Base Year - Inputs"
-output: html_document
-
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
 ---
 
 ```{css, echo=FALSE}
