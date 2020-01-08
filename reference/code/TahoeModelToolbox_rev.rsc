@@ -936,7 +936,7 @@ Dbox "configure"
 		stateArray[4] = 50                                                  // number of assignment iterations
 		stateArray[5] = 3                                                   // model iterations (feedback loop)
 		stateArray[6] = 1                                                   // index of scenario name in scenario list
-		stateArray[7] = 1000                                                // vm size
+		stateArray[7] = "1000m"                                             // vm size
 		
         tcLogxmlPath = path + "\\reference\\"
         logxmlPath = RunMacro("GenerifyPath",tcLogxmlPath)
@@ -2898,7 +2898,7 @@ Macro "RunJavaModelPart" (pathArray,vmSize,part)
         pathArray[8] + "common-base.jar;" + 
         pathArray[8] + "synpop.jar;" + 
         pathArray[8] + "tahoe.jar\"" 
-    javaVMArguments = " -Dlog4j.configuration=log4j_mine.xml -Xms" + vmSize + "m -Xmx" + vmSize + "m"
+    javaVMArguments = " -Dlog4j.configuration=log4j_mine.xml -Xms" + vmSize + " -Xmx" + vmSize
 	javaPath = pathArray[8] + "java\\jdk1.8.0_73\\bin\\java.exe"
     RunProgram("cmd /s /c \"start \"cmd\" /d" + RunMacro("GetBaseDrive",pathArray) + ":\\ /WAIT \"" + javaPath + "\"" + javaClassPath + javaVMArguments + " com.pb.tahoe.util.TahoeModelComponentRunner " + part + "\"",)
 EndMacro
