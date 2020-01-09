@@ -31,12 +31,12 @@ socio18<-read_csv('H:/model/model_update_2019/data_inputs/final_inputs_2020_RTP/
                                           between(emp_total, 500,999 ) ~ "high",
                                           emp_total >= 1000 ~ "very high"))
 #socio18[is.na(socio18)] = 0
-school18<-read_csv('H:/model/website/travel_demand_model/scenarios/scenario_base/zonal/SchoolEnrollment.csv') 
+school18<-read_csv('H:/model/website/model/travel_demand_model/scenarios/scenario_base/zonal/SchoolEnrollment.csv') 
 #school18[is.na(school18)] = 0
-overnight_zonal18<-read_csv('H:/model/website/travel_demand_model/scenarios/scenario_base/zonal/OvernightVisitorZonalData_Summer.csv')  %>%  rename(rec_attractiveness=beach) %>%
+overnight_zonal18<-read_csv('H:/model/website/model/travel_demand_model/scenarios/scenario_base/zonal//OvernightVisitorZonalData_Summer.csv')  %>%  rename(rec_attractiveness=beach) %>%
   mutate(percentHouseSeasonal=case_when(percentHouseSeasonal < 0 ~ 0, TRUE ~ as.numeric(percentHouseSeasonal)))
 overnight_zonal18[is.na(overnight_zonal18)] = 0
-overnight_rates18<-read_csv('H:/model/website/travel_demand_model/scenarios/scenario_base/zonal/VisitorOccupancyRates_Summer.csv')
+overnight_rates18<-read_csv('H:/model/website/model/travel_demand_model/scenarios/scenario_base/zonal/VisitorOccupancyRates_Summer.csv')
 #overnight_rates18[is.na(overnight_rates18)] = 0
 
 taz<-st_read("H:/model/model_update_2019/data_inputs/model_taz","taz_sde") %>%
