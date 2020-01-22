@@ -18,5 +18,6 @@ The sections are:
   - [Data Dictionary](DataDictionary.html): Data Dictionary for all the main model inputs and outputs.
   - [GISDK Reference](CodeReference.html): This page provides documentation on the functions used in Tahoe GISDK scripts.
   - [Base Year 2018 Inputs](base_2018.html): This page displays the zonal inputs for the 2018 model base year.
+  - [External Travel Summary](StreetlightData_Summary.html): This page displays the external travel methodology.
   - [Folder Structure](FolderStructure.html): This page shows the folder structure used in the Tahoe model.
   
