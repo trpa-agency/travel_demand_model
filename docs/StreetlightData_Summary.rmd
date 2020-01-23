@@ -284,7 +284,7 @@ summarize_data_2("short_distance_trip", "long_distance_trip")
 
 ```
 
-```{r,message=F, warning=F, echo = F, result = "asis"}
+```{r,message=F, warning=F, echo = F, result = "asis", include=F, echo=F, eval=F}
 #Show the summaries
 data_temp <- read_csv("H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/short_distance_external_VMT_long_distance_external_VMT_summary_2.csv")
 kable(data_temp, format.args = list(big.mark = ","), align = c(rep('c',ncol(data_temp))), caption = "VMT (Outside TRPA Region)") %>%
