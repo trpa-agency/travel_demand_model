@@ -159,7 +159,7 @@ public class DayVisitorThruDT {
         boolean error = true;
         for (int a=0; a < dcAlts.length; a++) {
             if (chosenAltName.equals(dcAlternativeNames[a])) {
-                vt.setDestTAZ(a+1);
+                vt.setDestTAZ(Integer.parseInt(chosenAltName));
                 vt.setDestWalkSegment(0);
                 error = false;
                 break;

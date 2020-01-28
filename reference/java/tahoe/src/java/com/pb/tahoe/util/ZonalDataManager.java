@@ -138,9 +138,9 @@ public class ZonalDataManager implements java.io.Serializable {
         String zonalMappingsFile = propertyMap.getString("taz.correspondence.file");
         AlphaToBeta zonalMap = new AlphaToBeta(new File(zonalMappingsFile), "taz", "county_code");
         numberOfZones = zonalMap.getNumAlphaZones();
-        numberOfExternalZones = 7;                //zones numbered 1-7.
+        numberOfExternalZones = 70;                //zones numbered 1-7.
         numberOfInternalZones = numberOfZones - numberOfExternalZones;
-        firstInternalZoneNumber = 9;
+        firstInternalZoneNumber = 109;
 
         maxTazNumber = zonalMap.getMaxAlphaZone();
 

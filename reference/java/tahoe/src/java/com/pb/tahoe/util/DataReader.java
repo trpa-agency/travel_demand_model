@@ -107,28 +107,42 @@ public class DataReader {
         TableDataSet[] pumsTables = new TableDataSet[2];  // there will always be a household (element [0])
                                                                                       //  and a person (element [1] ) table returned.
 
-        //Get what we need from the properties file
-        //pums properties
-        String pumsDataDictionaryFile = tahoeResources.getString("pums.data.dictionary.file");
-        String[] pumsHHVariablesToRead = ResourceUtil.getArray(tahoeResources,"pums.hh.variables.read");
-        String[] pumsPersonVariablesToRead = ResourceUtil.getArray(tahoeResources,"pums.person.variables.read");
+        String hhDataFile = tahoeResources.getString(stateLabel.toUpperCase() + ".pums.hh.file");
+        String psnDataFile = tahoeResources.getString(stateLabel.toUpperCase() + ".pums.psn.file");
 
-
-        //Now that I know what PUMAs I want to read in, I create my PUMS Data Dictionary and my PUMS
-        //Reader to read in the selected PUMAs.
-        DataDictionary dd = new DataDictionary(pumsDataDictionaryFile, "2000");
-
-        PUMSDataReader pumsReader = new PUMSDataReader();
-        String file = tahoeResources.getString("pums" + stateLabel.toUpperCase() + ".file");
-        pumsReader.readPumsAttributes(file,dd,pumsHHVariablesToRead,pumsPersonVariablesToRead,pumaSet);
-        pumsTables[0] = pumsReader.getHhTableDataSet();
-        pumsTables[1] = pumsReader.getPersonTableDataSet();
-
+        try {
+            CSVFileReader reader = new CSVFileReader();
+            pumsTables[0] = reader.readFile(new File(hhDataFile));
+        } catch (IOException e) {
+            logger.warn("Error reading Travel Party file " + hhDataFile);
+        }
+        try {
+            CSVFileReader reader = new CSVFileReader();
+            pumsTables[1] = reader.readFile(new File(psnDataFile));
+        } catch (IOException e) {
+            logger.warn("Error reading Travel Party file " + psnDataFile);
+        }        
+  		
+        		
+        
+//		CSVFileWriter fileWriter = new CSVFileWriter();
+//		try {
+//			fileWriter.writeFile(pumsTables[0],new File(stateLabel + "_HH_TABLE.csv"));
+//		} catch (IOException e) {
+//            throw new RuntimeException("Error writing file " +  stateLabel + "_HH_TABLE.csv", e);
+//        }
+//		CSVFileWriter fileWriter2 = new CSVFileWriter();
+//		try {
+//			fileWriter2.writeFile(pumsTables[1],new File(stateLabel + "_PER_TABLE.csv"));
+//		} catch (IOException e) {
+//            throw new RuntimeException("Error writing file " +  stateLabel + "_PER_TABLE.csv", e);
+//        }
+		
         if(logger.isDebugEnabled()){
             CSVFileWriter writer = new CSVFileWriter();
             try {
-                writer.writeFile(pumsTables[0], new File("/Users/christi/model_data/tahoe/debug/" + stateLabel + "_HH_TABLE.csv"),new GeneralDecimalFormat("0.#####E0",10000000,.01 ));
-                writer.writeFile(pumsTables[1], new File("/Users/christi/model_data/tahoe/debug/" + stateLabel + "_PER_TABLE.csv"),new GeneralDecimalFormat("0.#####E0",10000000,.01 ));
+                writer.writeFile(pumsTables[0], new File("/Temp/" + stateLabel + "_HH_TABLE.csv"),new GeneralDecimalFormat("0.#####E0",10000000,.01 ));
+                writer.writeFile(pumsTables[1], new File("/Temp/" + stateLabel + "_PER_TABLE.csv"),new GeneralDecimalFormat("0.#####E0",10000000,.01 ));
             } catch (IOException e) {
                 e.printStackTrace();
             }
