@@ -31,7 +31,7 @@ public class ModelCategories {
 
     public enum HHWorkers {ZERO, ONE, TWO, THREE_PLUS};
 
-    public enum HHIncome {LOW, MED, HIGH};   //** low = 0-$34,999, med = $35,000 - 74,999, high = $75,000+ *//
+    public enum HHIncome {LOW, MED, HIGH};   //** low = 0-$49,999, med = $50,000 - 99,999, high = $100,000+ *//
 
     public static ArrayList getSizeWorkerIncomeCategories (int size, int workers, int income){
         ArrayList < Enum> list = new ArrayList <Enum> ();
@@ -122,8 +122,8 @@ public class ModelCategories {
 
     public static HHIncome getIncomeCategory (int income) {
 
-        if(income < 35000) return HHIncome.LOW;     //income can be negative
-        if(income < 75000) return HHIncome.MED;
+        if(income < 50000) return HHIncome.LOW;     //income can be negative
+        if(income < 100000) return HHIncome.MED;
         return HHIncome.HIGH;   //will return HIGH for any value over $75,000.
     }
 
