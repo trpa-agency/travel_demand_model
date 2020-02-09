@@ -2095,11 +2095,7 @@ EndMacro
 
 Macro "GenerateMap" (pathArray,scenarioName)
     scenarioPath = pathArray[13] + "scenarios\\" + scenarioName + "\\"
-    originalMapPath = scenarioPath + "gis\\Maps\\Tahoe.map"
-    originalMap = OpenMap(originalMapPath,{{"Auto Project", "False"}})
-    scope = GetMapScope(originalMap)
-    CloseMap(originalMap)
-    //DeleteFile(originalMapPath)
+	scope = Scope(Coord(-119947195, 38946737), 54.08997181860831, 47.20617866332869, 0)
     newMap = CreateMap(scenarioName, {{"Scope", scope},{"Auto Project", "False"},{"Location", 100, 150}})
     newLayerPath = scenarioPath + "gis\\Layers\\"
     newTransitPath = scenarioPath + "gis\\Transit_Route_System\\"
