@@ -2804,6 +2804,7 @@ Macro "RunAssignment" (iterations, period, fsPath, dnPath, outPath, matPath)
     Opts.Global.[VDF Defaults] = {, , 0.15, 4, , , 0}
     Opts.Output.[Flow Table] = outPath + period + "_LinkFlow.bin"
     ret_value = RunMacro("TCB Run Procedure", 2, "Assignment", Opts)
+	if !ret_value then MessageBox("Assignment failed",)
 endMacro
 
 Macro "TransferData" (direction, period, fullStreetsField, assignmentResult, fullStreetsPath, resultsPath)
