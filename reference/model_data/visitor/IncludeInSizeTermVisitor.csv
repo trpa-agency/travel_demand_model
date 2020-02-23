@@ -1,5 +1,5 @@
-purpose,purpose_label,emp_total,emp_retail,emp_srvc,emp_game,emp_rec,emp_other,campground,beach
-1s,recreation - summer,0,0,0,0,2.8672,0,0,0
+purpose,purpose_label,emp_total,emp_retail,emp_srvc,emp_game,emp_rec,emp_other,campground,rec_attractiveness
+1s,recreation - summer,0,0,0,0,2.8672,0,0,1
 2s,gaming - summer,0,0,0,1,0,0,0,0
 3s,shopping - summer,0,1.5633,0,0,0,1,0,0
 4s,other - summer,1,0,0,0,0,0,0,0
