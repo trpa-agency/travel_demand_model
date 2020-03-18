@@ -11,21 +11,14 @@ Model installation
 
 3. Edit the file to update the model directory location. For example if the model is installed in the directory C:\TahoeModelFolder, then this file should have the following lines.
 
-C:\TahoeModelFolder\reference\code\emfac\gisdk\Utilities.rsc 
-
-C:\TahoeModelFolder\reference\code\emfac\gisdk\Macro.rsc 
-
-C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisUtilities.rsc 
-
-C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisNetwork.rsc 
-
-C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisIntrazonal.rsc 
-
-C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisTrips.rsc 
-
-C:\TahoeModelFolder\reference\code\emfac\gisdk\TahoeAQuaVis.rsc 
-
-C:\TahoeModelFolder\reference\code\TahoeModelToolbox_rev.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\Utilities.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\Macro.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisUtilities.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisNetwork.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisIntrazonal.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\AQuaVisTrips.rsc 
+    + C:\TahoeModelFolder\reference\code\emfac\gisdk\TahoeAQuaVis.rsc 
+    + C:\TahoeModelFolder\reference\code\TahoeModelToolbox_rev.rsc 
 
 4. Compile the .lst file updated above. To do this follow the following steps
 
@@ -36,14 +29,14 @@ C:\TahoeModelFolder\reference\code\TahoeModelToolbox_rev.rsc
 
 5. (Open transcad in admin mode) Setup the TransCAD UI - Tools > Setup > addins  - Click add button
 
-Type = Macro
-Description = TahoeModel
-Name = TahoeABModel
-UI = Browse to reference\code\ui\tahoemodelui.dbd
+ + Type = Macro
+ + Description = TahoeModel
+ + Name = TahoeABModel
+ + UI = Browse to reference\code\ui\tahoemodelui.dbd
 
-6. Gitignore files - PUMS data need to be copied if not already present
-
-7. Update the model shortcut icon
+6. Update the model shortcut icon
 
 * Right click the "Tahoe Activity Based Travel Demand Model" icon and click properties
 * Update the Target field with your local directory information
+
+7. Copy the scenario_base.zip to the reference folder 
