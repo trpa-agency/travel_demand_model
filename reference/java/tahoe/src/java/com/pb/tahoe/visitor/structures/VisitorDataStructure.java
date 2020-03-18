@@ -17,7 +17,7 @@ public class VisitorDataStructure {
     public static final String OVZONAL_CASINO_FIELD = StayType.CASINO.toString().toLowerCase();
     public static final String OVZONAL_CAMPGROUND_FIELD = StayType.CAMPGROUND.toString().toLowerCase();
     public static final String OVZONAL_SEASONALPERCENTAGE_FIELD = "percentHouseSeasonal";
-    public static final String OVZONAL_BEACH_FIELD = "beach";
+    public static final String OVZONAL_BEACH_FIELD = "rec_attractiveness";
 
     //These are the constants for identifying the column names of the day visitor zonal data file
     public static final String DVZONAL_TAZ_FIELD = "taz";

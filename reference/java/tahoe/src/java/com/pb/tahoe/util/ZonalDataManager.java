@@ -490,6 +490,8 @@ public class ZonalDataManager implements java.io.Serializable {
         int empotherFieldPosition = includes.getColumnPosition(ZonalData.OTHER_EMP);
         int schenrFieldPosition = includes.getColumnPosition("school_enrollment");
         int hhMoreThan50FieldPosition = includes.getColumnPosition("moreThan50HHs");
+        int recIndexFieldPosition = includes.getColumnPosition("rec_attractiveness");
+        
 
         
 
@@ -516,6 +518,8 @@ public class ZonalDataManager implements java.io.Serializable {
                     schenrFieldPosition);
             coeff[purp][8] = includes.getValueAt(i,
                     hhMoreThan50FieldPosition);
+            coeff[purp][9] = includes.getValueAt(i,
+            		recIndexFieldPosition);            
         }
 
 
@@ -612,6 +616,8 @@ public class ZonalDataManager implements java.io.Serializable {
                     zoneTable.getIndexedValueAt(taz, hsenrFieldPosition) + zoneTable.getIndexedValueAt(taz, colenrFieldPosition);
 
                 field[8] = (field[0] >= 50) ? field[0] : 0.0f;
+                
+                field[9] = visitorData.getIndexedValueAt(taz,beachVisitorFieldPosition);
 
                 //field 1 is total employment
                 zonalEmployment[taz] = field[1];
@@ -1019,18 +1025,18 @@ public class ZonalDataManager implements java.io.Serializable {
         }           
 
         ////////This is code to write out the shadow price values to a serialized array////////
-//        try {
-//            //write object to byte array
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            FileOutputStream outStream = new FileOutputStream(new  File(propertyMap.getString("shadow.price.start.values")));
-//            //ObjectOutputStream out = new ObjectOutputStream(bos);
-//            ObjectOutputStream out = new ObjectOutputStream(outStream);
-//            out.writeObject(shadowPrice);
-//            out.flush();
-//            out.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            //write object to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            FileOutputStream outStream = new FileOutputStream(new  File(propertyMap.getString("shadow.price.final.values")));
+            //ObjectOutputStream out = new ObjectOutputStream(bos);
+            ObjectOutputStream out = new ObjectOutputStream(outStream);
+            out.writeObject(shadowPrice);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         /////////////////////
 
         for (int taz : zoneTable.getColumnAsInt(TAZ)) {

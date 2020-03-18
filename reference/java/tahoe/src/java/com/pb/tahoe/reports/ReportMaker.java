@@ -323,6 +323,9 @@ public class ReportMaker {
 
         //sum over column by filter slices
         for (int i=0; i < baseTable.getRowCount(); i++) {
+        	if(i==72871) {
+        		logger.info(i);
+        	}        	
             String filterSlice = getFilterString(filters,i+1);
             sum.put(filterSlice,(Float) sum.get(filterSlice) + baseTable.getValueAt(i+1,column));
         }

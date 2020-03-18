@@ -523,7 +523,7 @@ public class TahoeModelComponentRunner {
         ovdtm.doWork(pam);
         ovdtm.printTimes();
         //cleanup
-        deleteFilesFromProperties("visitor.synpop.dtm.results.file");
+        //deleteFilesFromProperties("visitor.synpop.dtm.results.file");
         DTMModel.clearMCODHashMap();
     }
 
@@ -550,7 +550,7 @@ public class TahoeModelComponentRunner {
             tr.visitorReport();
         }
         //cleanup
-        deleteFilesFromProperties("overnight.pattern.results.file","day.pattern.results.file","thru.visitor.synpop.results.file","visitor.synpop.stops.results.file","visitor.synpop.full.results.file");
+        //deleteFilesFromProperties("overnight.pattern.results.file","day.pattern.results.file","thru.visitor.synpop.results.file","visitor.synpop.stops.results.file","visitor.synpop.full.results.file");
     }
 
     private void runTripSynthesize() {
