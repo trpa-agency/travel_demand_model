@@ -25,6 +25,8 @@ navbar:
           href: CodeReference.html  
         - text: "Base Year 2018 Zonal Inputs"
           href: base_2018.html  	
+        - text: "External Travel Summary"
+          href: StreetlightData_Summary.html  
         - text: "Folder Structure"
           href: FolderStructure.html           
   right:

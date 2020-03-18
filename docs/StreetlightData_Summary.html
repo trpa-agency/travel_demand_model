@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Streetlight Data Summary for Lake Tahoe Region</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 45px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h2 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h3 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h4 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h5 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.section h6 {
+  padding-top: 50px;
+  margin-top: -50px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Tahoe Model Documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Pages
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="UserGuide.html">UserGuide</a>
+    </li>
+    <li>
+      <a href="ResidentModel.html">Resident Model</a>
+    </li>
+    <li>
+      <a href="ExternalWorkers.html">External Workers Model</a>
+    </li>
+    <li>
+      <a href="VisitorModels.html">Visitor Models</a>
+    </li>
+    <li>
+      <a href="TrafficAssignment.html">Traffic Assignment</a>
+    </li>
+    <li>
+      <a href="Calibration.html">Calibration and Validation Summary</a>
+    </li>
+    <li>
+      <a href="DataDictionary.html">Data Dictionary</a>
+    </li>
+    <li>
+      <a href="CodeReference.html">GISDK Reference</a>
+    </li>
+    <li>
+      <a href="base_2018.html">Base Year 2018 Zonal Inputs</a>
+    </li>
+    <li>
+      <a href="StreetlightData_Summary.html">External Travel Summary</a>
+    </li>
+    <li>
+      <a href="FolderStructure.html">Folder Structure</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/trpa-agency/travel_demand_model">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Streetlight Data Summary for Lake Tahoe Region</h1>
+<h4 class="date">January 2020</h4>
+
+</div>
+
+
+<p>To better validate the Tahoe Model outputs, Streetlight Data for the Tahoe region was gathered for the following time periods, including:</p>
+<ul>
+<li>First 2 weeks in June 2018 (06/04 - 06/15)</li>
+<li>Last week in August 2018 (08/27 - 08/31)</li>
+<li>2nd and 3rd week in September 2018 (09/10 - 09/21)</li>
+</ul>
+<p>For this study, trips on typical weekdays (Monday - Thursday) are analyzed, and trips on Fridays or weekends are not included. The <a href="https://www.tidyverse.org/">tidyverse</a> package provides tools and functions used in this analysis. Please contact <a href="mailto:%20R.Sidharthan@wsp.com,%20mingyang.li@wsp.com">WSP USA</a> for questions regarding the analysis.</p>
+<div id="methodology" class="section level2">
+<h2>Methodology</h2>
+<div id="gates" class="section level3">
+<h3>Gates</h3>
+<p>The objective of this analysis is to summarize the VMT from I-E and E-I trips as observed in the Streetlight Dataset. “Gates” are the major entrance / exit point to the Tahoe Lake region, and there are a total of 7 gates considered in this study.</p>
+<ul>
+<li><a href="https://www.google.com/maps/place/Tahoe+Meadows+South+Trailhead/@39.1601312,-120.1347057,10.4z/data=!4m5!3m4!1s0x80996e50dc563fbb:0x3dedbf0be21ccb41!8m2!3d39.3016431!4d-119.9186693">Gate 1: Tahoe Meadows South Trailhead</a></li>
+<li><a href="https://www.google.com/maps/search/Spooner+Summit+Trailhead/@39.064722,-119.9944846,11.04z">Gate 2: Spooner Summit Trailhead</a></li>
+<li><a href="https://www.google.com/maps/place/Daggett+Pass/@39.0958601,-120.0750635,11.04z/data=!4m5!3m4!1s0x80999a06e00dbe3d:0x7af0ad85570fe69b!8m2!3d38.9765746!4d-119.888791">Gate 3: Daggett Pass</a></li>
+<li><a href="https://www.google.com/maps/place/Luther+Pass/@38.9902042,-120.1827023,10.16z/data=!4m5!3m4!1s0x8099ed3e3ced9ca7:0xb76eafccc32539f4!8m2!3d38.7868509!4d-119.9468476">Gate 4: Luther Pass</a></li>
+<li><a href="https://www.google.com/maps/place/Echo+Summit/@39.0275357,-120.4109167,10.26z/data=!4m5!3m4!1s0x80998cfa5eee2bb9:0x489132d7a3ea7f76!8m2!3d38.8129628!4d-120.0301833">Gate 5: Echo Summit</a></li>
+<li><a href="https://www.google.com/maps/place/Truckee+River+Bike+Trail,+California/@39.0505355,-120.4193488,10.02z/data=!4m5!3m4!1s0x809bd7eec370906d:0xb4f212616f01994!8m2!3d39.1773546!4d-120.1906817">Gate 6: Truckee River Bike Trail</a></li>
+<li><a href="https://www.google.com/maps/place/N+Shore+Blvd,+NORTHSTAR,+CA+96161/@39.1221507,-120.3170886,10.28z/data=!4m5!3m4!1s0x8099638234461bdd:0x6703827436e94fb6!8m2!3d39.2583015!4d-120.0667665">Gate 7: N Shore Blvd</a></li>
+</ul>
+</div>
+<div id="assumptions" class="section level3">
+<h3>Assumptions</h3>
+<p>Once the gates are defined, the study team make the following assumptions regarding the travel patterns.</p>
+<ul>
+<li><p>There are 8 internal zones for the Tahoe region. The block groups outside of the Tahoe region are external zones.</p></li>
+<li><p>All external zones can be grouped in 1 of 29 external districts.</p></li>
+<li><p>All I-E and E-I trips between a external district and a internal zone will use the same gate.</p></li>
+<li><p>The Streetlight data contains the Streetlight Volume for I-E and E-I trips</p></li>
+<li><p>The I-E and E-I trips contains 2 parts:</p>
+<ul>
+<li>distance between external zone and gate (external_distance), and</li>
+<li>distance between gate and internal zone (internal_distance), which should be the same for all the trips between the same gate and same internal zone</li>
+</ul></li>
+<li><p>external_distance will be used to further categorize the I-E and E-I trips:</p>
+<ul>
+<li>trips with external_distance &lt;= 60 miles are considered <strong>short-distance trips</strong></li>
+<li>trips with external_distance &gt; 60 miles are considered <strong>long-distance trips</strong></li>
+</ul></li>
+</ul>
+</div>
+<div id="vmt-and-trip-summaries" class="section level3">
+<h3>VMT and Trip Summaries</h3>
+<p>Based on the inputs and assumptions, VMT can be calculated by multiplying Streetlight Volume with external_distance and internal_distance. The results are then summarized by gates and by trip types (long- vs. short-distance trips). The summary tables will be used to validate the model outputs.</p>
+<ul>
+<li>VMT (Outside TRPA Region)</li>
+<li>VMT (Within TRPA Region)</li>
+<li>Total Number of Trips</li>
+</ul>
+</div>
+</div>
+<div id="streetlight-data-overview" class="section level2">
+<h2>Streetlight Data Overview</h2>
+<p>There are 3 Streetlight databases, a snapshot of the datasets are found below:</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<ol style="list-style-type: decimal">
+<li>Trip information dataset
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Origin Zone ID
+</th>
+<th style="text-align:center;">
+Origin Zone Name
+</th>
+<th style="text-align:center;">
+Origin Zone Is Pass-Through
+</th>
+<th style="text-align:center;">
+Origin Zone Direction (degrees)
+</th>
+<th style="text-align:center;">
+Origin Zone is Bi-Direction
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+no
+</td>
+<td style="text-align:center;">
+N/A
+</td>
+<td style="text-align:center;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+no
+</td>
+<td style="text-align:center;">
+N/A
+</td>
+<td style="text-align:center;">
+no
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+no
+</td>
+<td style="text-align:center;">
+N/A
+</td>
+<td style="text-align:center;">
+no
+</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<ol start="2" style="list-style-type: decimal">
+<li>Traveller information dataset
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Some College (percent)
+</th>
+<th style="text-align:center;">
+Bachelor’s Degree (percent)
+</th>
+<th style="text-align:center;">
+Graduate Degree (percent)
+</th>
+<th style="text-align:center;">
+White (percent)
+</th>
+<th style="text-align:center;">
+Black (percent)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+0.422
+</td>
+<td style="text-align:center;">
+0.226
+</td>
+<td style="text-align:center;">
+0.066
+</td>
+<td style="text-align:center;">
+0.461
+</td>
+<td style="text-align:center;">
+0.047
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+0.422
+</td>
+<td style="text-align:center;">
+0.226
+</td>
+<td style="text-align:center;">
+0.066
+</td>
+<td style="text-align:center;">
+0.461
+</td>
+<td style="text-align:center;">
+0.047
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+0.248
+</td>
+<td style="text-align:center;">
+0.446
+</td>
+<td style="text-align:center;">
+0.205
+</td>
+<td style="text-align:center;">
+0.852
+</td>
+<td style="text-align:center;">
+0.005
+</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<ol start="3" style="list-style-type: decimal">
+<li>Additional trip information dataset
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Avg All Trip Length (mi)
+</th>
+<th style="text-align:center;">
+Avg Trip Speed (mph)
+</th>
+<th style="text-align:center;">
+Avg All Trip Speed (mph)
+</th>
+<th style="text-align:center;">
+Avg All Trip Circuity
+</th>
+<th style="text-align:center;">
+Trip Duration 0-10 min (percent)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+218.5
+</td>
+<td style="text-align:center;">
+51
+</td>
+<td style="text-align:center;">
+51
+</td>
+<td style="text-align:center;">
+1.380
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+218.5
+</td>
+<td style="text-align:center;">
+51
+</td>
+<td style="text-align:center;">
+51
+</td>
+<td style="text-align:center;">
+1.380
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+197.6
+</td>
+<td style="text-align:center;">
+53
+</td>
+<td style="text-align:center;">
+53
+</td>
+<td style="text-align:center;">
+1.456
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+</div>
+<div id="data-processing-and-summary" class="section level2">
+<h2>Data Processing and Summary</h2>
+<p>There are 5 major steps during this phase, including:</p>
+<ol style="list-style-type: decimal">
+<li>Import Streetlight data</li>
+</ol>
+<pre class="r"><code># import data from local folder, and select the rows that are not all-day redcords and are on typical weekdays 
+dataset_1 &lt;- read_csv(&#39;H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/95945_Tahoe_OD_Analysis_2020_01_02_odg_all.csv&#39;,guess_max=10000000) %&gt;% 
+    data.frame() %&gt;% as_tibble() %&gt;%
+    filter(Day.Part!=&#39;0: All Day (12am-12am)&#39;) %&gt;% 
+    filter(Day.Type==&#39;1: Weekday (M-Th)&#39;) 
+
+dataset_2 &lt;- read_csv(&#39;H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/95945_Tahoe_OD_Analysis_2020_01_02_odg_traveler_all.csv&#39;,guess_max=10000000)%&gt;%
+    data.frame() %&gt;% as_tibble() %&gt;% 
+    filter(Day.Part!=&#39;0: All Day (12am-12am)&#39;) %&gt;% 
+    filter(Day.Type==&#39;1: Weekday (M-Th)&#39;) 
+
+dataset_3 &lt;- read_csv(&#39;H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/95945_Tahoe_OD_Analysis_2020_01_02_odg_trip_all.csv&#39;,guess_max=10000000) %&gt;%
+    data.frame() %&gt;% as_tibble() %&gt;% 
+    filter(Day.Part!=&#39;0: All Day (12am-12am)&#39;) %&gt;% 
+    filter(Day.Type==&#39;1: Weekday (M-Th)&#39;) </code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Trim the Streetlight data and combine the data for further analysis</li>
+</ol>
+<pre class="r"><code># trim the undesired attributes in the data
+dataset_3 &lt;- dataset_3 %&gt;% 
+    select(Origin.Zone.Name, Destination.Zone.Name, Day.Part,Avg.All.Trip.Length..mi.,Avg.Trip.Length..mi.)
+dataset_2 &lt;- dataset_2 %&gt;%
+    select(Day.Part,Origin.Zone.Name,Destination.Zone.Name,Purpose.HBW..percent.,Purpose.HBO..percent.,
+           Purpose.NHB..percent.)
+
+# combine the Streetlight data, calculate the home-based work(HBW), home-based other(HBO), and non-home-based(NHB) trips, and trim attributes that are not needed
+data_v1 &lt;- dataset_1 %&gt;% 
+    left_join(dataset_2) %&gt;% 
+    left_join(dataset_3) %&gt;% 
+    mutate(Purpose.HBW..percent.=as.numeric(Purpose.HBW..percent.),
+           Purpose.HBO..percent.=as.numeric(Purpose.HBO..percent.),
+           Purpose.NHB..percent.=as.numeric(Purpose.NHB..percent.)) %&gt;% 
+    replace_na(list(Purpose.HBW..percent.=0,Purpose.HBO..percent.=0,Purpose.NHB..percent.=0)) %&gt;% 
+    mutate(HBW_vol = Average.Daily.O.D.Traffic..StL.Volume.*Purpose.HBW..percent.,
+           HBO_vol = Average.Daily.O.D.Traffic..StL.Volume.*Purpose.HBO..percent.,
+           NHB_vol = Average.Daily.O.D.Traffic..StL.Volume.*Purpose.NHB..percent.,
+           Tot_vol = Average.Daily.O.D.Traffic..StL.Volume.) %&gt;% 
+    select(-Type.of.Travel,-Day.Type,
+           -Origin.Zone.Is.Pass.Through,-Origin.Zone.Direction..degrees.,-Origin.Zone.is.Bi.Direction,
+           -Destination.Zone.Is.Pass.Through,-Destination.Zone.Direction..degrees.,-Destination.Zone.is.Bi.Direction,
+           -Avg.Trip.Duration..sec.,-Origin.Zone.ID,-Destination.Zone.ID,
+           -Average.Daily.Origin.Zone.Traffic..StL.Volume.,-Average.Daily.Destination.Zone.Traffic..StL.Volume.,
+           -Purpose.HBW..percent.,-Purpose.HBO..percent.,-Purpose.NHB..percent.,
+           -Average.Daily.O.D.Traffic..StL.Volume.)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Import 3 additional input files with gate and external district information.</li>
+</ol>
+<pre class="r"><code># define the relationship between the block groups and the 29 external districts
+CA_NV_tract_to_district &lt;- read_csv(&#39;H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/CA_NV_Tract_To_District.csv&#39;)
+kable(CA_NV_tract_to_district[1:3,], align = c(rep(&#39;c&#39;,ncol(CA_NV_tract_to_district))), caption = &quot;External districts information&quot;) %&gt;%
+    kable_styling()
+
+# define which gate to use for E-I and I-E trips. Gates are determined based on Gogole Map routing information. Assumed departure time on Tuesday, 7:30 AM 
+district_to_gate_relationship &lt;- read_csv(&#39;H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/District_to_Gate.csv&#39;) %&gt;%
+    gather(Destination, Gate, &quot;06_0_Chico&quot;:&quot;Grand Total&quot;) %&gt;%
+    filter(!is.na(Gate)) %&gt;%
+    rename(&quot;Origin&quot; = &quot;Row Labels&quot;)
+kable(district_to_gate_relationship[1:3,], align = c(rep(&#39;c&#39;,ncol(district_to_gate_relationship))), caption = &quot;Gate information&quot;) %&gt;%
+    kable_styling()
+
+# define distance between gate and internal zones. Distance measured from gate location to the population centroid of the internal zones
+gate_to_internal_distance &lt;- read_csv(&#39;H:/model/model_update_2019/streetlight/95945_Tahoe_OD_Analysis_2020_01_02/Gate_to_Internal.csv&#39;) %&gt;%
+    gather(Internal, Distance, &quot;11&quot;:&quot;18&quot;)
+kable(gate_to_internal_distance[1:3,], align = c(rep(&#39;c&#39;,ncol(gate_to_internal_distance))), caption = &quot;Gate to internal zone distance&quot;) %&gt;%
+    kable_styling()</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Analyze the combined dataset to further evaluate the O-D trip patterns by incorporating the inputs from Step 3.</li>
+</ol>
+<pre class="r"><code># add the state, county, and tract information, and retain only I-E and E-I trips
+data_v2 &lt;- data_v1 %&gt;% 
+    mutate(orig_state=ifelse(Origin.Zone.Source!=&#39;Input&#39;,substr(Origin.Zone.Name,2,3),&#39;Input&#39;),
+           orig_county=ifelse(Origin.Zone.Source!=&#39;Input&#39;,substr(Origin.Zone.Name,4,6),&#39;Input&#39;),
+           orig_tract=ifelse(Origin.Zone.Source!=&#39;Input&#39;,substr(Origin.Zone.Name,7,12),Origin.Zone.Name),
+           dest_state=ifelse(Destination.Zone.Source!=&#39;Input&#39;,substr(Destination.Zone.Name,2,3),&#39;Input&#39;),
+           dest_county=ifelse(Destination.Zone.Source!=&#39;Input&#39;,substr(Destination.Zone.Name,4,6),&#39;Input&#39;),
+           dest_tract=ifelse(Destination.Zone.Source!=&#39;Input&#39;,substr(Destination.Zone.Name,7,12),Destination.Zone.Name)) %&gt;%
+    left_join(CA_NV_tract_to_district %&gt;%
+                  rename(orig_district=groupname),by=c(&#39;orig_state&#39;=&#39;STATEFP&#39;,&#39;orig_county&#39;=&#39;COUNTYFP&#39;,
+                                                      &#39;orig_tract&#39;=&#39;TRACTCE&#39;)) %&gt;% 
+    left_join(CA_NV_tract_to_district %&gt;%
+                  rename(dest_district=groupname),by=c(&#39;dest_state&#39;=&#39;STATEFP&#39;,&#39;dest_county&#39;=&#39;COUNTYFP&#39;,
+                                                      &#39;dest_tract&#39;=&#39;TRACTCE&#39;)) %&gt;% 
+    mutate(orig_district=ifelse(Origin.Zone.Source==&#39;Input&#39;, Origin.Zone.Name, orig_district)) %&gt;% 
+    mutate(dest_district=ifelse(Destination.Zone.Source==&#39;Input&#39;, Destination.Zone.Name, dest_district)) %&gt;% 
+    filter(!(is.na(orig_district)|is.na(dest_district)))
+
+# calculate the statistics of the trip length, trip volumes, by oirigin and destination.
+data_v3 &lt;- data_v2 %&gt;% 
+    mutate(Avg.All.Trip.Length..mi.=as.numeric(Avg.All.Trip.Length..mi.),
+           Avg.Trip.Length..mi.=as.numeric(Avg.Trip.Length..mi.),
+           ) %&gt;% 
+    mutate(Avg.Trip.Length..mi.=ifelse(is.na(Avg.Trip.Length..mi.),0,Avg.Trip.Length..mi.)) %&gt;% 
+    group_by(Origin.Zone.Name,Destination.Zone.Name) %&gt;% 
+    summarize( orig_state=first(orig_state),
+               orig_county=first(orig_county),
+               orig_tract=first(orig_tract),
+               dest_state=first(dest_state),
+               dest_county=first(dest_county),
+               dest_tract=first(dest_tract),
+               orig_district=first(orig_district),
+               dest_district=first(dest_district),
+               mean_distance = weighted.mean(Avg.All.Trip.Length..mi.,Tot_vol),
+               HBW_vol=sum(HBW_vol),
+               HBO_vol=sum(HBO_vol),
+               NHB_vol=sum(NHB_vol),
+               Tot_vol=sum(Tot_vol),
+               ) %&gt;%
+    ungroup() %&gt;%
+    filter(!is.na(mean_distance))
+
+# set the threshold for long-distance and short-distance trips
+long_distance_threshold = 60
+
+# define the internal and external zones for the I-E and E-I trips, and categorize the trips based on the average external_distance
+# update the internal and external distances if the calculated external distance is negative
+data_v4 &lt;- data_v3 %&gt;%
+    left_join(district_to_gate_relationship, by=c(&#39;orig_district&#39;=&#39;Origin&#39;,&#39;dest_district&#39;=&#39;Destination&#39;)) %&gt;%
+    filter(!is.na(Gate)) %&gt;% # Remove internal-internal trips
+    rename(gate = Gate) %&gt;%
+    mutate(internal_zone = ifelse(orig_district %in% c(&#39;11&#39;,&#39;12&#39;,&#39;13&#39;,&#39;14&#39;,&#39;15&#39;,&#39;16&#39;,&#39;17&#39;,&#39;18&#39;),
+                                 orig_district, dest_district),
+           external_zone = ifelse(Origin.Zone.Name %in% c(&#39;11&#39;,&#39;12&#39;,&#39;13&#39;,&#39;14&#39;,&#39;15&#39;,&#39;16&#39;,&#39;17&#39;,&#39;18&#39;),
+                                  Destination.Zone.Name, Origin.Zone.Name)) %&gt;%
+    left_join(gate_to_internal_distance, by=c(&#39;gate&#39;=&#39;gate&#39;,&#39;internal_zone&#39;=&#39;Internal&#39;)) %&gt;%
+    rename(internal_distance = Distance) %&gt;%
+    mutate(external_distance_to_gate = mean_distance - internal_distance,
+           flag = ifelse(external_distance_to_gate &lt; 0, 1, 0), 
+           long_distance = ifelse(external_distance_to_gate &gt; long_distance_threshold, 1, 0)) %&gt;%
+    mutate(external_distance_to_gate = ifelse(flag == 1, 0, external_distance_to_gate),
+           internal_distance = ifelse(flag == 1, mean_distance, internal_distance))</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Summarize the VMT and trips by gates and trip types</li>
+</ol>
+<pre class="r"><code># compute desired attributes
+data_v5 &lt;- data_v4 %&gt;%
+    group_by(internal_zone, gate) %&gt;%
+    summarize(total_trip = sum(Tot_vol),
+              external_VMT = sum(Tot_vol*external_distance_to_gate),
+              internal_VMT = sum(Tot_vol*internal_distance),
+              long_distance_external_VMT = sum(ifelse(long_distance == 1, Tot_vol*external_distance_to_gate, 0)),
+              short_distance_external_VMT = sum(ifelse(long_distance == 1, 0, Tot_vol*external_distance_to_gate)),
+              long_distance_internal_VMT = sum(ifelse(long_distance == 1, Tot_vol*internal_distance, 0)),
+              short_distance_internal_VMT = sum(ifelse(long_distance == 1, 0, Tot_vol*internal_distance)),
+              long_distance_trip = sum(ifelse(long_distance == 1, Tot_vol, 0)),
+              short_distance_trip = sum(ifelse(long_distance == 1, 0, Tot_vol)))
+    
+# define a function to output the data by gates and internal zones
+summarize_data_1 &lt;- function(sum_attribute){
+    data_temp &lt;- data_v5 %&gt;% 
+        select(internal_zone, gate, sum_attribute) %&gt;%
+        spread(internal_zone, sum_attribute) %&gt;%
+        replace_na(list(&quot;11&quot;=0,&quot;12&quot;=0,&quot;13&quot;=0,&quot;14&quot;=0,&quot;15&quot;=0,&quot;16&quot;=0,&quot;17&quot;=0,&quot;18&quot;=0)) %&gt;%
+        rename(&quot;Gate / Internal zones&quot; = &quot;gate&quot;)
+    write_csv(data_temp, paste0(sum_attribute,&quot;_summary_1.csv&quot;))
+}
+
+# call the function
+summarize_data_1(&quot;external_VMT&quot;)
+summarize_data_1(&quot;internal_VMT&quot;)
+summarize_data_1(&quot;long_distance_external_VMT&quot;)
+summarize_data_1(&quot;short_distance_external_VMT&quot;)
+summarize_data_1(&quot;long_distance_internal_VMT&quot;)
+summarize_data_1(&quot;short_distance_internal_VMT&quot;)
+summarize_data_1(&quot;total_trip&quot;)
+summarize_data_1(&quot;long_distance_trip&quot;)
+summarize_data_1(&quot;short_distance_trip&quot;)
+
+# group desired summaries by gates
+data_v6 &lt;- data_v5 %&gt;%
+    group_by(gate) %&gt;%
+    summarize(short_distance_external_VMT = sum(short_distance_external_VMT) %&gt;% round(),
+              long_distance_external_VMT = sum(long_distance_external_VMT) %&gt;% round(),
+              short_distance_internal_VMT = sum(short_distance_internal_VMT) %&gt;% round(),
+              long_distance_internal_VMT = sum(long_distance_internal_VMT) %&gt;% round(),
+              short_distance_trip = sum(short_distance_trip) %&gt;% round(),
+              long_distance_trip = sum(long_distance_trip) %&gt;% round())
+    
+# define a function to output the srummaries by gates
+summarize_data_2 &lt;- function(attribute_1, attribute_2){
+    data_temp &lt;- data_v6 %&gt;% 
+        select(gate, attribute_1, attribute_2) %&gt;%
+        rename(&quot;Gate&quot; = &quot;gate&quot;,
+               &quot;Short-Distance Trips&quot; = paste0(attribute_1),
+               &quot;Long-Distance Trips&quot; = paste0(attribute_2))
+    write_csv(data_temp, paste0(attribute_1, &quot;_&quot;, attribute_2, &quot;_summary_2.csv&quot;))
+}
+
+
+# call the function
+summarize_data_2(&quot;short_distance_external_VMT&quot;, &quot;long_distance_external_VMT&quot;)
+summarize_data_2(&quot;short_distance_internal_VMT&quot;, &quot;long_distance_internal_VMT&quot;)
+summarize_data_2(&quot;short_distance_trip&quot;, &quot;long_distance_trip&quot;)</code></pre>
+</div>
+
+<br>
+<br>
+<br>
+<hr>
+<p><a href="http://wsp-sag.github.io/">Systems Analysis Group</a>,
+  WSP USA 2018</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
