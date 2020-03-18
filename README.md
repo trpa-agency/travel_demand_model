@@ -22,21 +22,21 @@ Model installation
 
 4. Compile the .lst file updated above. To do this follow the following steps
 
-* Click on Tools > GISDK Developer's Kit
-* In the GISDK toolkit click "Compile to UI" button
-* Navigate to reference\code folder and select the .lst file updated in step 3.
-* Save As window will open up. Navigate to reference\code\ui and save as tahoemodelui.dbd
+    + Click on Tools > GISDK Developer's Kit
+    + In the GISDK toolkit click "Compile to UI" button
+    + Navigate to reference\code folder and select the .lst file updated in step 3.
+    + Save As window will open up. Navigate to reference\code\ui and save as tahoemodelui.dbd
 
 5. (Open transcad in admin mode) Setup the TransCAD UI - Tools > Setup > addins  - Click add button
 
- + Type = Macro
- + Description = TahoeModel
- + Name = TahoeABModel
- + UI = Browse to reference\code\ui\tahoemodelui.dbd
+    + Type = Macro
+    + Description = TahoeModel
+    + Name = TahoeABModel
+    + UI = Browse to reference\code\ui\tahoemodelui.dbd
 
 6. Update the model shortcut icon
 
-* Right click the "Tahoe Activity Based Travel Demand Model" icon and click properties
-* Update the Target field with your local directory information
+    + Right click the "Tahoe Activity Based Travel Demand Model" icon and click properties
+    + Update the Target field with your local directory information
 
 7. Copy the scenario_base.zip to the reference folder 
