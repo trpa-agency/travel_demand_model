@@ -1,0 +1,144 @@
+---
+title: "Dynamic Validation: Event Center"
+output: 
+  html_document
+---
+
+
+```{r include=FALSE,messages=F}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(rgdal)
+library(sf)
+library(rgeos)
+library(htmltools)
+library(htmlwidgets)
+library(leaflet)
+library(DT)
+
+convAttrToChar <- function(spdf){
+    spdf@data <- spdf@data %>% mutate_if(is.factor,as.character)
+    return(spdf)
+}
+
+mpal2 <- colorNumeric(c('#969696','#0570b0'), domain = 1:2) # For coding centroid connectors vs. other links
+
+```
+
+
+
+```{r include=F,messages=F}
+# Base Year Model
+scen <- '40_BY'
+trips_BY <- read_csv(paste0('Runs/',scen,'/outputs_summer/trip_file.csv'))
+trips_BY_302 <- trips_BY %>% filter(startTaz==302|endTaz==302)
+FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
+streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+nodesLayr <- st_read(paste0('Runs/',scen,'/post/Nodes_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+nodesLayr@data$TAZ[is.na(nodesLayr@data$TAZ)] <- 0
+taz302 <- nodesLayr[nodesLayr$TAZ==302,]
+
+streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+
+streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
+                                'Facility Type: ',AB_FC,'<br>',
+                                'Speed =',AB_SPEED,'<br>',
+                                'Model Volume: ',DAILYVOLUME,'<br>'))
+streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
+streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
+streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+
+mm_base <-leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldGray') %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldMap') %>% 
+  addPolylines(data=streetNet,group='All Links',color=~mpal2(ifelse(AB_FC==9,2,1)),weight = 2,
+               label=lapply(streetNet@data$tazLabel, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = F,offset = c(10,-20))) %>% 
+  addCircleMarkers(lng = streeCen$x, lat = streeCen$y,label = as.character((streeCen$DAILYVOLUME)),group='Model Volume',opacity=0,radius = 1,
+                   labelOptions = lapply(1:nrow(streeCen), function(x) {
+                     labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',direction = 'auto', offset=c(0,0)) 
+                   })) %>%   
+  addControl(HTML('<font size="5">Base Year</font>'), position = "bottomleft") %>% 
+  addCircleMarkers(data=taz302,opacity=0,group='TAZ 302') %>% 
+  addLayersControl(baseGroups = c('WorldGray','WorldMap'),overlayGroups = c('All Links','Model Volume','TAZ 302'),options = layersControlOptions(collapsed = F)  ) %>% 
+  hideGroup(c('Model Volume'))
+
+```
+
+## Event Center Impact
+
+In this dynamic validation test, the impact of a new event center is considered. The event center is assumed to be in TAZ 302, in Stateline, NV. Additionally, the following assumptions are made about this scenario
+
++ The event center has 300 regular jobs (employment)
+
++ The scenario is for a day on which the event center hosts an event for which up to 3000 people attend.
+
++ The people attending are both from within the region and outside the region. The occupancy rate of overnight visitors across all lodging types increases by 10% due to visitors attending the event.
+
++ For this scenario people are attracted to the event; therefore, the recreational attractiveness of the event center TAZ goes from zero to 15,000
+
+With these assumptions, the inputs were updated, and the model was run. The resulting highway loading is shown in the map below on the right. The base year highway loaded result is shown on the left for comparison.
+
+```{r include=F,messages=F}
+scen <- '42_EventCenter'
+trips <- read_csv(paste0('Runs/',scen,'/outputs_summer/trip_file.csv'))
+trips_302 <- trips %>% filter(startTaz==302|endTaz==302)
+FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
+streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+
+streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+
+streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
+                                'Facility Type: ',AB_FC,'<br>',
+                                'Speed =',AB_SPEED,'<br>',
+                                'Model Volume: ',DAILYVOLUME,'<br>'))
+streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
+streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
+streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+
+mm <-leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldGray') %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldMap') %>% 
+  addPolylines(data=streetNet,group='All Links',color=~mpal2(ifelse(AB_FC==9,2,1)),weight = 2,
+               label=lapply(streetNet@data$tazLabel, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = F,offset = c(10,-20))) %>% 
+  addCircleMarkers(lng = streeCen$x, lat = streeCen$y,label = as.character((streeCen$DAILYVOLUME)),group='Model Volume',opacity=0,radius = 1,
+                   labelOptions = lapply(1:nrow(streeCen), function(x) {
+                     labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',direction = 'auto', offset=c(0,0)) 
+                   })) %>%   
+  addControl(HTML('<font size="5">Event Center</font>'), position = "bottomleft") %>% 
+  addCircleMarkers(data=taz302,opacity=0,group='TAZ 302') %>% 
+  addLayersControl(baseGroups = c('WorldGray','WorldMap'),overlayGroups = c('All Links','Model Volume','TAZ 302'),options = layersControlOptions(collapsed = F)  ) %>% 
+  hideGroup(c('Model Volume'))
+
+```
+
+<div style= "float:left;position: relative; top: 10px;">
+```{r echo=FALSE, fig.height=4,fig.width=4.7}
+mm_base %>%  setView(lng = -119.937664 , lat = 38.962667, zoom = 15) %>% showGroup(c('Model Volume'))
+```
+</div>
+
+
+<div style= "float:right;position: relative; top: 10px;">
+```{r echo=FALSE, fig.height=4,fig.width=4.7}
+mm %>%  setView(lng = -119.937664 , lat = 38.962667, zoom = 15) %>% showGroup(c('Model Volume'))
+```
+</div>
+
+Key insights from this dynamic testing is summarized below:
+
++ The number of vehicle trips starting/ending in the event center TAZ increases from 11,740 trips to 16,634 trips, an increase of 42%.
+
++ The region wide VMT increases from 3,182,974 miles to 3,341,939 miles, an increase of 5%.
+
++ About 8349 trips (all modes included) are attracted to the event center. 3000 people attending events in the event center will generate at least 6000 trips. They can generate additional trips if they make multiple tours to the event center. So, the recreational attractiveness assumed for the event center is consistent with the event center attendance assumption.
+
++ US 50 highway south of Heavenly Village Way experiences additional 2300 vehicles per day due to the event center traffic. 
+
+
+
+

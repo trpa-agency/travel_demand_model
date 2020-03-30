@@ -1,0 +1,127 @@
+---
+title: "Dynamic Validation: Socioeconomic Data Changes"
+output: 
+  html_document
+---
+
+
+```{r include=FALSE,messages=F}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(rgdal)
+library(sf)
+library(rgeos)
+library(htmltools)
+library(htmlwidgets)
+library(leaflet)
+library(DT)
+
+convAttrToChar <- function(spdf){
+    spdf@data <- spdf@data %>% mutate_if(is.factor,as.character)
+    return(spdf)
+}
+
+mpal2 <- colorNumeric(c('#969696','#0570b0'), domain = 1:2) # For coding centroid connectors vs. other links
+
+```
+
+
+
+```{r include=F,messages=F}
+# Base Year Model
+scen <- '37_BY'
+FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
+streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+nodesLayr <- st_read(paste0('Runs/',scen,'/post/Nodes_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+nodesLayr@data$TAZ[is.na(nodesLayr@data$TAZ)] <- 0
+taz367 <- nodesLayr[nodesLayr$TAZ==367,]
+
+streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+
+streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
+                                'Facility Type: ',AB_FC,'<br>',
+                                'Speed =',AB_SPEED,'<br>',
+                                'Model Volume: ',DAILYVOLUME,'<br>'))
+streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
+streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
+streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+
+mm_base <-leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldGray') %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldMap') %>% 
+  addPolylines(data=streetNet,group='All Links',color=~mpal2(ifelse(AB_FC==9,2,1)),weight = 2,
+               label=lapply(streetNet@data$tazLabel, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = F,offset = c(10,-20))) %>% 
+  addCircleMarkers(lng = streeCen$x, lat = streeCen$y,label = as.character((streeCen$DAILYVOLUME)),group='Model Volume',opacity=0,radius = 1,
+                   labelOptions = lapply(1:nrow(streeCen), function(x) {
+                     labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',direction = 'auto', offset=c(0,0)) 
+                   })) %>%   
+  addControl(HTML('<font size="5">Base Year</font>'), position = "bottomleft") %>% 
+  addCircleMarkers(data=taz367,opacity=0,group='TAZ 367') %>% 
+  addLayersControl(baseGroups = c('WorldGray','WorldMap'),overlayGroups = c('All Links','Model Volume','TAZ 367'),options = layersControlOptions(collapsed = F)  ) %>% 
+  hideGroup(c('Model Volume'))
+
+```
+
+
+In dynamic validation, the model is put through a series of tests to evaluate how well the model responds to input changes. In transportation literature, dynamic validation is also known as sensitivity tests. The dynamic validation tests considered in this report include 1. changes in socio-economic data, 2. changes in recreation attractiveness of a major attraction, 3. transit level of service changes and 4. the creation of a new Event Center. Each of these dynamic validation tests, including all of the assumptions and results, will be described in detail. To keep the file size small, each of the tests will be presented in separate HTML pages.
+
+## Double Residents in a TAZ
+
+In this dynamic validation test, the total residential units are doubled in TAZ 367 - a TAZ near Incline Village. The TAZ centroid is marked using a blue circle in the maps below. Such a test could be used to model a policy where the impacts of a new development is being evaluated. In this test, occupancy rates after the addition of new residential units was assumed to be same as before. This results in doubling of occupied housing units also. The household income distribution of the new housing units was assumed to be the same as the original distribution in the TAZ. Persons per household was also assumed to be unchanged. This resulted in a doubling of the number of persons in the TAZ. For employment, this TAZ had 57 jobs originally and that was not changed for the test.
+
+The model was run with this change and the resulting highway loading is shown in the map below on the right. The base year highway loaded result is shown on the left for comparison.
+
+```{r include=F,messages=F}
+scen <- '39_Resid'
+FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
+streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+
+streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+
+streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
+                                'Facility Type: ',AB_FC,'<br>',
+                                'Speed =',AB_SPEED,'<br>',
+                                'Model Volume: ',DAILYVOLUME,'<br>'))
+streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
+streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
+streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+
+mm <-leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldGray') %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldMap') %>% 
+  addPolylines(data=streetNet,group='All Links',color=~mpal2(ifelse(AB_FC==9,2,1)),weight = 2,
+               label=lapply(streetNet@data$tazLabel, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = F,offset = c(10,-20))) %>% 
+  addCircleMarkers(lng = streeCen$x, lat = streeCen$y,label = as.character((streeCen$DAILYVOLUME)),group='Model Volume',opacity=0,radius = 1,
+                   labelOptions = lapply(1:nrow(streeCen), function(x) {
+                     labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',direction = 'auto', offset=c(0,0)) 
+                   })) %>%   
+  addControl(HTML('<font size="5">Residents Doubled</font>'), position = "bottomleft") %>% 
+  addCircleMarkers(data=taz367,opacity=0,group='TAZ 367') %>% 
+  addLayersControl(baseGroups = c('WorldGray','WorldMap'),overlayGroups = c('All Links','Model Volume','TAZ 367'),options = layersControlOptions(collapsed = F)  ) %>% 
+  hideGroup(c('Model Volume'))
+
+```
+
+<div style= "float:left;position: relative; top: 10px;">
+```{r echo=FALSE, fig.height=4,fig.width=4.7}
+mm_base %>%  setView(lng = -119.930610 , lat = 39.245958, zoom = 15) %>% showGroup(c('Model Volume'))
+```
+</div>
+
+
+<div style= "float:right;position: relative; top: 10px;">
+```{r echo=FALSE, fig.height=4,fig.width=4.7}
+mm %>%  setView(lng = -119.930610 , lat = 39.245958, zoom = 15) %>% showGroup(c('Model Volume'))
+```
+</div>
+
+Key insights from this dynamic testing are summarized below:
+
++ The number of vehicle trips starting/ending in the TAZ increased from 1864 to 3274, an increase of 75%.
++ The number of region-wide trips increased by 0.92% and VMT increased by 0.85%
++ Note that in this scenario the total residential units were increased while keeping the occupied percentage same meaning the number of unoccupied units also increased.  These unoccupied units were now available to be occupied by more seasonal visitors and house stay type visitors. Hence, the number of overnight visitors increased. The total number of overnight visitor parties in the region increased by 0.88%. Since day visitors and through visitors are pegged to the overnight visitors, there is a corresponding increase in those visitor types too.

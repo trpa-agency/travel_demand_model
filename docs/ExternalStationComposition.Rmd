@@ -1,0 +1,118 @@
+---
+title: "External Station Composition"
+output: 
+  html_document
+---
+
+This report documents the methodology used to determine the composition of external traffic volume at the seven external stations in the Lake Tahoe region (see map below). The different market segments in the Tahoe modeling framework are described first, and the methodology used to estimate them at the external stations is described later.
+
+The traffic at external gates is segmented into the following market segments
+
++ Work Trips - This includes trips from both the resident workers who work outside the region and external (non-resident) workers who work within the region. Every time one of these workers undertakes a work tour, they create two trips at the external gate, one out of the modeling area and one into the modeling area.
+
++ Through Trips - Through trips are all trips that pass through the modeling area without stopping within it. They enter the modeling area at one external station and exit through a different external station.
+
++ Resident Day Trips - All residents in the region can undertake non-work tours that start and end either at home or work locations, these are non-mandatory tours. As part of these non-mandatory tours, residents can undertake trips which take them outside the modeling area.
+
++ Overnight Visitor - Day Trips - Overnight visitors are visitors present in the model area at the *start* of the day and at the *end* of the modeled day. These visitors undertake tours which start and end at their lodging location. However, as part of these tours, they might undertake trips outside of the modeling area through one of the external stations. These external trips contribute to the external gate traffic.
+
++ Day visitors - This is the last segment that contributes to traffic at external stations. This segment is comprised mainly of visitors who are visiting the modeling area for a day trip, spending time visiting one or more locations with the region and then leaving the same day using the same external station. However, these are not the only kind of travelers included in this segment. This segment also includes the following types of travelers:
+
+    + Delivery trucks trips that come into (or go out of) the modeling area for delivering goods.
+
+    + Overnight visitors coming into the region on the day of their journey into the region
+    
+    + Overnight visitors leaving the region after a period of stay in the region.
+
+The sum of trips from all these market segments at each of the external stations will be equal to the total traffic at each of the external stations.
+
+```{r include=F,messages=F, echo=F}
+library(tidyverse)
+library(kableExtra)
+library(readxl)
+library(leaflet)
+library(sf)
+library(htmltools)
+
+gateTripTarget_StlLgt <- read_excel('../Calibration/Data/1_Targets_FromStreetlightData.xlsx','Aggregate_Calculation','A3:I11')
+gateTripTarget_StlLgt <- gateTripTarget_StlLgt %>% select(-EGate,-ExternalGate)
+gateTripTarget_StlLgt <- gateTripTarget_StlLgt %>% mutate_at(2:7,round,0)
+
+TahoeNodes <- st_read("../ExternalWorker/CTPP/Shape/Outputs/TahoeNodes/TahoeNodes.shp") %>%  as('Spatial')
+
+# TahoeNodesExt <- TahoeNodes[TahoeNodes$ID %in% c(1484,12,1114,2189,3844,2182,1797),]
+TahoeNodesExt <- TahoeNodes[TahoeNodes$ID %in% c(12066,83,12583,5900,5876,9374,6132),]
+
+
+TahoeNodesExt@data <- TahoeNodesExt@data %>% 
+    mutate(TAZ=case_when(ID==12066~1,
+                         ID==83~2,
+                         ID==12583~3,
+                         ID==5900~4,
+                         ID==5876~5,
+                         ID==9374~6,
+                         ID==6132~7,
+                         ),
+           nodeLabel = paste0('<i>Station: </i>',TAZ,'<br>'
+    ))
+
+wsIcons <- iconList(
+    Gate = makeIcon("../ExternalWorker/CTPP/Images/gate2.png", "../ExternalWorker/CTPP/Images/gate.png", 20, 20)
+)
+
+mm <- leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+    addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(
+        updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
+        updateWhenIdle = TRUE           # map won't load new tiles when panning
+    ),group='WorldGray') %>% 
+    addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(
+        updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
+        updateWhenIdle = TRUE           # map won't load new tiles when panning
+    ),group='WorldMap') %>% 
+    addProviderTiles(providers$Esri.WorldTopoMap,group='CartoDB-1') %>% 
+    addMarkers(data=TahoeNodesExt,group='Ext Stations',
+               label=lapply(paste0(TahoeNodesExt@data$nodeLabel), function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = T,offset = c(10,30)),
+               icon = wsIcons['Gate'])  %>% 
+    addLayersControl(
+        baseGroups = c('WorldGray','WorldMap'),
+        overlayGroups = c('Ext Stations'),
+        options = layersControlOptions(collapsed = T)  )
+```
+
+```{r include=T,messages=F, echo=F, out.height=400,out.width=900}
+mm
+
+```
+
+## External Station Market Segment Targets
+
+For each of the market segments described above, the following describes the methodology used to develop external station  traffic targets (totals are bi-directional) 
+
+
+### Work Trips
+
+The details of the creation of work tour targets, for both residents and external workers, crossing the external station has already been covered in an earlier report (ExternalWorkerCalibration.html). The only difference from the previous summary is that, for this task the interest is in work trips and not work tours. StreetLight Data directly provides work trips that were summarized to create the station level work trip summary below in Table 1.
+
+### Through Trips
+
+In the Lake Tahoe model, through trips are created by the Through Visitor model. Through visitors use an entry station and an exit station, hence, every through visitor creates two external station trips. The targets for through trips were created from StreetLight Data. An *O-D Analysis with Middle Filter* was run on the StreetLight platform to get this output. Inbound pass-through zones were created at each of the seven external stations, and were tagged as the origin zone. Outbound pass-through zones were created at each of the external stations and they were tagged as the destination zone. In the Streetlight platform a pass-through zone is used when you want to measure trips that are passing through a specific area, not just trips that are starting or stopping in that zone. The middle filter zones were created just inside of each of the seven external gates. Once the analysis is run, through trips between two gates, say Inbound_Gate_1 and Outbound_Gate_2, can be obtained by averaging the middle filter OD flows for the OMD (Origin-Middle-Destination) combinations; Inbound_Gate_1-Gate1-Outbound_Gate_2 and Inbound_Gate_1-Gate2-Inbound_Gate_2. This was summarized for all inbound outbound combination (each external gate pair) to get an external gate level total through trip contribution to the traffic. This total is shown in the column *Through Trips* in the Table 1.
+
+```{r include=T,messages=F, echo=F}
+kable(gateTripTarget_StlLgt,format.args = list(big.mark = ","),caption='Table 1: Trips Crossing the External Station',align=c('l',rep('r',6))) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+### Resident Day Trips
+
+StreetLight Data could not be used to get an estimate of the resident’s non-work external trips because they could not be distinguished from day visitor’s trips. Therefore, the share of resident trips that were external trips in the 2014 model (2016 RTP) was used to estimate the number of non-work external trips. In the 2014 scenario, 15.4% of all trips and 16.4% of non-work trips made by residents were external trips. For the current calibration target, the external non-work trip share was not set that high since it was found during resident work location calibration that the 2014 model overestimated the external *work* trips of residents. Based on this finding, it is likely that the 2014 model also overestimated *non-work* external trips; therefore the share for non-work external trips for residents was fixed at 13%. After a few initial rounds of calibration when the model was validating reasonably well, the number of non-work trips were computed for the residents. This came out to be 115,000 trips. Based on this value, the total external day trips target for the residents was estimated to be 14,950 trips. From this total, resident’s non-work day trips for each external station were obtained by distributing the total trips proportional to each station’s traffic share across all external stations (the *Total Trips* column in Table 1).
+
+### Overnight Visitor Day Trips
+
+Like residents making external trips for non-mandatory purposes, overnight visitors can also make external day trips during their daily travel. For estimating these trips StreetLight Data could not be used directly, hence  a method like the one described earlier was used. In the 2014 model, overnight visitors made 10.8% of their total daily trips to an external location (or from an external location). For the 2019 model, the target for share of trips that an external visitor makes to/from an external location was set at 10%. A minor reduction in the share was made for the same reason as the one for resident day trip - the over estimation of external trips in the 2014 model. With these assumptions, the total day trips made by overnight visitors to an external location was calculated at 4704 trips. The individual external station share was obtained by distributing these trips to the individual stations based on the station’s share of the *Total Trips* column (Table 1).
+
+### Day visitors and Total External Station Targets
+
+Day visitors are, as mentioned in the introduction of this report, all trips that are not part of the above mentioned four market segments. Therefore, the day visitors are calculated by first calculating the total external station trips  across all market segments and then subtracting out the other four market segment trips. The total trips at the external stations is obtained from the same StreetLight Data analysis as the one performed for the through trips. The external station total was obtained directly by summing up the total inbound gate trips and the outbound gate trips. This sum is shown in the column *Total Trips*. The *Day Visitor Trips* is derived for each external station as the difference between the *Total Trips* for that external station and the sum for that external gate for all columns from *Work Trips* to *Overnight Visitor Day Trips*. The column total for the *Day Visitor Trips* segment is obtained as the sum of the individual station level targets.
+
+
+

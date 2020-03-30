@@ -1,0 +1,310 @@
+---
+title: "External Worker Calibration"
+output: 
+  html_document
+---
+
+The external worker model models workers who live outside the Lake Tahoe model area and commute in and out of the region for work. Even though the resident workers outnumber the external workers significantly, the impact of the external workers on the overall travel in the basin is significant because (i) they use one of the seven external gates to commute in and out of the region, (ii) the large distances of the external workers commute contribute substantially to the overall VMT.
+
+In the Lake Tahoe model, the external workers fill the jobs for each TAZs that are not filled by resident workers (subject to an unfilled employment factor). Because of this coupling between resident workers and external workers, both models are calibrated simultaneously. The methodology and results for both will be presented in this report.
+
+## Calibration Targets
+
+The first step in the model calibration is to create calibration targets for both the resident workers and external workers. Resident workers are segmented into resident workers who work inside the Tahoe basin and those who work outside the Tahoe basin.
+
+The targets are created from the Census Transportation Planning Products (CTPP) data and from the Streetlight Data. The CTPP data provides worker flow (number of workers living in a  geographic zone and working in a geographic zone) data. The smallest geographic zone at which CTPP data is available is at the census tract level. The Streetlight data provides data that can be used to estimate the number of work trips between a geographic zone and another geographic zone. The smallest geographic zone at which Streetlight data is available is at the census block-group level. One point to note when comparing CTPP data and StreetLight Data is that while CTPP data provides worker flow, StreetLight Data provides work trips flow. For any particular origin-destination combination work trips can be different from worker flow because:
+
+ + workers stays at home or does only non-work tours (on the travel day)
+ 
+ + workers does multiple work tours on the same day
+
+Model outputs, which are work trips, are directly comparable to the Streetlight data and for that reason Streetlight data will be used as the main calibration target. However, the CTPP numbers provides another reference point and is therefore included in the report.
+
+
+
+```{r include=F,messages=F, echo=F}
+# ALL MAP RELATED RPOCESSING IN THE BELOW CHUNK
+library(sf)
+library(maptools)
+library(raster)
+library(leaflet)
+library(tidyverse)
+library(kableExtra)
+library(readxl)
+# library(plotly)
+caCounties <- c('057','061','017','003')
+nvCounties <- c('031','510','005','019','029')
+
+convAttrToChar <- function(spdf){
+    spdf@data <- spdf@data %>% mutate_if(is.factor,as.character)
+    return(spdf)
+}
+
+canv_county <- st_read(paste0("CTPP/Shape/Inputs/tl_2018_us_county/tl_2018_us_county.shp"))
+canv_county <- as(canv_county, 'Spatial') %>% convAttrToChar()
+
+canv_county@data$STATEFP <- as.character(canv_county@data$STATEFP) # Doing this step because the GEOID ID is read in as a factor and this converts correctly
+canv_county <- canv_county[canv_county@data$STATEFP %in% c('06','32'),]    # Filtering CA and NV
+
+canv_county <- canv_county[canv_county@data$STATEFP=='06' & canv_county@data$COUNTYFP %in% caCounties |
+                               canv_county@data$STATEFP=='32' & canv_county@data$COUNTYFP %in% nvCounties,]
+
+
+# Extracting the tracts that are of interest
+
+nv_tract <- st_read(paste0("CTPP/Shape/Inputs/tl_2018_32_tract/tl_2018_32_tract.shp"))
+nv_tract <- as(nv_tract, 'Spatial') %>% convAttrToChar()
+
+ca_tract <- st_read(paste0("CTPP/Shape/Inputs/tl_2018_06_tract/tl_2018_06_tract.shp"))
+ca_tract <- as(ca_tract, 'Spatial') %>% convAttrToChar()
+
+
+
+
+# Read the Tahoe area Tract information
+TractToDistrict <- read_excel('CTPP/TractToDistrict.xlsx',sheet='Sheet1',range = 'A1:B26') %>% 
+    mutate(STATEFP=substr(Tract,1,2),COUNTYFP=substr(Tract,4,6),TRACTCE=substr(Tract,8,13))
+
+lakeIDs <- c('06_017_990000','06_061_990000','32_031_990000','32_510_990000','32_005_990000')
+
+nv_tract <- nv_tract[paste0(nv_tract$STATEFP,'_',nv_tract$COUNTYFP,'_',nv_tract$TRACTCE) %in% 
+                         c(TractToDistrict$Tract,lakeIDs),  ]
+ca_tract <- ca_tract[paste0(ca_tract$STATEFP,'_',ca_tract$COUNTYFP,'_',ca_tract$TRACTCE) %in% 
+                         c(TractToDistrict$Tract,lakeIDs),  ]
+
+row.names(ca_tract) <- paste0(1:nrow(ca_tract))
+row.names(nv_tract) <- paste0((nrow(ca_tract)+1):(nrow(ca_tract)+nrow(nv_tract)))
+tahoe_tract <- spRbind(ca_tract,nv_tract)
+tahoe_tract@data$ID <- paste0(tahoe_tract$STATEFP,'_',tahoe_tract$COUNTYFP,'_',tahoe_tract$TRACTCE)
+tahoe_tract@data$dummy <- 1
+doPolyUnion <- function(inpPoly,unionVec){
+    retPoly <- unionSpatialPolygons(inpPoly, unionVec)
+    dummyData = data.frame(row.names(retPoly))
+    names(dummyData) <- 'ID'
+    row.names(dummyData) <- row.names(retPoly)
+    retPoly = SpatialPolygonsDataFrame(retPoly,dummyData)
+    retPoly@data$V1 <- (retPoly@data$V1)
+    return(retPoly)
+}
+tahoe_tract_outline <- doPolyUnion(tahoe_tract,tahoe_tract$dummy)
+# REmove the lake area
+tahoe_tract <- tahoe_tract[!(tahoe_tract$ID %in% lakeIDs),]
+tahoe_tract_outline <- spTransform(tahoe_tract_outline,CRS("+init=epsg:4269"))
+
+
+canv_county <- spTransform(canv_county,CRS("+init=epsg:4269"))
+canv_county_wTahoe <- canv_county - tahoe_tract_outline
+canv_county_wTahoe@data$ID <- paste0(canv_county_wTahoe$STATEFP,'_',canv_county_wTahoe$COUNTYFP)
+canv_county_wTahoe@data <- canv_county_wTahoe@data %>% dplyr::select(ID,STATEFP,COUNTYFP)
+
+tahoe_tract@data <- tahoe_tract@data %>% dplyr::select(ID,STATEFP,COUNTYFP)
+
+
+row.names(canv_county_wTahoe) <- paste0((nrow(tahoe_tract)+1):(nrow(tahoe_tract)+nrow(canv_county_wTahoe)))
+row.names(tahoe_tract) <- paste0(1:nrow(tahoe_tract))
+tahoe_tract <- spTransform(tahoe_tract,CRS("+init=epsg:4269"))
+
+
+tahoe_tract_wExternalCounties <- spRbind(tahoe_tract,canv_county_wTahoe)
+
+
+
+
+tahoe_tract_wExternalCounties@data <- tahoe_tract_wExternalCounties@data %>% left_join(TractToDistrict %>% dplyr::select(Tract,District),by=c('ID'='Tract'))
+tahoe_tract_wExternalCounties@data <- tahoe_tract_wExternalCounties@data %>% mutate(
+    District = ifelse(is.na(District),ID,District)
+)
+tahoe_worker_district_wExternalCounties <- doPolyUnion(tahoe_tract_wExternalCounties,tahoe_tract_wExternalCounties$District)
+
+tahoe_worker_district_wExternalCounties@data <- tahoe_worker_district_wExternalCounties@data %>% 
+  mutate(ID = 
+           ifelse(ID=='11','11_TahoeVista',
+                  ifelse(ID=='12','12_TahoeCity',
+                         ifelse(ID=='13','13_EmeraldBay',
+                                ifelse(ID=='14','14_TahoeAirport',
+                                       ifelse(ID=='15','15_SouthLakeTahoe',
+                                              ifelse(ID=='16','16_Stateline',
+                                                     ifelse(ID=='17','17_InclineVillage',ID)))))))
+  )
+
+
+
+mm <- leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+    addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(
+        updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
+        updateWhenIdle = TRUE           # map won't load new tiles when panning
+    ),group='WorldGray') %>% 
+    addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(
+        updateWhenZooming = FALSE,      # map won't update tiles until zoom is done
+        updateWhenIdle = TRUE           # map won't load new tiles when panning
+    ),group='WorldMap') %>% 
+    addPolygons(data=tahoe_worker_district_wExternalCounties,group='Zone',
+                label=tahoe_worker_district_wExternalCounties@data$ID,weight=1,color='#e31a1c',
+                labelOptions = labelOptions(noHide = T,offset = c(10,-20)))   %>% 
+    addLayersControl(
+        baseGroups = c('WorldGray','WorldMap'),
+        overlayGroups = c('Zone'),
+        options = layersControlOptions(collapsed = F)  )
+
+```
+
+
+```{r include=FALSE,messages=F}
+
+
+extTAZCutOff <- 108
+workTripTarget_CTPPTg <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','D2D','C5:U22')
+workTripTarget_StlLgt <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','D2D','C31:U48')
+workTripTarget_CTPPTg[is.na(workTripTarget_CTPPTg)] <- 0
+workTripTarget_StlLgt[is.na(workTripTarget_StlLgt)] <- 0
+
+workTripTarget_CTPPTg_seg <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','D2D','J24:K28')
+workTripTarget_StlLgt_seg <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','D2D','J50:K54')
+
+workTripTarget_StlLgt_IE_destSumm <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','D2D','C57:D64')
+taz_toworker_district <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','taz_to_district','A1:B297')
+
+workTripTarget_StlLgt_EE_destSumm <- read_excel('../Calibration/Data/1_TahoeWorkerFlow_Analysis.xlsx','D2D','F57:G64') %>% 
+    rename(HomeDistrict=`Orig District`,`Streetlight external work tours from origin`=Trips)
+
+scen <- '52_TestDelivery'
+# scen <- '../../test_trpa/scenarios/Mar17_2'
+
+SummerLateNightDriveDistanceSkim <- read_csv(paste0('../Calibration/Runs/',scen,'/gis/skims/SummerAMPeakDriveDistanceSkim.csv')) 
+SummerLateNightDriveDistanceSkim <- setNames(SummerLateNightDriveDistanceSkim,c('Orig','Dest','Ivtt','DistanceInternal'))
+
+sedInput <- read_csv(paste0('../Calibration/Runs/',scen,'/zonal/SocioEcon_Summer.csv'))
+sedInput <- sedInput %>% left_join(taz_toworker_district,by=c('taz'='TAZ'))
+sedInputSumm <- sedInput %>% group_by(District) %>% summarise(`Total Employment in SE Data` = sum(emp_retail +emp_srvc +emp_rec +emp_game+ emp_other))
+
+MandatoryDTMChoice <- read_csv(paste0('../Calibration/Runs/',scen,'/outputs_summer/MandatoryDTMChoice.csv'))
+MandatoryDTMChoice <- MandatoryDTMChoice %>% filter(purpose==1) # Filtering work tours
+MandatoryDTMChoice <- MandatoryDTMChoice %>% left_join(taz_toworker_district,by=c('destTaz'='TAZ')) %>% 
+    rename(WorkDistrict=District) %>% left_join(SummerLateNightDriveDistanceSkim,c('origTaz'='Orig','destTaz'='Dest'))
+
+MandatoryDTMChoice <- MandatoryDTMChoice %>% mutate(TripCat = ifelse(destTaz<extTAZCutOff,'Resident External Worker','Resident Internal Worker'
+                                                   ))
+
+workLocSumm <- MandatoryDTMChoice %>% group_by(WorkDistrict) %>% summarise(`Total residents work tours to destination` = n())
+workLocSummInternal <- workLocSumm %>% filter(WorkDistrict %in% sedInputSumm$District)
+workLocSummExternal <- workLocSumm %>% filter(!(WorkDistrict %in% sedInputSumm$District))
+
+ExternalWorkerSynpopWithOT <- read_csv(paste0('../Calibration/Runs/',scen,'/outputs_summer/ExternalWorkerSynpopWithOT.csv'))
+ExternalWorkerSynpopWithOT <- ExternalWorkerSynpopWithOT %>% left_join(taz_toworker_district,by=c('homeTaz'='TAZ')) %>% rename(HomeDistrict=District)
+
+trip_file <- read_csv(paste0('../Calibration/Runs/',scen,'/outputs_summer/trip_file.csv'))
+
+```
+
+### CTPP Targets
+
+
+```{r include=T,messages=F, echo=F}
+workTripTarget_CTPPTg_seg %>% kable(caption='CTPP Total Worker by Segment', align = c('l',rep('r',1))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+
+
+<details><summary><font size="3">CTPP Worker Flow</font></summary><p>
+```{r include=T,messages=F, echo=F}
+
+workTripTarget_CTPPTg %>% kable(caption='CTPP Worker Flow', align = c('l',rep('r',ncol(workTripTarget_CTPPTg)))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "1000px")
+
+```
+</p></details>
+
+### StreetLight Data Targets
+
+```{r include=T,messages=F, echo=F}
+workTripTarget_StlLgt_seg %>% kable(caption='Streetlight Data Work Trips by Segment', align = c('l',rep('r',1))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+
+
+<details><summary><font size="3">Streetlight Data Work Trip Flow</font></summary><p>
+```{r include=T,messages=F, echo=F}
+
+workTripTarget_StlLgt %>% kable(caption='Streetlight Data Work Trip Flow', align = c('l',rep('r',ncol(workTripTarget_StlLgt)))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  scroll_box(width = "1000px")
+
+```
+</p></details>
+
+#### District Map
+
+```{r include=T,messages=F, echo=F, fig.height=3.5,fig.width=9.5}
+mm %>%
+    setView(lng = -120, lat = 39, zoom = 11) 
+```
+
+
+## Calibration Results
+
+### Resident internal workers
+
+```{r,echo=F,eval=T}
+tazWorkerCompare <- sedInput %>% mutate(SEDataEmployment = (emp_retail +emp_srvc +emp_rec +emp_game+ emp_other)) %>% select(taz,SEDataEmployment) %>% 
+    left_join(MandatoryDTMChoice %>% group_by(destTaz) %>% summarise(residentWorkers= n()) , by=c('taz'='destTaz')) %>% 
+    replace_na(list(residentWorkers=0))
+
+mdl <- lm(residentWorkers ~ 0 + SEDataEmployment, data = tazWorkerCompare)
+rsq <- signif(summary(mdl)$adj.r.squared, 3)
+
+```
+
+
+```{r,echo=F,eval=T}
+gg <- ggplot(tazWorkerCompare, aes(SEDataEmployment, residentWorkers))+
+    geom_point() + geom_smooth(method = "lm", se = F) +
+    # scale_x_continuous(limits = c(0, 3000)) +
+    # scale_y_continuous(limits = c(0, 3000)) +
+    labs(x = "SED Employment", y="Predicted Work Tours", title = "TAZ Employment vs. Work Tours to destination")
+# pp <- gg %>% ggplotly() 
+# pp <- pp %>% layout(annotations =list(x=max(tazWorkerCompare$SEDataEmployment)*0.66,y=max(tazWorkerCompare$residentWorkers)*0.33,text=paste0('R-squared = ',rsq),showarrow=F))
+
+```
+
+
+<div style= "float:right;position: relative; top: -80px;">
+```{r pressure, echo=FALSE, fig.height=4,fig.width=5}
+gg
+```
+</div>
+
+Resident internal workers work inside the Tahoe basin. The employment in each of the zones act as attractions for the resident work location choice. An iterative shadow price algorithm ensures that the number of workers making work tours to a zone is proportional to the employment in that zone. The adjacent figure shows the scatter plot between the total employment (from socio-economic data) in each of the zone and the total resident work tours attracted to each of the zones. A high R-square of `r rsq` indicate that the shadow pricing algorithm has converged well.
+
+### Resident external workers
+
+A segment of resident workers also work at a destination external to the region, they are called resident external workers. The distance between the resident’s home zone and the external zone is the primary determining factor in choosing an external work zone. An external gate specific size-term determines how many internal workers are attracted to a particular external zone. These size-terms are specified in the file ExternalZoneSizeCoefficients.csv – one for each of the fourteen external zones in the column *intWorkSizeCoeffSummer*. Increasing the size-term for an external zone will make the resident work location model send more workers to that external zone. The table below shows the number of resident work tours that go to an external station according to StreetLight Data and from the model. The distribution closely matches and the overall number of resident workers making external work tours match well too.
+
+```{r,echo=F,eval=T}
+
+
+IE_Work_Summ <- workTripTarget_StlLgt_IE_destSumm %>% rename(WorkDistrict=`Dest District`,`Streetlight work tours to destination`=Trips) %>% 
+    full_join(workLocSummExternal,by='WorkDistrict') 
+IE_Work_Summ[is.na(IE_Work_Summ)] <- 0
+tempRowSum <- IE_Work_Summ %>% ungroup() %>% summarise_at(2:ncol(IE_Work_Summ),sum) %>% mutate(WorkDistrict='Total')
+IE_Work_Summ <- rbind.data.frame(IE_Work_Summ,tempRowSum)
+
+kable(IE_Work_Summ,caption='Resident work tours outside the region',align='r') %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+
+### External Workers
+
+The first step in the external worker model is the external worker work destination synthesis. For each TAZ this is determined by the number of jobs (i.e. employment) in the TAZ, the number of residents working in that TAZ (output of the resident worker model) and the parameter *unfilled.employment.percentage* in the property file. The higher this factor, the higher number of jobs that will be unfilled and the fewer number of external workers that will be synthesized. Once this step is completed, the origin choice model determines the external zone for the origin of each of the synthesized external workers. The table below shows the comparison between the target StreetLight Data external worker origins and the model predicted origins. Overall, the individual external zone origins match well as do the total number of external work tours.
+
+```{r,echo=F,eval=T}
+extWorkerOrigSumm <- ExternalWorkerSynpopWithOT %>% group_by(HomeDistrict) %>% summarise(`Total external workers from origin`=n())
+
+EI_work_summ <- workTripTarget_StlLgt_EE_destSumm %>% left_join(extWorkerOrigSumm,by='HomeDistrict')
+EI_work_summ[is.na(EI_work_summ)] <- 0
+tempRowSum <- EI_work_summ %>% ungroup() %>% summarise_at(2:ncol(EI_work_summ),sum) %>% mutate(HomeDistrict='Total')
+EI_work_summ <- rbind.data.frame(EI_work_summ,tempRowSum)
+
+kable(EI_work_summ,caption='External work tours into the region',align='r') %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```

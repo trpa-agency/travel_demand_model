@@ -1,0 +1,389 @@
+---
+title: "Streetlight Data Summary for Lake Tahoe Region"
+output:
+  html_document:
+    code_folding: hide
+date: "February 2020"
+---
+
+```{r setup, include=FALSE,messages=F}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(htmltools)
+library(janitor)
+```
+
+To better validate the Tahoe Model outputs, Streetlight Data for the Tahoe region was gathered for the following time periods, including:
+
+*  First 2 weeks in June 2018 (06/04 - 06/15)
+*  Last week in August 2018 (08/27 - 08/31)
+*  2nd and 3rd week in September 2018 (09/10 - 09/21)
+
+For this study, trips on typical weekdays (Monday - Thursday) are analyzed, and trips on Fridays or weekends are not included. The [tidyverse](https://www.tidyverse.org/) package provides tools and functions used in this analysis. Please contact [WSP USA](mailto: R.Sidharthan@wsp.com, mingyang.li@wsp.com) for questions regarding the analysis. 
+
+
+## Methodology 
+### Gates
+The objective of this analysis is to summarize the VMT from I-E and E-I trips as observed in the Streetlight Dataset. "Gates" are the major entrance / exit point to the Tahoe Lake region, and there are a total of 7 gates considered in this study. 
+
+*  [Gate 1: Tahoe Meadows South Trailhead](https://www.google.com/maps/place/Tahoe+Meadows+South+Trailhead/@39.1601312,-120.1347057,10.4z/data=!4m5!3m4!1s0x80996e50dc563fbb:0x3dedbf0be21ccb41!8m2!3d39.3016431!4d-119.9186693)
+*  [Gate 2: Spooner Summit Trailhead](https://www.google.com/maps/search/Spooner+Summit+Trailhead/@39.064722,-119.9944846,11.04z)
+*  [Gate 3: Daggett Pass](https://www.google.com/maps/place/Daggett+Pass/@39.0958601,-120.0750635,11.04z/data=!4m5!3m4!1s0x80999a06e00dbe3d:0x7af0ad85570fe69b!8m2!3d38.9765746!4d-119.888791)
+*  [Gate 4: Luther Pass](https://www.google.com/maps/place/Luther+Pass/@38.9902042,-120.1827023,10.16z/data=!4m5!3m4!1s0x8099ed3e3ced9ca7:0xb76eafccc32539f4!8m2!3d38.7868509!4d-119.9468476)
+*  [Gate 5: Echo Summit](https://www.google.com/maps/place/Echo+Summit/@39.0275357,-120.4109167,10.26z/data=!4m5!3m4!1s0x80998cfa5eee2bb9:0x489132d7a3ea7f76!8m2!3d38.8129628!4d-120.0301833)
+*  [Gate 6: Truckee River Bike Trail](https://www.google.com/maps/place/Truckee+River+Bike+Trail,+California/@39.0505355,-120.4193488,10.02z/data=!4m5!3m4!1s0x809bd7eec370906d:0xb4f212616f01994!8m2!3d39.1773546!4d-120.1906817)
+*  [Gate 7: N Shore Blvd](https://www.google.com/maps/place/N+Shore+Blvd,+NORTHSTAR,+CA+96161/@39.1221507,-120.3170886,10.28z/data=!4m5!3m4!1s0x8099638234461bdd:0x6703827436e94fb6!8m2!3d39.2583015!4d-120.0667665)
+
+### Assumptions
+Once the gates are defined, the study team make the following assumptions regarding the travel patterns.
+
++  There are 8 internal zones for the Tahoe region. The block groups outside of the Tahoe region are external zones. 
++  All external zones can be grouped in 1 of 29 external districts. 
++  All I-E and E-I trips between an external district and an internal zone will use the same gate.
++  The Streetlight data contains the Annual Average Daily Traffic (AADT) for I-E and E-I trips
++  The I-E and E-I trips contains 2 parts:
+    +  distance between external zone and gate (external_distance), and
+    +  distance between gate and internal zone (internal_distance), which should be the same for all the trips between the same gate and same internal zone
++  external_distance will be used to further categorize the I-E and E-I trips:
+
+    +  trips with external_distance <= 60 miles are considered short-distance trips
+    +  trips with external_distance > 60 miles are considered long-distance trips
+
+### VMT and Trip Summaries      
+Based on the inputs and assumptions, VMT can be calculated by multiplying AADT with external_distance and internal_distance. The results are then summarized by gates and by trip types (long- vs. short-distance trips). The summary tables will be used to validate the model outputs. 
+
++  VMT (Outside TRPA Region)
++  VMT (Within TRPA Region)
++  Total Number of Trips
+
+
+## Streetlight Data Overview
+There are 3 Streetlight databases, a snapshot of the datasets are found below: 
+
+```{r, message=F, warning=F, results = 'asis', echo = F}
+dataset_1 <- read_csv('../Data/95945_Tahoe_OD_Analysis_2020_01_02_odg_all.csv')
+kable(dataset_1[1:3, 2:6], align = c(rep('c',5)), caption = "1. Trip information dataset") %>%
+    kable_styling()
+
+dataset_2 <- read_csv('../Data/95945_Tahoe_OD_Analysis_2020_01_02_odg_traveler_all.csv')
+kable(dataset_2[1:3, 30:34], align = c(rep('c',5)), caption = "2. Traveller information dataset") %>%
+    kable_styling()
+
+dataset_3 <- read_csv('../Data/95945_Tahoe_OD_Analysis_2020_01_02_odg_trip_all.csv')
+kable(dataset_3[1:3, 23:27], align = c(rep('c',5)), caption = "3. Additional trip information dataset") %>%
+    kable_styling()
+```
+
+
+## Data Processing and Summary
+There are six(6) major steps during this phase, including:
+
+
+1.  Import Streetlight data
+```{r,message=F,eval=T,warning=F}
+# import data from local folder, and select the rows that are not all-day redcords and are on typical weekdays 
+dataset_1 <- read_csv('../Data/95945_Tahoe_OD_Analysis_2020_01_02_odg_all.csv',guess_max=10000000) %>% 
+    data.frame() %>% as_tibble() %>%
+    filter(Day.Part=='0: All Day (12am-12am)') %>% 
+    filter(Day.Type=='1: Weekday (M-Th)') 
+
+dataset_2 <- read_csv('../Data/95945_Tahoe_OD_Analysis_2020_01_02_odg_traveler_all.csv',guess_max=10000000)%>%
+    data.frame() %>% as_tibble() %>% 
+    filter(Day.Part=='0: All Day (12am-12am)') %>% 
+    filter(Day.Type=='1: Weekday (M-Th)') 
+
+dataset_3 <- read_csv('../Data/95945_Tahoe_OD_Analysis_2020_01_02_odg_trip_all.csv',guess_max=10000000) %>%
+    data.frame() %>% as_tibble() %>% 
+    filter(Day.Part=='0: All Day (12am-12am)') %>% 
+    filter(Day.Type=='1: Weekday (M-Th)') 
+```
+
+2.  Trim the Streetlight data and combine the data for further analysis
+```{r,message=F,eval=T,warning=F}
+# trim the undesired attributes in the data
+dataset_3 <- dataset_3 %>% 
+    select(Origin.Zone.Name, Destination.Zone.Name, Day.Part,Avg.All.Trip.Length..mi.,Avg.Trip.Length..mi.)
+dataset_2 <- dataset_2 %>%
+    select(Day.Part,Origin.Zone.Name,Destination.Zone.Name,Purpose.HBW..percent.,Purpose.HBO..percent.,
+           Purpose.NHB..percent.)
+
+# combine the Streetlight data, calculate the home-based work(HBW), home-based other(HBO), and non-home-based(NHB) trips, and trim attributes that are not needed
+data_v1 <- dataset_1 %>% 
+    left_join(dataset_2) %>% 
+    left_join(dataset_3) %>% 
+    mutate(Purpose.HBW..percent.=as.numeric(Purpose.HBW..percent.),
+           Purpose.HBO..percent.=as.numeric(Purpose.HBO..percent.),
+           Purpose.NHB..percent.=as.numeric(Purpose.NHB..percent.)) %>% 
+    replace_na(list(Purpose.HBW..percent.=0,Purpose.HBO..percent.=0,Purpose.NHB..percent.=0)) %>% 
+    mutate(HBW_vol = Average.Daily.O.D.Traffic..StL.Volume.*Purpose.HBW..percent.,
+           HBO_vol = Average.Daily.O.D.Traffic..StL.Volume.*Purpose.HBO..percent.,
+           NHB_vol = Average.Daily.O.D.Traffic..StL.Volume.*Purpose.NHB..percent.,
+           Tot_vol = Average.Daily.O.D.Traffic..StL.Volume.) %>% 
+    select(-Type.of.Travel,-Day.Type,
+           -Origin.Zone.Is.Pass.Through,-Origin.Zone.Direction..degrees.,-Origin.Zone.is.Bi.Direction,
+           -Destination.Zone.Is.Pass.Through,-Destination.Zone.Direction..degrees.,-Destination.Zone.is.Bi.Direction,
+           -Avg.Trip.Duration..sec.,-Origin.Zone.ID,-Destination.Zone.ID,
+           -Average.Daily.Origin.Zone.Traffic..StL.Volume.,-Average.Daily.Destination.Zone.Traffic..StL.Volume.,
+           -Purpose.HBW..percent.,-Purpose.HBO..percent.,-Purpose.NHB..percent.,
+           -Average.Daily.O.D.Traffic..StL.Volume.)
+```
+
+3.  Import 3 additional input files with gate and external district information. 
+
+```{r, message=F, warning=F, results=F}
+# define the relationship between the block groups and the 29 external districts
+CA_NV_tract_to_district <- read_csv('../Data/Inputs/CA_NV_Tract_To_District.csv')
+kable(CA_NV_tract_to_district[1:3,], align = c(rep('c',ncol(CA_NV_tract_to_district))), caption = "External districts information") %>%
+    kable_styling()
+
+# define which gate to use for E-I and I-E trips. Gates are determined based on Gogole Map routing information. Assumed departure time on Tuesday, 7:30 AM 
+district_to_gate_relationship <- read_csv('../Data/Inputs/District_to_Gate.csv') %>%
+    gather(Destination, Gate, "06_0_Chico":"Grand Total") %>%
+    filter(!is.na(Gate)) %>%
+    rename("Origin" = "Row Labels")
+kable(district_to_gate_relationship[1:3,], align = c(rep('c',ncol(district_to_gate_relationship))), caption = "Gate information") %>%
+    kable_styling()
+
+# define distance between gate and internal zones. Distance measured from gate location to the population centroid of the internal zones
+gate_to_internal_distance <- read_csv('../Data/Inputs/Gate_to_Internal.csv') %>%
+    gather(Internal, Distance, "11":"18")
+kable(gate_to_internal_distance[1:3,], align = c(rep('c',ncol(gate_to_internal_distance))), caption = "Gate to internal zone distance") %>%
+    kable_styling()
+```
+
+4. Analyze the combined dataset to further evaluate the O-D trip patterns by incorporating the inputs from Step 3.
+
+```{r message=FALSE, warning=FALSE, eval=T}
+# add the state, county, and tract information, and retain only I-E and E-I trips
+data_v2 <- data_v1 %>% 
+    mutate(orig_state=ifelse(Origin.Zone.Source!='Input',substr(Origin.Zone.Name,2,3),'Input'),
+           orig_county=ifelse(Origin.Zone.Source!='Input',substr(Origin.Zone.Name,4,6),'Input'),
+           orig_tract=ifelse(Origin.Zone.Source!='Input',substr(Origin.Zone.Name,7,12),Origin.Zone.Name),
+           dest_state=ifelse(Destination.Zone.Source!='Input',substr(Destination.Zone.Name,2,3),'Input'),
+           dest_county=ifelse(Destination.Zone.Source!='Input',substr(Destination.Zone.Name,4,6),'Input'),
+           dest_tract=ifelse(Destination.Zone.Source!='Input',substr(Destination.Zone.Name,7,12),Destination.Zone.Name)) %>%
+    left_join(CA_NV_tract_to_district %>%
+                  rename(orig_district=groupname),by=c('orig_state'='STATEFP','orig_county'='COUNTYFP',
+                                                      'orig_tract'='TRACTCE')) %>% 
+    left_join(CA_NV_tract_to_district %>%
+                  rename(dest_district=groupname),by=c('dest_state'='STATEFP','dest_county'='COUNTYFP',
+                                                      'dest_tract'='TRACTCE')) %>% 
+    mutate(orig_district=ifelse(Origin.Zone.Source=='Input', Origin.Zone.Name, orig_district)) %>% 
+    mutate(dest_district=ifelse(Destination.Zone.Source=='Input', Destination.Zone.Name, dest_district)) %>% 
+    filter(!(is.na(orig_district)|is.na(dest_district)))
+
+# calculate the statistics of the trip length, trip volumes, by oirigin and destination.
+data_v3 <- data_v2 %>% 
+    mutate(Avg.All.Trip.Length..mi.=as.numeric(Avg.All.Trip.Length..mi.),
+           Avg.Trip.Length..mi.=as.numeric(Avg.Trip.Length..mi.),
+           ) %>% 
+    mutate(Avg.Trip.Length..mi.=ifelse(is.na(Avg.Trip.Length..mi.),0,Avg.Trip.Length..mi.)) %>% 
+    group_by(Origin.Zone.Name,Destination.Zone.Name) %>% 
+    summarize( orig_state=first(orig_state),
+               orig_county=first(orig_county),
+               orig_tract=first(orig_tract),
+               dest_state=first(dest_state),
+               dest_county=first(dest_county),
+               dest_tract=first(dest_tract),
+               orig_district=first(orig_district),
+               dest_district=first(dest_district),
+               mean_distance = weighted.mean(Avg.All.Trip.Length..mi.,Tot_vol),
+               HBW_vol=sum(HBW_vol),
+               HBO_vol=sum(HBO_vol),
+               NHB_vol=sum(NHB_vol),
+               Tot_vol=sum(Tot_vol),
+               ) %>%
+    ungroup() %>%
+    filter(!is.na(mean_distance))
+
+# set the threshold for long-distance and short-distance trips
+long_distance_threshold = 60
+
+# define the internal and external zones for the I-E and E-I trips, and categorize the trips based on the average external_distance
+# update the internal and external distances if the calculated external distance is negative
+data_v4 <- data_v3 %>%
+    left_join(district_to_gate_relationship, by=c('orig_district'='Origin','dest_district'='Destination')) %>%
+    filter(!is.na(Gate)) %>% # Remove internal-internal trips
+    rename(gate = Gate) %>%
+    mutate(internal_zone = ifelse(orig_district %in% c('11','12','13','14','15','16','17','18'),
+                                 orig_district, dest_district),
+           external_zone = ifelse(Origin.Zone.Name %in% c('11','12','13','14','15','16','17','18'),
+                                  Destination.Zone.Name, Origin.Zone.Name)) %>%
+    left_join(gate_to_internal_distance, by=c('gate'='gate','internal_zone'='Internal')) %>%
+    rename(internal_distance = Distance) %>%
+    mutate(external_distance_to_gate = mean_distance - internal_distance,
+           flag = ifelse(external_distance_to_gate < 0, 1, 0), 
+           long_distance = ifelse(external_distance_to_gate > long_distance_threshold, 1, 0)) %>%
+    mutate(external_distance_to_gate = ifelse(flag == 1, 0, external_distance_to_gate),
+           internal_distance = ifelse(flag == 1, mean_distance, internal_distance))
+```
+
+5. Summarize the VMT and trips by gates and trip types
+
+```{r,message=F, warning=F, eval=T}
+# compute desired attributes
+data_v5 <- data_v4 %>%
+    group_by(internal_zone, gate) %>%
+    summarize(total_trip = sum(Tot_vol),
+              external_VMT = sum(Tot_vol*external_distance_to_gate),
+              internal_VMT = sum(Tot_vol*internal_distance),
+              long_distance_external_VMT = sum(ifelse(long_distance == 1, Tot_vol*external_distance_to_gate, 0)),
+              short_distance_external_VMT = sum(ifelse(long_distance == 1, 0, Tot_vol*external_distance_to_gate)),
+              long_distance_internal_VMT = sum(ifelse(long_distance == 1, Tot_vol*internal_distance, 0)),
+              short_distance_internal_VMT = sum(ifelse(long_distance == 1, 0, Tot_vol*internal_distance)),
+              long_distance_trip = sum(ifelse(long_distance == 1, Tot_vol, 0)),
+              short_distance_trip = sum(ifelse(long_distance == 1, 0, Tot_vol)))
+    
+# define a function to output the data by gates and internal zones
+summarize_data_1 <- function(sum_attribute){
+    data_temp <- data_v5 %>% 
+        select(internal_zone, gate, sum_attribute) %>%
+        spread(internal_zone, sum_attribute) %>%
+        replace_na(list("11"=0,"12"=0,"13"=0,"14"=0,"15"=0,"16"=0,"17"=0,"18"=0)) %>%
+        rename("Gate / Internal zones" = "gate")
+    write_csv(data_temp, paste0("outputs/",sum_attribute,"_summary_1.csv"))
+}
+
+# call the function
+summarize_data_1("external_VMT")
+summarize_data_1("internal_VMT")
+summarize_data_1("long_distance_external_VMT")
+summarize_data_1("short_distance_external_VMT")
+summarize_data_1("long_distance_internal_VMT")
+summarize_data_1("short_distance_internal_VMT")
+summarize_data_1("total_trip")
+summarize_data_1("long_distance_trip")
+summarize_data_1("short_distance_trip")
+
+# group desired summaries by gates
+data_v6 <- data_v5 %>%
+    group_by(gate) %>%
+    summarize(short_distance_external_VMT = sum(short_distance_external_VMT) %>% round(),
+              long_distance_external_VMT = sum(long_distance_external_VMT) %>% round(),
+              short_distance_internal_VMT = sum(short_distance_internal_VMT) %>% round(),
+              long_distance_internal_VMT = sum(long_distance_internal_VMT) %>% round(),
+              short_distance_trip = sum(short_distance_trip) %>% round(),
+              long_distance_trip = sum(long_distance_trip) %>% round())
+    
+# define a function to output the srummaries by gates
+summarize_data_2 <- function(attribute_1, attribute_2){
+    data_temp <- data_v6 %>% 
+        select(gate, attribute_1, attribute_2) %>%
+        rename("Gate" = "gate",
+               "Short-Distance Trips" = paste0(attribute_1),
+               "Long-Distance Trips" = paste0(attribute_2))
+    write_csv(data_temp, paste0("outputs/",attribute_1, "_", attribute_2, "_summary_2.csv"))
+}
+
+
+# call the function
+summarize_data_2("short_distance_external_VMT", "long_distance_external_VMT")
+summarize_data_2("short_distance_internal_VMT", "long_distance_internal_VMT")
+summarize_data_2("short_distance_trip", "long_distance_trip")
+
+```
+
+```{r,message=F, warning=F, echo = F, result = "asis"}
+#Show the summaries
+data_temp <- read_csv("outputs/short_distance_external_VMT_long_distance_external_VMT_summary_2.csv")
+kable(data_temp, format.args = list(big.mark = ","), align = c(rep('c',ncol(data_temp))), caption = "VMT (Outside TRPA Region)") %>%
+    kable_styling() 
+data_temp <- read_csv("outputs/short_distance_internal_VMT_long_distance_internal_VMT_summary_2.csv")
+kable(data_temp, format.args = list(big.mark = ","), align = c(rep('c',ncol(data_temp))), caption = "VMT (Within TRPA Region)") %>%
+    kable_styling() 
+data_temp <- read_csv("outputs/short_distance_trip_long_distance_trip_summary_2.csv")
+kable(data_temp, format.args = list(big.mark = ","), align = c(rep('c',ncol(data_temp))), caption = "Total Number of Trips") %>%
+    kable_styling() 
+```
+
+```{r,output=F,message=F,echo=F,eval=T,results=F}
+#categorize the block group to be either "long-distance" or "short-distance", and to rename them by gate number
+#short-distance zones are named 1 - 7, long-distance zones are named 10, 20, 30, ..., 70
+#this is strictly for mapping purposes
+data_v6 <- data_v4 %>%
+    group_by(external_zone, gate) %>%
+    summarize(total_trip = sum(Tot_vol),
+              long_distance_per = sum(Tot_vol*long_distance)/total_trip * 100,
+              bg_type = ifelse(long_distance_per >= 50, "long-distance", "short-distance"))  %>%
+    ungroup() %>%
+    group_by(external_zone) %>%
+    filter(total_trip == max(total_trip)) %>%
+    ungroup() %>%
+    mutate(external_zone = str_sub(external_zone,2,-2),
+           zone_group = ifelse(bg_type == "short-distance", gate, paste0(gate,"0")))
+
+write_csv(data_v6, "summary_by_bg.txt")
+```
+
+## Validation with Additional Streetlight Data
+Upon summarizing the number of trips by gates, the study team validated the statistics with a second Streetlight dataset, which was produced by running the "O-D Analysis with Middle Filters". By setting the middle filters at the 7 gate locations, the study team was able to obtain the number of I-E and E-I trips by gates during the same study periods. Observations are as follows:
+
++  Overall, the two datasets matched reasonably (3%).
++  Compared to the second Streetlight dataset, the original summary tends to overestimate the number of trips. This is because the original dataset captured all I-E and E-I trips, while the second dataset only reflected the trips using the 7 gates. 
++  In addition, some of the discrepancies can be attributed to the limitations of assuming that all I-E and E-I trips between an external district and an internal zone would use the same gate. Given the size of the external districts, it is possible that multiple gates are viable options for the same O-D pair. 
+
+
+
+ 
+
+```{r,message=F, warning=F, eval=T}
+# compute total trips with first dataset
+trips_summary1 <- data_v6 %>% 
+  mutate(trips_dataset1 = short_distance_trip + long_distance_trip) %>%
+  select(gate, trips_dataset1) %>%
+  rename("Gate" = "gate",
+         "Total Trips (Dataset 1)" = trips_dataset1)
+
+# compute total trips with the second dataset (O-D analysis with middle filter)
+MF_gate_raw <- read.csv("../Data/All_trips_at_gate_locations/98753_ScreenlineAll_2020_01_24_mf_all.csv", stringsAsFactors = FALSE)
+MF_gate_EE_raw <- read.csv("../Data/EE_trips_at_gate_locations/98845_EETrips_Analysis_2020_01_24_mf_all.csv", stringsAsFactors = FALSE)
+internal = c("11","12","13","14","15","16","17","18")
+MF_gate_processed <- MF_gate_raw %>%
+  filter(substr(Day.Type,1,1) != "0") %>% 
+  filter(substr(Day.Part,1,1) == "0") %>%
+  rename(link_vol = Average.Daily.O.M.D.Traffic..StL.Volume.,
+         link_name = Middle.Filter.Zone.Name) %>%
+  filter(!(Origin.Zone.Name %in% internal & Destination.Zone.Name %in% internal)) %>%
+  dplyr::select(link_vol, link_name) %>%
+  group_by(link_name) %>%
+  summarize(n = n(),
+            SL_vol = sum(link_vol))
+MF_gate_EE_processed <- MF_gate_EE_raw %>%
+  filter(substr(Day.Type,1,1) != "0") %>% 
+  filter(substr(Day.Part,1,1) == "0") %>%
+  rename(link_vol = Average.Daily.O.M.D.Traffic..StL.Volume.,
+         link_name = Middle.Filter.Zone.Name) %>%
+  dplyr::select(link_vol, link_name) %>%
+  group_by(link_name) %>%
+  summarize(n = n(),
+            SL_vol = sum(link_vol))
+
+trips_summary2 <- MF_gate_processed %>% select(-n) %>%
+  left_join(MF_gate_EE_processed %>% select(-n), by = c("link_name" = "link_name"), suffix = c("_all","_EE")) %>%
+  mutate(SL_vol_IE = SL_vol_all - SL_vol_EE,
+         link_name= as.numeric(substr(link_name, 6 ,6))) %>%
+  rename(gate = link_name) %>%
+  select(gate, SL_vol_IE) %>%
+  rename("Gate" = "gate",
+         "Total Trips (Dataset 2)" = SL_vol_IE)
+
+# combine the summary from 2 datasets 
+trips_summary <- trips_summary1 %>%
+  left_join(trips_summary2, by = c("Gate" = "Gate")) %>%
+  adorn_totals("row") %>%
+  mutate(diff = ((`Total Trips (Dataset 1)` - `Total Trips (Dataset 2)`)/`Total Trips (Dataset 2)` * 100) %>%round()) %>%
+  rename("Difference (%)" = diff) %>%
+  write_csv("outputs/trips_summary.csv")
+```
+
+```{r,message=F, warning=F, echo = F, result = "asis"}
+#Show the summaries
+data_temp <- read_csv("outputs/trips_summary.csv")
+kable(data_temp, format.args = list(big.mark = ","), align = c(rep('c',ncol(data_temp))), caption = "Comparison of Two Streetlight Datasets") %>%
+    kable_styling() 
+```
+
+
+

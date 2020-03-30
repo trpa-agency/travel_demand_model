@@ -1,0 +1,154 @@
+---
+title: "Dynamic Validation: Transit Level of Service Changes"
+output: 
+  html_document
+---
+
+
+```{r include=FALSE,messages=F}
+library(tidyverse)
+library(readxl)
+library(kableExtra)
+library(rgdal)
+library(sf)
+library(rgeos)
+library(htmltools)
+library(htmlwidgets)
+library(leaflet)
+library(DT)
+
+convAttrToChar <- function(spdf){
+    spdf@data <- spdf@data %>% mutate_if(is.factor,as.character)
+    return(spdf)
+}
+
+mpal2 <- colorNumeric(c('#969696','#0570b0'), domain = 1:2) # For coding centroid connectors vs. other links
+
+```
+
+
+
+```{r include=F,messages=F}
+# Base Year Model
+scen <- '40_BY'
+FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
+streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+
+streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+
+streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
+                                'Facility Type: ',AB_FC,'<br>',
+                                'Speed =',AB_SPEED,'<br>',
+                                'Model Volume: ',DAILYVOLUME,'<br>'))
+streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
+streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
+streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+
+Tahoe_TransitR <- read_csv(paste0('../Calibration/Runs/',scen,'/post/Tahoe_TransitR.csv'))
+transitRouteMap <- read_excel('../Calibration/Data/3_CountsAndBoardings.xlsx','TransitBoardsings','G2:H28')
+
+SummerAMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerAMPeakboardAlight.csv'))
+SummerLateNightboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerLateNightboardAlight.csv'))
+SummerMiddayboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerMiddayboardAlight.csv'))
+SummerPMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerPMPeakboardAlight.csv'))
+
+routeSumm_BY <- rbind.data.frame(SummerLateNightboardAlight,SummerAMPeakboardAlight,SummerMiddayboardAlight,SummerPMPeakboardAlight) %>% 
+  left_join(Tahoe_TransitR %>% select(ROUTE_ID,ROUTE_NAME),by=c('ROUTE'='ROUTE_ID')) %>% 
+  left_join(transitRouteMap,by=c('ROUTE_NAME'='Route_Name_Dir')) %>% 
+  group_by(`Route Desc`) %>% summarise(`Model Boardings`= sum(ALIGHTEND))
+
+
+
+mm_base <-leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldGray') %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldMap') %>% 
+  addPolylines(data=streetNet,group='All Links',color=~mpal2(ifelse(AB_FC==9,2,1)),weight = 2,
+               label=lapply(streetNet@data$tazLabel, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = F,offset = c(10,-20))) %>% 
+  addCircleMarkers(lng = streeCen$x, lat = streeCen$y,label = as.character((streeCen$DAILYVOLUME)),group='Model Volume',opacity=0,radius = 1,
+                   labelOptions = lapply(1:nrow(streeCen), function(x) {
+                     labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',direction = 'auto', offset=c(0,0)) 
+                   })) %>%   
+  addControl(HTML('<font size="5">Base Year</font>'), position = "bottomleft") %>% 
+  addLayersControl(baseGroups = c('WorldGray','WorldMap'),overlayGroups = c('All Links','Model Volume'),options = layersControlOptions(collapsed = F)  ) %>% 
+  hideGroup(c('Model Volume'))
+
+```
+
+## Transit Frequency Doubled Systemwide
+
+In this dynamic validation test, frequency of all transit services is doubled. This is achieved by halving the headway in the transit route system file. The model was run with this update and the resulting highway loading is shown in the map below on the right. The base year highway loaded result is shown on the left for comparison. Table 1 shows the transit boardings by route for the base scenario and for the frequency doubled scenario.
+
+```{r include=F,messages=F}
+scen <- '41_Headway'
+FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
+streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+
+streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+
+streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
+                                'Facility Type: ',AB_FC,'<br>',
+                                'Speed =',AB_SPEED,'<br>',
+                                'Model Volume: ',DAILYVOLUME,'<br>'))
+streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
+streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
+streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+
+SummerAMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerAMPeakboardAlight.csv'))
+SummerLateNightboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerLateNightboardAlight.csv'))
+SummerMiddayboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerMiddayboardAlight.csv'))
+SummerPMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerPMPeakboardAlight.csv'))
+
+routeSumm <- rbind.data.frame(SummerLateNightboardAlight,SummerAMPeakboardAlight,SummerMiddayboardAlight,SummerPMPeakboardAlight) %>% 
+  left_join(Tahoe_TransitR %>% select(ROUTE_ID,ROUTE_NAME),by=c('ROUTE'='ROUTE_ID')) %>% 
+  left_join(transitRouteMap,by=c('ROUTE_NAME'='Route_Name_Dir')) %>% 
+  group_by(`Route Desc`) %>% summarise(`Model Boardings`= sum(ALIGHTEND))
+
+routeSumm_compare <- routeSumm_BY %>% full_join(routeSumm,by=c("Route Desc"))
+routeSumm_compare[is.na(routeSumm_compare)] <- 0
+names(routeSumm_compare) <- c('Route Desc','Base Year Boardings','Frequency Doubled Boardings')
+routeSumm_compare <- routeSumm_compare %>% rbind.data.frame(routeSumm_compare %>% summarise_if(is.numeric,sum) %>% mutate(`Route Desc`='Total'))
+
+mm <-leaflet(options = leafletOptions(preferCanvas = TRUE)) %>% 
+  addProviderTiles(providers$Esri.WorldGrayCanvas, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldGray') %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap, options = providerTileOptions(updateWhenZooming = FALSE,updateWhenIdle = TRUE),group='WorldMap') %>% 
+  addPolylines(data=streetNet,group='All Links',color=~mpal2(ifelse(AB_FC==9,2,1)),weight = 2,
+               label=lapply(streetNet@data$tazLabel, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = F,offset = c(10,-20))) %>% 
+  addCircleMarkers(lng = streeCen$x, lat = streeCen$y,label = as.character((streeCen$DAILYVOLUME)),group='Model Volume',opacity=0,radius = 1,
+                   labelOptions = lapply(1:nrow(streeCen), function(x) {
+                     labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',direction = 'auto', offset=c(0,0)) 
+                   })) %>%   
+  addControl(HTML('<font size="5">Transit Frequency Doubled</font>'), position = "bottomleft") %>% 
+  addLayersControl(baseGroups = c('WorldGray','WorldMap'),overlayGroups = c('All Links','Model Volume'),options = layersControlOptions(collapsed = F)  ) %>% 
+  hideGroup(c('Model Volume'))
+
+```
+
+<div style= "float:left;position: relative; top: 10px;">
+```{r echo=FALSE, fig.height=4,fig.width=4.7}
+mm_base %>%  setView(lng = -120.022618 , lat = 39.235187, zoom = 12) 
+```
+</div>
+
+
+<div style= "float:right;position: relative; top: 10px;">
+```{r echo=FALSE, fig.height=4,fig.width=4.7}
+mm %>%  setView(lng = -120.022618 , lat = 39.235187, zoom = 12) 
+```
+</div>
+
+```{r, include=T,messages=F,echo=F}
+
+routeSumm_compare %>% kable(caption = 'Table 1: Boardings comparison')    %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```  
+  
+Key insights from this dynamic testing is summarized below:
+
++ The transit boardings increased from 1,961 to 2,588, an increase of 32%. 
+
++ The region wide VMT decreased by 3,574 miles, a decrease of 0.11%.
+

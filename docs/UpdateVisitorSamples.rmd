@@ -1,0 +1,123 @@
+---
+title: "Update Visitor Samples"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+This task in the Tahoe Model Update involves updating the overnight and day visitor records in the model using the latest 2018 Summer Travel Survey. These records are used as the seed population in the overnight and day visitor synthesis. Updating these sample records ensures that the synthesized visitor population distribution resembles the observed visitor population. The key attributes of the visitor population, referred to as visitor parties in the model are the following:
+
+ + travel party size
+ 
+ + number of children (age < 18) in the party
+ 
+ + presence of an adult female
+ 
+ + stay-type of the party
+ 
+The next sub-sections describe the steps involved in creating the records.
+
+## Summer Travel Survey 2018
+
+There were two files associated with this dataset; a csv file that contains all of the survey data and a data dictionary which defines the fields in the dataset. Some of the key fields in this dataset are 
+
+  + *survey_id* field, a unique ID field identifying each respondent and
+    
+  + *gps_point_category* field which takes one of the following values: permanent home, overnight lodging, seasonal home, or survey location. In this analysis the interest is in analyzing the different types of visitors, so the dataset was filtered using the condition gps_point_category equals 'survey location'. 
+    
+ 
+Further, the respondents who rejected participating in the survey were omitted using the criterion of survey_rejected = ‘no’. Filtering for 'no' gives all survey responses that were not rejected (i.e. ones that were completed).  With these two conditions there were 1,048  completed survey records.
+
+
+Once the visitor records are created from the 2018 Visitor survey data, the records were appended to the original records from the 2005 survey. This is done to ensure that the model still creates the synthetic population from a large seed population and not from a narrow sample (if only the 2018 records were used).
+
+
+```{r include=FALSE,messages=F}
+library(tidyverse)
+library(kableExtra)
+
+survey_all <- read.csv("../../50_Project_Data/512_OwnerFurnishedData/travel_survey_2018_TRPA/travel_survey_data.csv",stringsAsFactors = F)
+
+day_vis_orig <- read_csv('OrigRecords/DayVisitorSampleRecords.csv')
+overn_vis_orig <- read_csv('OrigRecords/OvernightVisitorSampleRecords.csv')
+
+```
+
+```{r, include=T,messages=F,echo=T}
+survey <- survey_all %>%   dplyr::select(survey_id, survey_rejected, person_type, lodging_type, travel_size, travel_size_children, gps_point_category,highway) %>% 
+  filter(gps_point_category == "survey location" & survey_rejected == "no")
+
+count <- data.frame("Count" = c("zero", "one", "two", "three","four", "five", "six", "more_than_six"),  "Num" = c(0, 1,2,3,4,5,6,7),stringsAsFactors = F)
+
+```
+
+
+## Data processing
+
+In this section the processing of survey data to create the sample records for the overnight visitors and day visitors is described along with any assumptions that were made. 
+
+Day visitors in the survey were identified using the filter person_type = ‘Day Visitor’. There were 156 such records. Out of these, 152 records were retained as valid records; the other four had missing party size information. Since the created sample records are appended to the 2005 sample records, the unique ID is created by starting the ID counter from the maximum ID found in the 2005 day visitor sample records.
+
+```{r, include=T,messages=F,echo=T}
+day_vis <- survey %>%
+  dplyr:: filter(person_type == "Day Visitor", 
+         !is.na(travel_size)) %>%
+  dplyr::select(survey_id, travel_size, travel_size_children) %>%
+  mutate(
+    femaleAdult = -1,
+    stayType = 2, 
+    season = 1
+    ) %>%
+  dplyr:: left_join(count, by = c("travel_size" = "Count")) %>%
+  dplyr:: left_join(count, by = c("travel_size_children" = "Count")) %>%
+  dplyr:: select(survey_id, Num.x, Num.y, femaleAdult, stayType, season) %>%
+  setNames(c('id', 'persons', 'children', 'femaleAdult', 'stayType', 'season')) %>% as_tibble() %>% 
+  mutate(id = max(day_vis_orig$id)+row_number() )
+
+write.csv(day_vis, "DayVisitorSampleRecords_2018_temp.csv", row.names=FALSE)
+kable(day_vis[1:5,], align = c(rep('c',5)), caption = "2018 Day Visitor Records: First five records") %>%
+  kable_styling()
+
+
+```
+
+The overnight visitor records in the survey were identified using the filter person_type = ‘Overnight Visitor’. There were 521 such records. Out of these, 516 were valid records – i.e. the ones where the key variables “travel size” and “number of children in the party” were not missing. The unique ID variable was created similar to the day visitor records. The 2018 visitor survey did not ask about the presence of an adult female in the respondent’s travel party, so this variable was imputed. The variable *female* was created using a Monte Carlo simulation using a fixed probability model of 90% chance of having an adult female in the party. The 90% probability was arrived at by computing the share of overnight visitor parties in the 2005 overnight visitor records that had an adult female.
+
+Lodging types *Friend's Residence*, *Secondary Home* and *Timeshare* were classified as stay type *seasonal*, one of the six stay types modeled in the Lake Tahoe model. *Rental Unit*, *Other* and *Vacation Rental* were classified as *House* stay type. There were no casino or resort lodging types in the 2018 survey so no new records for those stay types were obtained.
+
+
+```{r, include=T,messages=F,echo=T}
+set.seed(123)
+
+overn_vis <- survey %>%
+  dplyr:: filter(person_type == "Overnight Visitor", 
+                 !is.na(travel_size),
+                 !is.na(travel_size_children)) %>%
+  dplyr::select(survey_id, travel_size, travel_size_children, lodging_type) %>%
+  mutate(
+    femaleAdult = ifelse(runif(n())>0.1,1,0),
+    season = 1
+  ) %>%
+  dplyr:: left_join(count, by = c("travel_size" = "Count")) %>%
+  dplyr:: left_join(count, by = c("travel_size_children" = "Count")) %>%
+  dplyr:: select(survey_id, Num.x, Num.y, femaleAdult, lodging_type, season,) %>%
+  setNames(c('id', 'persons', 'children','femaleAdult', 'lodging_type', 'season')) %>% as_tibble() %>% 
+  mutate(id = max(overn_vis_orig$id)+row_number() ) %>% 
+  mutate(
+  stayType = case_when(
+    lodging_type %in% c("Friend's Residence","Secondary Home",'Timeshare') ~ 1, # SEASONAL;
+    lodging_type %in% c('Hotel') ~ 2, # HOTELMOTEL;
+    lodging_type %in% c() ~ 3, # CASINO;
+    lodging_type %in% c() ~ 4, # RESORT;
+    lodging_type %in% c('Rental Unit','Other','Vacation Rental') ~ 5, # HOUSE;
+    lodging_type %in% c('Campground') ~ 6  # CAMPGROUND;
+  )
+  ) %>% 
+  mutate(
+    stayType = ifelse(is.na(stayType),5,stayType)) %>% 
+  select(names(overn_vis_orig))
+
+write.csv(overn_vis, "OvernightVisitorSampleRecords_2018_temp.csv", row.names=FALSE)
+kable(overn_vis[1:5,], align = c(rep('c',5)), caption = "2018 Overnight Visitor Records: First five records") %>%
+  kable_styling()
+```
