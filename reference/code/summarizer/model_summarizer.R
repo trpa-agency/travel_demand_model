@@ -55,19 +55,71 @@ md<-read_csv(paste0(scenFolder,"/gis/Skims/SummerMiddayDriveDistanceSkim.csv")) 
   mutate(skim=3, id2=paste(`TAZ:1`, TAZ, skim, sep="-")) %>%
   rename(trip_time=`AB_MD_IVTT / BA_MD_IVTT`)
 dist <- bind_rows(pm,am,ln,md) %>%
-  mutate(ext_dist=case_when(`TAZ:1`%in% c(1,2,3,4,5,6,7) & TAZ %in% c(1,2,3,4,5,6,7) ~ 0,
-                            `TAZ:1` == 1 | TAZ == 1 ~ 12.5,
-                            `TAZ:1` == 2 | TAZ == 2 ~ 10,
-                            `TAZ:1` == 3 | TAZ == 3 ~ 11,
-                            `TAZ:1` == 4 | TAZ == 4 ~ 16.5,
-                            `TAZ:1` == 5 | TAZ == 5 ~ 40,
-                            `TAZ:1` == 6 | TAZ == 6 ~ 11,
-                            `TAZ:1` == 7 | TAZ == 7 ~ 9.5),
-         distance=`Length (Skim)`- ext_dist) %>%
-		 mutate(distance = ifelse(is.na(distance),`Length (Skim)`,distance),
-		        time_woExtDist = trip_time - (`Length (Skim)`-distance)/50*50)
+  mutate(ext_dist=case_when(`TAZ:1`%in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) & 
+                              TAZ %in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) ~ 0,
+                            `TAZ:1` == 1 | TAZ == 1 ~ 25.1,
+                            `TAZ:1` == 2 | TAZ == 2 ~ 21.6,
+                            `TAZ:1` == 3 | TAZ == 3 ~ 17.2,
+                            `TAZ:1` == 4 | TAZ == 4 ~ 16.7,
+                            `TAZ:1` == 5 | TAZ == 5 ~ 30.9,
+                            `TAZ:1` == 6 | TAZ == 6 ~ 19.0,
+                            `TAZ:1` == 7 | TAZ == 7 ~ 15.1,
+                            `TAZ:1` == 10 | TAZ == 10 ~ 136,
+                            `TAZ:1` == 20 | TAZ == 20 ~ 114,
+                            `TAZ:1` == 30 | TAZ == 30 ~ 424,
+                            `TAZ:1` == 40 | TAZ == 40 ~ 408,
+                            `TAZ:1` == 50 | TAZ == 50 ~ 112,
+                            `TAZ:1` == 60 | TAZ == 60 ~ 130,
+                            `TAZ:1` == 70 | TAZ == 70 ~ 122                            
+  ),
+  distance=`Length (Skim)`- ext_dist) %>%
+  mutate(distance = ifelse(is.na(distance),`Length (Skim)`,distance),
+         time_woExtDist = trip_time - (`Length (Skim)`-distance)/50*50) %>% 
+  mutate(
+    ext_dist = ifelse(`TAZ:1`%in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) & 
+                        TAZ %in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70),
+                      ext_dist+(
+                        case_when(`TAZ:1` == 1|`TAZ:1` == 10~25.1,
+                                  `TAZ:1` == 2|`TAZ:1` == 20~21.6,
+                                  `TAZ:1` == 3|`TAZ:1` == 30~17.2,
+                                  `TAZ:1` == 4|`TAZ:1` == 40~16.7,
+                                  `TAZ:1` == 5|`TAZ:1` == 50~30.9,
+                                  `TAZ:1` == 6|`TAZ:1` == 60~19.0,
+                                  `TAZ:1` == 7|`TAZ:1` == 70~15.1)
+                      ),
+                      ext_dist
+    ),
+    ext_dist = ifelse(`TAZ:1`%in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) & 
+                        TAZ %in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70),
+                      ext_dist+(
+                        case_when(TAZ == 1|TAZ == 10~25.1,
+                                  TAZ == 2|TAZ == 20~21.6,
+                                  TAZ == 3|TAZ == 30~17.2,
+                                  TAZ == 4|TAZ == 40~16.7,
+                                  TAZ == 5|TAZ == 50~30.9,
+                                  TAZ == 6|TAZ == 60~19.0,
+                                  TAZ == 7|TAZ == 70~15.1)
+                      ),
+                      ext_dist
+    )
+  ) %>% 
+  mutate(
+    `Length (Skim)` = ifelse(
+      `TAZ:1`%in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) & 
+        TAZ %in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70),
+      `Length (Skim)`+ext_dist,
+      `Length (Skim)`
+    ),
+    trip_time = ifelse(
+      `TAZ:1`%in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) & 
+        TAZ %in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70),
+      trip_time+ext_dist,
+      trip_time
+    )
+  )
 
 
+# dist %>% head(20) %>% data.frame()
 ### trip_length_summary ###
 
 if(includeExtDist==1){
