@@ -21,7 +21,7 @@ library(leaflet)
 library(DT)
 
 knitr::opts_knit$set(knitr.kable.NA = '')
-scen <- '52_TestDelivery'
+scen <- '53_Reid'
 
 ### read in and combine distances skim files ###
 ### read in and combine distances skim files ###
@@ -258,8 +258,36 @@ The table above shows that the match between the target trips and modeled trips 
 
 ## Highway Validation
 
-In the highway assignment the origin-destination trip demand matrix created from the demand models is assigned (loaded) on to the network. The primary output from the highway assignment step is the traffic flow on each roadway link, commonly referred to as the model volume. This section presents the comparison of the model volume against the roadway count obtained from the count databases of the transportation agencies - Nevada Department of Transportation and California Department of Transportation's Caltrans Performance Measurement System (PeMS) Data. The counts obtained from transportation agencies did not cover some of the regions in the modeling area, especially west shore and east shore. To fill this missing gap, the count from StreetLight Data was used. The link ID for the roadway links where StreetLight Data was used are the following: 145,3068,12135,14493,622,4881,4077,14579,14499,2439. Table 3 presents the overall summary and Table 4 provides the link level detail. 
-                                                       
+```{r,echo=F,eval=T}
+
+counthighwaySTL <- read_excel('../Calibration/Data/3_CountsAndBoardings.xlsx','HighwayCounts','A1:F35') %>% select(-diff,-AB_LANES) %>% 
+  filter(Source=='DOT Count')
+
+mdl <- lm(count_vol ~ 0 + SL_vol, data = counthighwaySTL)
+rsq <- signif(summary(mdl)$adj.r.squared, 2)
+
+```
+
+
+```{r,echo=F,eval=T}
+gg <- ggplot(counthighwaySTL, aes(SL_vol, count_vol))+
+    geom_point() + geom_smooth(method = "lm", se = F) +
+     # scale_x_continuous(limits = c(0, 40000)) +
+     # scale_y_continuous(limits = c(0, 40000)) +
+    labs(x = "Streetlight Data Count", y="DOT Count", title = "Streetlight Data Count vs. DOT Count")
+# pp <- gg %>% ggplotly() 
+# pp <- pp %>% layout(annotations =list(x=max(tazWorkerCompare$SEDataEmployment)*0.66,y=max(tazWorkerCompare$residentWorkers)*0.33,text=paste0('R-squared = ',rsq),showarrow=F))
+
+```
+
+<div style= "float:right;position: relative; top: 10px;">
+```{r pressure, echo=FALSE, fig.height=4,fig.width=5}
+gg
+```
+</div>
+
+In the highway assignment the origin-destination trip demand matrix created from the demand models is assigned (loaded) on to the network. The primary output from the highway assignment step is the traffic flow on each roadway link, commonly referred to as the model volume. This section presents the comparison of the model volume against the roadway count obtained from the count databases of the transportation agencies - Nevada Department of Transportation and California Department of Transportation’s Caltrans Performance Measurement System (PeMS) Data. As a consistency check on the roadway count data and the StreetLight data, the two sources were compared to each other. The initial benefit of this comparison was that it helped unearth an error made in summarizing the count data during the initial compilation of the roadway count data. Using the correctly summarized roadway count data, a comparison was made against StreeLlight counts by computing the R2, across all the links that had a roadway count information (see plot to the right).  An R2 value of 0.97 indicates a strong match between the roadway count data (used to validate highway assignment) and Streetlight Data (used to validate external station traffic and composition); thus providing confidence in the count data and the StreetLight data. Only five, out of the twenty-five links that had roadway counts, had a Streetlight Data count deviation of 25% or more  from the roadway count. The counts obtained from transportation agencies did not cover some of the regions in the modeling area, especially west shore and east shore. To fill this missing gap, the count from StreetLight Data was used. The link ID for the roadway links where StreetLight Data was used are the following: 145,3068,12135,14493,622,4881,4077,14579,14499,2439. Table 3 presents the overall summary and Table 4 provides the link level detail.
+
 
 ```{r, include=T,messages=F,echo=F}
 
