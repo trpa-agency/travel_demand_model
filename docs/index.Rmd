@@ -3,8 +3,7 @@ title: "Tahoe Model Documentation"
 output: html_document
 ---
 
-Welcome to the Model Documentation for the Tahoe Travel Model. This
-set of webpages is under construction.   
+Welcome to the Model Documentation for the Tahoe Travel Model.
 
 The "Pages" menu at the top of this page will take you to the various sections of the document.  
 The sections are:  
@@ -14,10 +13,16 @@ The sections are:
   - [External Workers Models](ExternalWorkers.html): Describes the external workers model.
   - [Visitor Models](VisitorModels.html): Describes the visitor model.
   - [Traffic Assignment](TrafficAssignment.html): Describes the Traffic Assignment step of the model.
-  - [Calibration and Validation Summary](Calibration.html): Describes the model calibration results.
+  - [Folder Structure](FolderStructure.html): This page shows the folder structure used in the Tahoe model.
   - [Data Dictionary](DataDictionary.html): Data Dictionary for all the main model inputs and outputs.
   - [GISDK Reference](CodeReference.html): This page provides documentation on the functions used in Tahoe GISDK scripts.
-  - [Base Year 2018 Inputs](base_2018.html): This page displays the zonal inputs for the 2018 model base year.
-  - [External Travel Summary](StreetlightData_Summary.html): This page displays the external travel methodology.
-  - [Folder Structure](FolderStructure.html): This page shows the folder structure used in the Tahoe model.
+  - [Base Year 2018 Inputs](base_2018.html): Zonal inputs for the 2018 model base year.
+  - [External Travel Summary](StreetlightData_Summary.html): Updated 2018 external travel methodology.
+  - [External Worker Methodology](ExternalWorkers.html): Updated 2018 external workers methodology.
+  - [Entry/Exit Station Methodology](ExternalStationComposition.html): Updated 2018 entry/exit station methodology
+  - [Visitor Samples](UpdateVisitorSamples.html): Updated 2018 visitor samples.
+  - [Static Validation Report (2018)](StaticValidation.html): 2018 static validation results.
+  - [Dynamic Validation #1: Housing Units](DynamicValidationSED_Changes.html): 2018 dynamic validation test for adding residential units.
+  - [Dynamic Validation #2: Recreation](DynamicValidationRecAttractionChanges.html): 2018 dynamic validation test for modifying recreation attractivenss.
+  - [Dynamic Validation #3: Transit](DynamicValidationTransitLOS.html): 2018 dynamic validation test for increasing transit service.
   

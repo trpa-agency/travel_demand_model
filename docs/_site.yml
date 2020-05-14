@@ -17,18 +17,31 @@ navbar:
           href: VisitorModels.html
         - text: "Traffic Assignment"
           href: TrafficAssignment.html
-        - text: "Calibration and Validation Summary"
-          href: Calibration.html
         - text: "Data Dictionary"
           href: DataDictionary.html
         - text: "GISDK Reference"
           href: CodeReference.html  
+        - text: "Folder Structure"
+          href: FolderStructure.html 
         - text: "Base Year 2018 Zonal Inputs"
           href: base_2018.html  	
         - text: "External Travel Summary"
-          href: StreetlightData_Summary.html  
-        - text: "Folder Structure"
-          href: FolderStructure.html           
+          href: StreetlightData_Summary.html 
+        - text: "External Worker Methodology"
+          href: ExternalWorkers.html 
+        - text: "Entry/Exit Station Methodology"
+          href: ExternalStationComposition.html 
+        - text: "Visitor Samples"
+          href: UpdateVisitorSamples.html 
+        - text: "Static Validation Report (2018)"
+          href: StaticValidation.html
+        - text: "Dynamic Validation #1: Housing Units"
+          href: DynamicValidationSED_Changes.html
+        - text: "Dynamic Validation #2: Recreation"
+          href: DynamicValidationRecAttractionChanges.html
+        - text: "Dynamic Validation #3: Transit"
+          href: DynamicValidationTransitLOS.html
+
   right:
     - icon: fa-github fa-lg
       href: https://github.com/trpa-agency/travel_demand_model

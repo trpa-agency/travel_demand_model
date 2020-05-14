@@ -31,12 +31,11 @@ mpal2 <- colorNumeric(c('#969696','#0570b0'), domain = 1:2) # For coding centroi
 ```{r include=F,messages=F}
 # Base Year Model
 scen <- '40_BY'
-FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- read_csv('H:/model/model_update_2019/WSP/products/40_BY/post/FullStreets.csv')
 FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
-streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+streetNet <- st_read(paste0('H:/model/model_update_2019/WSP/products/40_BY/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
 
-streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
-
+streetNet@data <- streetNet@data %>% dplyr::select(ID) %>% left_join(FullStreets %>% dplyr::select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
 streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
                                 'Facility Type: ',AB_FC,'<br>',
                                 'Speed =',AB_SPEED,'<br>',
@@ -44,17 +43,17 @@ streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'
 streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
 streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
 streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
+Tahoe_TransitR <- read_csv('H:/model/model_update_2019/WSP/products/40_BY/post/Tahoe_TransitR.csv')
 
-Tahoe_TransitR <- read_csv(paste0('../Calibration/Runs/',scen,'/post/Tahoe_TransitR.csv'))
-transitRouteMap <- read_excel('../Calibration/Data/3_CountsAndBoardings.xlsx','TransitBoardsings','G2:H28')
+transitRouteMap <- read_excel('H:/model/website/5_11_20/travel_demand_model/docs/data/3_CountsAndBoardings.xlsx','TransitBoardsings','G2:H28')
 
-SummerAMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerAMPeakboardAlight.csv'))
-SummerLateNightboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerLateNightboardAlight.csv'))
-SummerMiddayboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerMiddayboardAlight.csv'))
-SummerPMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerPMPeakboardAlight.csv'))
+SummerAMPeakboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/40_BY/post/SummerAMPeakboardAlight.csv')
+SummerLateNightboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/40_BY/post/SummerLateNightboardAlight.csv')
+SummerMiddayboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/40_BY/post/SummerMiddayboardAlight.csv')
+SummerPMPeakboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/40_BY/post/SummerPMPeakboardAlight.csv')
 
 routeSumm_BY <- rbind.data.frame(SummerLateNightboardAlight,SummerAMPeakboardAlight,SummerMiddayboardAlight,SummerPMPeakboardAlight) %>% 
-  left_join(Tahoe_TransitR %>% select(ROUTE_ID,ROUTE_NAME),by=c('ROUTE'='ROUTE_ID')) %>% 
+  left_join(Tahoe_TransitR %>% dplyr::select(ROUTE_ID,ROUTE_NAME),by=c('ROUTE'='ROUTE_ID')) %>% 
   left_join(transitRouteMap,by=c('ROUTE_NAME'='Route_Name_Dir')) %>% 
   group_by(`Route Desc`) %>% summarise(`Model Boardings`= sum(ALIGHTEND))
 
@@ -82,11 +81,11 @@ In this dynamic validation test, frequency of all transit services is doubled. T
 
 ```{r include=F,messages=F}
 scen <- '41_Headway'
-FullStreets <- read_csv(paste0('Runs/',scen,'/post/FullStreets.csv'))
+FullStreets <- read_csv('H:/model/model_update_2019/WSP/products/41_Headway/post/FullStreets.csv')
 FullStreets <- FullStreets %>% mutate(DAILYVOLUME=round(DAILYVOLUME))
-streetNet <- st_read(paste0('Runs/',scen,'/post/Streets_offset.shp')) %>% as('Spatial') %>% convAttrToChar()
+streetNet <- st_read('H:/model/model_update_2019/WSP/products/41_Headway/post/Streets_offset.shp') %>% as('Spatial') %>% convAttrToChar()
 
-streetNet@data <- streetNet@data %>% select(ID) %>% left_join(FullStreets %>% select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
+streetNet@data <- streetNet@data %>% dplyr::select(ID) %>% left_join(FullStreets %>% dplyr::select(ID,AB_FC,AB_SPEED,DAILYVOLUME),by=c('ID'='ID')) 
 
 streetNet@data <- streetNet@data %>% mutate(tazLabel = paste0('<i>ID: </i>',ID,'<br>',
                                 'Facility Type: ',AB_FC,'<br>',
@@ -96,10 +95,10 @@ streetNet_FC129 <- streetNet[streetNet$AB_FC %in% c(1,2,9),]
 streeCen = (data.frame(gCentroid(streetNet_FC129,byid=TRUE)))
 streeCen <- streeCen %>% mutate(DAILYVOLUME=streetNet_FC129$DAILYVOLUME)
 
-SummerAMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerAMPeakboardAlight.csv'))
-SummerLateNightboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerLateNightboardAlight.csv'))
-SummerMiddayboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerMiddayboardAlight.csv'))
-SummerPMPeakboardAlight <- read_csv(paste0('../Calibration/Runs/',scen,'/post/SummerPMPeakboardAlight.csv'))
+SummerAMPeakboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/41_Headway/post/SummerAMPeakboardAlight.csv')
+SummerLateNightboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/41_Headway/post/SummerLateNightboardAlight.csv')
+SummerMiddayboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/41_Headway/post/SummerMiddayboardAlight.csv')
+SummerPMPeakboardAlight <- read_csv('H:/model/model_update_2019/WSP/products/41_Headway/post/SummerPMPeakboardAlight.csv')
 
 routeSumm <- rbind.data.frame(SummerLateNightboardAlight,SummerAMPeakboardAlight,SummerMiddayboardAlight,SummerPMPeakboardAlight) %>% 
   left_join(Tahoe_TransitR %>% select(ROUTE_ID,ROUTE_NAME),by=c('ROUTE'='ROUTE_ID')) %>% 
@@ -150,5 +149,4 @@ Key insights from this dynamic testing is summarized below:
 
 + The transit boardings increased from 1,961 to 2,588, an increase of 32%. 
 
-+ The region wide VMT decreased by 3,574 miles, a decrease of 0.11%.
 
