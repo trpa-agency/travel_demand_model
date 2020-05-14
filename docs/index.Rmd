@@ -15,7 +15,7 @@ The sections are:
   - [Traffic Assignment](TrafficAssignment.html): Describes the Traffic Assignment step of the model.
   - [Folder Structure](FolderStructure.html): This page shows the folder structure used in the Tahoe model.
   - [Data Dictionary](DataDictionary.html): Data Dictionary for all the main model inputs and outputs.
-  - [GISDK Reference](CodeReference.html): This page provides documentation on the functions used in Tahoe GISDK scripts.
+  - [GISDK Reference](CodeReference.html): Documentation on the functions used in Tahoe GISDK scripts.
   - [Base Year 2018 Inputs](base_2018.html): Zonal inputs for the 2018 model base year.
   - [External Travel Summary](StreetlightData_Summary.html): Updated 2018 external travel methodology.
   - [External Worker Methodology](ExternalWorkers.html): Updated 2018 external workers methodology.
