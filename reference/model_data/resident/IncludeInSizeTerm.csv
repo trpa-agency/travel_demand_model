@@ -1,9 +1,0 @@
-purpose,purpose_label,total_occ_units,emp_total,emp_retail,emp_srvc,emp_game,emp_rec,emp_other,school_enrollment,moreThan50HHs,rec_attractiveness
-1,work,0,3.5,0,0,0,0,0,0,0,0
-2,school,1,1,1,1,1,1,1,1,1,0
-3,escorting,1,0,0,1,0,1,0,1,0,0
-4,shop,1,0,1,0,1,0,0,0,0,0
-5,other,0,0,0,1,0,0,1,0,0,0
-6,discretionary,1,0,0,1,1,1,0,0,0,1
-7,eat,1,0,0,1,1,0,1,0,0,0
-8,at work,0,0,0,1,0,0,1,0,0,0

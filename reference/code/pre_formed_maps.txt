@@ -1,5 +1,0 @@
-preFormAssignmentMap%%ONE%%Assignment Map%%TWO%%Map with links colored by VOC and thickened by flow.  Both directions' attributes are summed in this map.
-preFormPopDMap%%ONE%%Population Density Map%%TWO%%Map with zones colored by population density (persons/sq. mile).
-preFormPopAMap%%ONE%%Absolute Population Map%%TWO%%Map with zones colored by actual population.
-preFormEmpMap%%ONE%%Employment Maps%%TWO%%Maps with zones colored by employment.
-preFormNonResidentFillMap%%ONE%%Filled Visitor Units Maps%%TWO%%Maps with zones colored by number of filled visitor units.
