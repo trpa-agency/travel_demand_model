@@ -1,0 +1,51 @@
+UrbanType .csv outputs_%%SEASON%%\ 2 A summary of the urban type calculations by zone.
+AccessibilityToEmployment .csv outputs_%%SEASON%%\ 2 A summary of the accessibility to employment calculations by zone.
+SocioEconWithLaborForce .csv outputs_%%SEASON%%\ 2 The socioeconomic data with the addition of the calculated labor force by zone.
+MergedZonalData .csv outputs_%%SEASON%%\ 2 The combined zonal data used in the model.
+Final_Targets .csv outputs_%%SEASON%%\ 3 The table balancing targets used in the resident synthetic population generator.
+SynPopH_Full .csv outputs_%%SEASON%%\ 3 The resident synthetic population by household.
+SynPopP .csv outputs_%%SEASON%%\ 3 The resident synthetic population by person.
+MandatoryDTMChoice .csv outputs_%%SEASON%%\ 3 The results of the resident mandatory tour destination, time-of-day, and mode choice models.
+JointTourGeneration .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour generation model.
+JointTourComposition .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour composition model.
+JointTourParticipation .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour participation model.
+JointDTMChoice .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour destination, time-of-day, and mode choice models.
+MaintenanceFrequency .csv outputs_%%SEASON%%\ 3 The results of the resident individual non-mandatory maintenance tour frequency model.
+MaintenanceAllocation .csv outputs_%%SEASON%%\ 3 The results of the resident individual non-mandatory maintenance tour allocation model.
+DiscFrequency_Workers .csv outputs_%%SEASON%%\ 3 The results of the resident individual worker non-mandatory discretionary tour frequency model.
+DiscFrequency_Nonworkers .csv outputs_%%SEASON%%\ 3The results of the resident individual non-worker non-mandatory discretionary tour frequency model.
+DiscFrequency_Children .csv outputs_%%SEASON%%\ 3 The results of the resident individual children non-mandatory discretionary tour frequency model.
+NonMandatoryDTMChoice .csv outputs_%%SEASON%%\ 3 The results of the resident individual non-mandatory tour destination, time-of-day, and mode choice models.
+IndivAtWorkFreq .csv outputs_%%SEASON%%\ 3 The results of the resident at-work tour frequency model.
+AtWorkDTMChoice .csv outputs_%%SEASON%%\ 3 The results of the resident at-work tour destination, time-of-day, and mode choice models.
+MandatoryStopFrequency .csv outputs_%%SEASON%%\ 3 The results of the resident mandatory tour stops frequency model.
+MandatoryStopLocation .csv outputs_%%SEASON%%\ 3 The results of the resident mandatory tour stops location model.
+MandatoryStopMode .csv outputs_%%SEASON%%\ 3 The results of the resident mandatory tour stops mode model.
+JointStopFrequency .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour stops frequency model.
+JointStopLocation .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour stops location model.
+JointStopMode .csv outputs_%%SEASON%%\ 3 The results of the resident joint tour stops mode model.
+Non-MandatoryStopFrequency .csv outputs_%%SEASON%%\ 3 The results of the resident individual non-mandatory tour stops frequency model.
+Non-MandatoryStopLocation .csv outputs_%%SEASON%%\ 3 The results of the resident individual non-mandatory tour stops location model.
+Non-MandatoryStopMode .csv outputs_%%SEASON%%\ 3 The results of the resident individual non-mandatory tour stops mode model.
+At-WorkStopFrequency .csv outputs_%%SEASON%%\ 3 The results of the resident at-work tour stops frequency model.
+At-WorkStopLocation .csv outputs_%%SEASON%%\ 3 The results of the resident at-work tour stops location model.
+At-WorkStopMode .csv outputs_%%SEASON%%\ 3 The results of the resident at-work tour stops mode model.
+ExternalWorkerSynpopWithOT .csv outputs_%%SEASON%%\ 4 The synthetic external worker population with origin and time-of-day choice model results.
+PartyArray_afterThruVisitors .pam outputs_%%SEASON%%\ 5 The synthetic overnight, day, and thru visitor population with pattern, destination, time-of-day, mode, and stops models results.
+FullStreets_iter0 .bin outputs_%%SEASON%%\ 6 The street network dataview with results of the initial highway assignment.
+FullStreets_iter1 .bin outputs_%%SEASON%%\ 6 The street network dataview with results of the highway assignment after one model iteration.
+FullStreets_iter2 .bin outputs_%%SEASON%%\ 6 The street network dataview with results of the highway assignment after two model iterations.
+FullStreets_iter3 .bin outputs_%%SEASON%%\ 6 The street network dataview with results of the highway assignment after three model iterations.
+AMPeakboardAlight .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Boarding and alighting summary for AM peak transit assignment.
+AMPeaktransitFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Transit line flows for AM peak transit assignment.
+AMPeaklinkFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Drive to transit drive flows for AM peak transit assignment.
+MiddayboardAlight .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Boarding and alighting summary for midday peak transit assignment.
+MiddaytransitFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Transit line flows for midday transit assignment.
+MiddaylinkFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Drive to transit drive flows for midday transit assignment.
+PMPeakboardAlight .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Boarding and alighting summary for PM peak transit assignment.
+PMPeaktransitFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Transit line flows for PM peak transit assignment.
+PMPeaklinkFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Drive to transit drive flows for PM peak transit assignment.
+LateNightboardAlight .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Boarding and alighting summary for LN peak transit assignment.
+LateNighttransitFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Transit line flows for LN peak transit assignment.
+LateNightlinkFlow .bin gis\Skims\Transit_Assignment\%%SEASON%% 6 Drive to transit drive flows for LN peak transit assignment.
+event .log outputs_%%SEASON%%\logs\ 7 The log recorded during the latest model run for this scenario and season.

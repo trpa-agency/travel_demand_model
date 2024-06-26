@@ -1,0 +1,11 @@
+purpose,purpose_label,total_occ_units,emp_total,emp_retail,emp_srvc,emp_game,emp_other,school_enrollment,rec_attractiveness
+10,work_outbound,1,0,1,1,1,1,0,0
+11,work_inbound,0,0,0,1,0,1,1,0
+20,school_outbound,1,0,1,1,0,0,1,0
+21,school_inbound,1,0,0,1,0,0,1,0
+3,escorting,1,0,0,1,0,1,1,0
+4,shop,1,0,0,1,1,0,0,0
+5,other,1,0,1,1,1,1,0,0
+6,discretionary,1,0,1,1,1,0,0,1
+7,eat,1,0,1,1,1,0,1,0
+8,at work,1,0,1,1,1,1,0,0

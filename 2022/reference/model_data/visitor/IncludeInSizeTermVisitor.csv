@@ -1,0 +1,11 @@
+purpose,purpose_label,emp_total,emp_retail,emp_srvc,emp_game,emp_rec,emp_other,campground,rec_attractiveness
+1s,recreation - summer,0,0,0,0,2.8672,0,0,1
+2s,gaming - summer,0,0,0,1,0,0,0,0
+3s,shopping - summer,0,1.5633,0,0,0,1,0,0
+4s,other - summer,1,0,0,0,0,0,0,0
+1w,recreation - winter,0,0,0,0,2.8672,0,2.4402,1
+2w,gaming - winter,0,0,0,1,0,0,0,0
+3w,shopping - winter,0,1.5633,0,0,0,1,0,0
+4w,other - winter,1,0,0,0,0,0,0,0
+stops,stops - summer,0,2.9731,1.6243,1.4215,0.2472,2.3037,2.7184,1
+stopw,stops - winter,0,1.5394,1,1.1369,0.7072,0.7072,0,0
