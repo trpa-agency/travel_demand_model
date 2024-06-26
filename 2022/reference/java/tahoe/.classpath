@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="lib" path="release/tahoe.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common-base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/censusdata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/logging-log4j-1.2.9"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/synpop"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
