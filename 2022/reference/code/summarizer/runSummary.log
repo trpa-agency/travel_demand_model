@@ -1,7 +1,7 @@
-D:\Projects\trpa\31000778\travel_demand_model\reference\code\summarizer 
-[1] "D:/Projects/trpa/31000778/travel_demand_model/reference/code/R-3.5.1/library"
+S:\Projects\CA\TRPA\Model\3_Updated_Model_compiled_java\TahoeModel_Release1\reference\code\summarizer 
+[1] "S:/Projects/CA/TRPA/Model/3_Updated_Model_compiled_java/TahoeModel_Release1/reference/code/R-3.5.1/library"
 running
-  'D:\Projects\trpa\31000778\travel_demand_model\reference\code\R-3.5.1\bin\x64\Rterm.exe --slave --no-restore --vanilla --file=./model_summarizer.R --args test2'
+  'S:\Projects\CA\TRPA\Model\3_Updated_Model_compiled_java\TahoeModel_Release1\reference\code\R-3.5.1\bin\x64\Rterm.exe --slave --no-restore --vanilla --file=./model_summarizer.R --args 2018_final'
 
 -- Attaching packages --------------------------------------- tidyverse 1.2.1 --
 v ggplot2 3.1.1       v purrr   0.3.2  
@@ -21,7 +21,15 @@ Warning messages:
 7: package 'dplyr' was built under R version 3.5.3 
 8: package 'stringr' was built under R version 3.5.3 
 9: package 'forcats' was built under R version 3.5.3 
-[1] "../../../scenarios/test2"
+[1] "../../../scenarios/2018_final"
+Parsed with column specification:
+cols(
+  TAZ = col_double(),
+  TRACT_2000 = col_double(),
+  COUNTY = col_character(),
+  CDP = col_character(),
+  SOUTH_LAKE = col_character()
+)
 [1] 0
 Parsed with column specification:
 cols(
@@ -46,31 +54,45 @@ cols(
   skim = col_double(),
   mode = col_character()
 )
+# A tibble: 1,752 x 1
+   id   
+   <chr>
+ 1 300-0
+ 2 0-109
+ 3 300-0
+ 4 0-109
+ 5 109-0
+ 6 0-302
+ 7 302-0
+ 8 0-109
+ 9 109-0
+10 0-302
+# ... with 1,742 more rows
 Parsed with column specification:
 cols(
-  `TAZ:1` = col_double(),
   TAZ = col_double(),
+  `TAZ:1` = col_double(),
   `AB_PM_IVTT / BA_PM_IVTT` = col_double(),
   `Length (Skim)` = col_double()
 )
 Parsed with column specification:
 cols(
-  `TAZ:1` = col_double(),
   TAZ = col_double(),
+  `TAZ:1` = col_double(),
   `AB_AM_IVTT / BA_AM_IVTT` = col_double(),
   `Length (Skim)` = col_double()
 )
 Parsed with column specification:
 cols(
-  `TAZ:1` = col_double(),
   TAZ = col_double(),
+  `TAZ:1` = col_double(),
   `AB_LN_IVTT / BA_LN_IVTT` = col_double(),
   `Length (Skim)` = col_double()
 )
 Parsed with column specification:
 cols(
-  `TAZ:1` = col_double(),
   TAZ = col_double(),
+  `TAZ:1` = col_double(),
   `AB_MD_IVTT / BA_MD_IVTT` = col_double(),
   `Length (Skim)` = col_double()
 )
