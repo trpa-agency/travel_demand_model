@@ -1915,7 +1915,7 @@ EndMacro
 
 Macro "TripSummarizer" (pathArray,scenarioName,summer,iteration)
     RunProgram("cmd /s /c \"start \"cmd\" /D" + pathArray[8] + "summarizer\\ /WAIT \"runRSummarizer.cmd\" " + scenarioName + "\"",)
-    RunProgram(pathArray[8] + "summarizer\\ /WAIT \"runVMTVisualizer.cmd\" " + scenarioName + "\"",)
+    RunProgram("cmd /s /c \"start \"cmd\" /D" + pathArray[8] + "summarizer\\ /WAIT \"runVMTVisualizer.cmd\" " + scenarioName + "\"",)
     files = {"vmt_summary","trip_length_summary","tour_length_summary","autoocc_summary"}
     outputDirectory = pathArray[13] + "scenarios\\" + scenarioName + "\\outputs_winter\\reports\\"
     if summer = 1 then do
