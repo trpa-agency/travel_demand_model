@@ -16,7 +16,7 @@
 
 
     <appender name="FILE" class="org.apache.log4j.FileAppender">
-        <param name="File" value="/Projects/trpa/31000778/travel_demand_model/scenarios/test2/outputs_summer/logs/event.log"/>
+        <param name="File" value="/Projects/CA/TRPA/Model/3_Updated_Model_compiled_java/TahoeModel_Release1/scenarios/2018_final/outputs_summer/logs/event.log"/>
         <param name="Append" value="true"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{dd-MMM-yyyy HH:mm:ss:SSS}, %p, %m%n"/>

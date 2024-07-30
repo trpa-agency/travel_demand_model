@@ -283,10 +283,14 @@ Dbox "TahoeDbox" (tempStateArray) right, bottom , 50 , 31.5 title: "Tahoe Activi
                 else do
                     //Clear log file
                     if season_idx = 1 then do
-                        DeleteFile(pathArray[13] + "scenarios\\" + scenario_list[scenario_idx] + "\\outputs_summer\\logs\\event.log")
+						if GetFileInfo(pathArray[13] + "scenarios\\" + scenario_list[scenario_idx] + "\\outputs_summer\\logs\\event.log") <> null then do
+							DeleteFile(pathArray[13] + "scenarios\\" + scenario_list[scenario_idx] + "\\outputs_summer\\logs\\event.log")
+						end // BK added this error handling, as In Version 6.0 added the NotFound error. 
                     end
                     else do
-                        DeleteFile(pathArray[13] + "scenarios\\" + scenario_list[scenario_idx] + "\\outputs_winter\\logs\\event.log")
+						if GetFileInfo(pathArray[13] + "scenarios\\" + scenario_list[scenario_idx] + "\\outputs_winter\\logs\\event.log") <> null then do
+							DeleteFile(pathArray[13] + "scenarios\\" + scenario_list[scenario_idx] + "\\outputs_winter\\logs\\event.log")
+						end // BK added this error handling, as In Version 6.0 added the NotFound error.
                     end
                 end
             end
@@ -861,9 +865,11 @@ Macro "RenameMatrixCores" (matrixName)
     RunMacro("TCB Run Operation", 1, "Rename Matrix Core", Opts) 
     Opts.Input.[Target Core] = "Sh" 
     Opts.Input.[Core Name] = "Visitor Shuttle" 
-    RunMacro("TCB Run Operation", 1, "Rename Matrix Core", Opts) 
-    Opts.Input.[Target Core] = "NM" 
-    Opts.Input.[Core Name] = "Non-Motorized" 
+    RunMacro("TCB Run Operation", 1, "Rename Matrix Core", Opts) // JF: modified the GISDK file to handle the new modes and also update the base trip files input to the 0th iteration of the model to make them consistent 
+    Opts.Input.[Target Core] = "WK" 
+    Opts.Input.[Core Name] = "Walk" 
+    Opts.Input.[Target Core] = "BK" 
+    Opts.Input.[Core Name] = "Bike" 
     RunMacro("TCB Run Operation", 1, "Rename Matrix Core", Opts) 
 endMacro
 
@@ -904,7 +910,7 @@ Macro "SaveActions" (scenarioPath,season_idx,cr_user_iters,model_iters,scenario_
     writearray(scenario_file,scenario_list)
     CloseFile(scenario_file)
 EndMacro
-
+// BK: The path to the bike/walk layer, network and TAZ is defined here
 Macro "updatePath" (basePath,scenarioPath)
     referencePath = basePath + "reference\\"
     javaPath = referencePath + "code\\"
@@ -919,7 +925,12 @@ Macro "updatePath" (basePath,scenarioPath)
     csvTripTablePath = scenarioPath + "gis\\Skims\\Data_Files\\TripTables\\"
     tripMatrixPath = scenarioPath + "gis\\Skims\\Data_Files\\TripTables\\"
     assignmentOutputPath = scenarioPath + "gis\\Skims\\Traffic_Assignment\\"
-    pathArray = {streetLayerPath, transitNetworkPath, transitRoutesPath, modeTablePath, outputPath, networkPath, mapPath, javaPath, externalDistanceMatrixPath, csvTripTablePath, tripMatrixPath, assignmentOutputPath, basePath}
+	// BK: add the path to the bike line layer [14], bike network [15], and TAZ layer [16]
+	bikeLayerPath = scenarioPath + "gis\\Layers\\Streets\\" 
+	bikeNetworkPath = scenarioPath + "gis\\Networks\\"
+	tazLayerPath = scenarioPath + "gis\\Layers\\TAZ\\"
+    pathArray = {streetLayerPath, transitNetworkPath, transitRoutesPath, modeTablePath, outputPath, networkPath, mapPath,
+				javaPath, externalDistanceMatrixPath, csvTripTablePath, tripMatrixPath, assignmentOutputPath, basePath, bikeLayerPath, bikeNetworkPath, tazLayerPath}
     return(pathArray)
 EndMacro
 
@@ -1341,6 +1352,8 @@ EndMacro
 //11 tripMatrixPath
 //12 assignmentOutputPath
 //13 basePath
+//14 bikeLayerPath
+//15 bikeNetworkPath
 
 
 //mapValues = {name, categories, category type, color start, color end, missing value color, zeros as missing values}
@@ -1902,6 +1915,7 @@ EndMacro
 
 Macro "TripSummarizer" (pathArray,scenarioName,summer,iteration)
     RunProgram("cmd /s /c \"start \"cmd\" /D" + pathArray[8] + "summarizer\\ /WAIT \"runRSummarizer.cmd\" " + scenarioName + "\"",)
+    RunProgram("cmd /s /c \"start \"cmd\" /D" + pathArray[8] + "summarizer\\ /WAIT \"runVMTVisualizer.cmd\" " + scenarioName + "\"",)
     files = {"vmt_summary","trip_length_summary","tour_length_summary","autoocc_summary"}
     outputDirectory = pathArray[13] + "scenarios\\" + scenarioName + "\\outputs_winter\\reports\\"
     if summer = 1 then do
@@ -1917,7 +1931,8 @@ Macro "TripSummarizer" (pathArray,scenarioName,summer,iteration)
     end
 EndMacro
 
-Macro "MSAAssignmentResults" (pathArray,scenarioName,summer,iteration)
+Macro "MSAAssignmentResults" (pathArray,scenarioName,summer,iteration) 
+ 
     vws = GetViewNames()
     for i = 1 to vws.length do
         CloseView(vws[i])
@@ -1993,6 +2008,13 @@ Macro "PreModelRunner"(pathArray,season_idx)
 
     RunMacro("UpdateFFSpeeds",pathArray)
     RunMacro("CreateDriveNetwork",pathArray)
+	RunMacro("PreProcessBikePedLayer", pathArray) // BK added
+	RunMacro("CreateBikePedNetwork", pathArray) // BK added
+	RunMacro("BikePedExtTAZLookup", pathArray) // BK added
+	RunMacro("WalkTimeSkim", season, pathArray, "WalkTimeSkim") // BK added
+	RunMacro("WalkDistanceSkim", season, pathArray, "WalkDistanceSkim") // BK added
+	RunMacro("BikeTimeSkim", season, pathArray, "BikeTimeSkim") // BK added
+	RunMacro("BikeDistanceSkim", season, pathArray, "BikeDistanceSkim") // BK added
     RunMacro("CopyBaseTripTables",pathArray)
     RunMacro("CreateTripMatrices",pathArray)
     RunMacro("TrafficAssignment",pathArray,cr_user_iters)
@@ -2621,6 +2643,705 @@ Macro "DriveDistanceSkim" (pathArray, time, period, outputname)
 
 endMacro
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//BK: Bike and Walk skim / Shortest BikePed path stuff below                                                               //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//BK: Macros need to be created:
+//1- Macro/Procedure(s) to read the BikePed Links Layer (that has the connectors already): Macro "AddLayer"
+//2- Macro to add two fields: BIKE_MINMILE and WALK_MINMILE: Macro "addfields" (dataview, newfldnames, typeflags)
+//3- Macro to calculate the BIKE_MINMILE , based on bike_facil: Macro "BikePedMINMILE" 
+//4- The Macro to create BikePedNetwork
+//5- Two Macros to create BikeSkim, WalkSkim, with cores of BIKE_MINMILE and WALK_MINMILE included in the skims
+
+
+// BK: this Macro Preprocess and create the Bike Network
+Macro "PreProcessBikePedLayer" (pathArray)
+    RunMacro("TCB Init")
+	 file = pathArray[14] + "bike_ped_links.DBD"
+	 BikePedLinksVW = RunMacro ("AddLayer", file , "Line")
+	 RunMacro("addfields", BikePedLinksVW, {"BIKE_MINMILE", "WALK_MINMILE"}, {"r","r"})
+	 RunMacro("BikePedMINMILE", BikePedLinksVW)
+	 return (BikePedLinksVW) 
+endMacro
+	 
+Macro "CreateBikePedNetwork" (pathArray)
+    RunMacro("TCB Init")
+     Opts = null
+     Opts.Input.[Link Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_links", "bike_ped_links"}
+     Opts.Global.[Network Options].[Node ID] = "bike_ped_nodes.ID"
+     Opts.Global.[Network Options].[Link ID] = "bike_ped_links.ID"
+     Opts.Global.[Network Options].[Turn Penalties] = "No"
+     Opts.Global.[Network Options].[Keep Duplicate Links] = "FALSE"
+     Opts.Global.[Network Options].[Ignore Link Direction] = "FALSE"
+     //Opts.Global.[Network Options].[Time Units] = "Minutes"
+	 Opts.Global.[Link Options] = {{"Length", "bike_ped_links.Length", "bike_ped_links.Length"}, {"Dir", "bike_ped_links.Dir", "bike_ped_links.Dir"}, {"speed", "bike_ped_links.speed", "bike_ped_links.speed"}, {"BIKE_MINMILE", "bike_ped_links.BIKE_MINMILE", "bike_ped_links.BIKE_MINMILE"}, {"WALK_MINMILE", "bike_ped_links.WALK_MINMILE", "bike_ped_links.WALK_MINMILE"}}
+	/* 
+     Opts.Global.[Link Options].Length = {"bike_ped_links.Length", "bike_ped_links.Length", , , "False"}
+     Opts.Global.[Link Options].osmid = {"bike_ped_links.osmid", "bike_ped_links.osmid", , , "False"}
+     Opts.Global.[Link Options].speed = {"bike_ped_links.speed", "bike_ped_links.speed", , , "False"}
+	 Opts.Global.[Link Options].BIKE_MINMILE = {"bike_ped_links.BIKE_MINMILE", "bike_ped_links.BIKE_MINMILE", , , "True"}
+	 Opts.Global.[Link Options].WALK_MINMILE = {"bike_ped_links.WALK_MINMILE", "bike_ped_links.WALK_MINMILE", , , "True"}
+     Opts.Global.[Link Options].Connector = {"bike_ped_links.Connector", "bike_ped_links.Connector", , , "False"} */
+	 
+	 Opts.Global.[Node Options].ID = "bike_ped_nodes.ID"
+     Opts.Global.[Node Options].Longitude = "bike_ped_nodes.Longitude"
+     Opts.Global.[Node Options].Latitude = "bike_ped_nodes.Latitude"
+	 Opts.Global.[Node Options].Centroid = "bike_ped_nodes.Centroid"
+     Opts.Global.[Node Options].Elevation = "bike_ped_nodes.Elevation"
+     //Opts.Global.[Length Units] = "Miles"
+     Opts.Output.[Network File] = pathArray[6] + "Tahoe_BikePed_Network.net"
+     ret_value = RunMacro("TCB Run Operation", 1, "Build Highway Network", Opts)
+	 maps = GetMapNames()
+		
+	 for i = 1 to maps.length do
+
+		 CloseMap(maps[i])
+
+		 end
+	 
+	 
+endMacro
+
+
+Macro "AddLayer" (file, type)
+	RunMacro("TCB Init")
+	//Adds .dbd to map as a layer
+	//Type: "Point", "Line", or "Area" for geographic layers, "Image" for image layers, or "Image Library" for image libraries
+
+	map_name = GetMap()
+	layer_names = GetLayerNames()
+	file_layers = GetDBLayers(file)
+	file_info = GetDBInfo(file)
+	if map_name = null then map_name = CreateMap("RSG", {{"Scope", file_info[1]}, {"Auto Project", "True"}})
+	SetMapRedraw(map_name, "False")
+
+	//Check if db already exists
+	for i=1 to layer_names.length do
+		//Skip if Type mismatch
+		layer_type = GetLayerType(layer_names[i])
+		if layer_type <> type then goto skip
+		
+		//Check for dbd match
+		layer_info = GetLayerInfo(layer_names[i])
+		layerdb = layer_info[10]
+		if lower(layerdb) = lower(file) then do
+			//ShowMessage("AddLayer: LayerDB already exists in map")
+			Return(layer_names[i])
+		end
+		skip:
+	end
+
+
+	//Else, add file to map
+	newlyr = AddLayer(null, file_layers[1], file, file_layers[1])
+	if GetLayerType(newlyr) <> type then do
+		newlyr = AddLayer( , file_layers[2], file, file_layers[2]) //Add lines if only nodes were loaded
+	end
+	RunMacro("G30 new layer default settings", newlyr)
+	Return(newlyr)
+
+	endhere:
+	throw("AddLayer: Layer already exists in map!")
+
+endMacro
+
+Macro "addfields" (dataview, newfldnames, typeflags)
+	RunMacro("TCB Init")
+	 //Add a new field to a dataview; does not overwrite
+	 //RunMacro("addfields", mvw.node, {"Delay", "Centroid", "Notes"}, {"r","i","c"})
+	 fd = newfldnames.length
+	 dim fldtypes[fd]
+	
+	 if TypeOf(typeflags) = "array" then do 
+		for i = 1 to newfldnames.length do
+			if typeflags[i] = "r" then fldtypes[i] = {"Real", 12, 2}
+			if typeflags[i] = "i" then fldtypes[i] = {"Integer", 10, 3}
+			if typeflags[i] = "c" then fldtypes[i] = {"String", 16, null}
+		end
+	 end
+	
+	 if TypeOf(typeflags) = "string" then do 
+		for i = 1 to newfldnames.length do
+			if typeflags = "r" then fldtypes[i] = {"Real", 12, 2}
+			if typeflags = "i" then fldtypes[i] = {"Integer", 10, 3}
+			if typeflags = "c" then fldtypes[i] = {"String", 16, null}
+		end
+	 end
+
+	 SetView(dataview)
+     struct = GetTableStructure(dataview)
+
+	 dim snames[1]
+     for i = 1 to struct.length do
+        struct[i] = struct[i] + {struct[i][1]}
+	  snames = snames + {struct[i][1]}
+     end
+
+	 modtab = 0
+     for i = 1 to newfldnames.length do
+        pos = ArrayPosition(snames, {newfldnames[i]}, )
+        if pos = 0 then do
+           newstr = newstr + {{newfldnames[i], fldtypes[i][1], fldtypes[i][2], fldtypes[i][3], 
+					"false", null, null, null, null}}
+           modtab = 1
+        end
+     end
+   
+     if modtab = 1 then do
+        newstr = struct + newstr
+        ModifyTable(dataview, newstr)
+     end
+	 
+endMacro
+
+Macro "BikePedMINMILE" (BikePedLinksVW)
+	RunMacro("TCB Init")
+	 {BikeFacType, Length} = GetDataVectors(BikePedLinksVW + "|", {"bike_facil", "Length"}, {{"Sort Order",{{BikePedLinksVW + ".ID","Ascending"}}}})
+	 // Bike Facility Type; speed class distinction 
+	 BIKE_MINMILE = if (BikeFacType = 'class 1') then (2.0 * Length)	else 
+	 if (BikeFacType = 'class 2') then (3.1 * Length) else 
+	 if (BikeFacType = 'class 3') then (4.9 * Length) else (6.0 * Length)	
+	 SetDataVector(BikePedLinksVW+"|", "BIKE_MINMILE", BIKE_MINMILE, {{"Sort Order",{{BikePedLinksVW + ".ID","Ascending"}}}})
+	 WALK_MINMILE =  20.0 * Length
+	 SetDataVector(BikePedLinksVW+"|", "WALK_MINMILE", WALK_MINMILE, {{"Sort Order",{{BikePedLinksVW + ".ID","Ascending"}}}})
+	 
+endMacro
+
+Macro "BikePedExtTAZLookup" (pathArray)
+/*
+This Macro adds the external zones to the TAZ and creates a lookup bin file for Bike & Ped use, and also creates the ExternalDistanceMatrixBikePed 
+*/
+
+	RunMacro("TCB Init")
+	 file= pathArray[16] + "TAZ.bin"
+
+	 table = CreateObject("Table", {FileName: file})
+
+	 file_copy = Substitute(file, ".bin", "_BikePedExtTAZLookup.bin",)
+
+	 table.Export({FileName: file_copy})
+
+	 //tazLookupFile= file_copy 
+
+	 tazLookupTable = OpenTable("tazLookupTable","FFB", {file_copy}, {{"Shared", "True"}})
+	 SetView(tazLookupTable)
+	 rh = AddRecords("tazLookupTable",
+
+     {"ID", "TAZ"},
+     {
+     { 12567,1},
+     { 12566,2},
+     { 12565,3},
+     { 12564,4},
+	 {12569,5},
+	 {12563,6},
+	 {12562,7},
+	 {12602,10},
+	 {12603,20},
+	 {12604,30},
+	 {12605,40},
+	 {12606,50},
+	 {12607,60},
+	 {12608,70}
+     }, null)
+	 //{vw, set} = SplitString(tazLookupTable)
+     //n = GetRecordCount(vw, set)
+     //vec = Vector(n, "Double", {{"Constant", 0}})
+     //SetDataVector(vw_set, "ExtDist", vec,)
+	 
+	 mat =CreateMatrix({tazLookupTable+"|", tazLookupTable+".TAZ" , "TAZ"},
+
+                 {tazLookupTable+"|", tazLookupTable+".TAZ" , "TAZ"},
+
+                 {{"File Name", pathArray[9] + "ExternalDistanceMatrixBikePed.mtx"}, {"Type", "Float"}})
+
+	 mc = CreateMatrixCurrency(mat, "Table", "TAZ", "TAZ", )
+	 //mc := 0.00
+	 //FillMatrix(mc,,,{"Copy",0},)
+	 CloseView(tazLookupTable)
+endMacro
+
+// BK: this Macro creates the BikeSkim (Length and MINMILE): 
+Macro "BikeDistanceSkim" (season, pathArray, outputname)
+    RunMacro("TCB Init")
+    //Set up and run shortest path skim
+     Opts = null
+     Opts.Input.Network = pathArray[15] + "Tahoe_BikePed_Network.net"
+     Opts.Input.[Origin Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Destination Set] = {pathArray[1] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Via Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes"}
+     Opts.Field.Minimize = "Length"
+     Opts.Field.Nodes = "bike_ped_nodes.ID"
+     //Opts.Field.[Skim Fields].Length = "All" 
+     Opts.Output.[Output Matrix].Label = "Bike_Distance_Matrix"
+     //Opts.Output.[Output Matrix].Compression = 1
+     Opts.Output.[Output Matrix].[File Name] = pathArray[5] + outputname + ".mtx"
+     ret_value = RunMacro("TCB Run Procedure", 1, "TCSPMAT", Opts)
+     
+	 //Create intrazonal
+     Opts = null
+	 Opts.Input.[Matrix Currency] = {pathArray[5] + outputname + ".mtx", "Length",,}
+	 Opts.Global.Factor = 1
+     Opts.Global.Neighbors = 3
+     Opts.Global.Operation = 1
+     Opts.Global.[Treat Missing] = 1
+     ret_value = RunMacro("TCB Run Procedure", 1, "Intrazonal", Opts)
+
+	 //Add TAZ Matrix Index on Row and Column
+	 skimMatrix = OpenMatrix(pathArray[5] + outputname + ".mtx","True")
+	 mtxinx = GetMatrixIndexNames(skimMatrix)
+	 for i = 1 to mtxinx[1].length do
+		if mtxinx[1][i] = "TAZ" then goto skiphere
+	 end
+
+     Opts = null
+     Opts.Input.[Current Matrix] = skimMatrix
+     Opts.Input.[Index Type] = "Both"
+     Opts.Input.[View Set] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes+TAZ", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Old ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes.ID"}
+     Opts.Input.[New ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "TAZ"}
+     Opts.Output.[New Index] = "TAZ"
+     ret_value = RunMacro("TCB Run Operation", "Add Matrix Index", Opts, &Ret)
+	 
+	 skiphere:
+
+	 // Adding the External Zones skimmed
+	 // Filled all cells with zeros to indicate infeasible Bike/Ped routes from external zones to Lake Tahoe internal zones by Ped/Bike (this will be taken care of in the UEC)
+	 m2 = OpenMatrix(pathArray[9] + "ExternalDistanceMatrixBikePed.mtx", )
+	 mc1 = CreateMatrixCurrency(skimMatrix, "Length", "TAZ", "TAZ", )
+	 mc2 = CreateMatrixCurrency(m2, "Table", "TAZ", "TAZ", )
+	 new_mat = CombineMatrices({mc1, mc2}, {{"File Name",pathArray[5] + outputname + "withExt" + ".mtx"},
+     {"Label", ""},
+     {"Operation", "Union"}})
+	 m2 = null
+	 mc1 = null
+	 mc2 = null
+	 
+	 m = OpenMatrix(pathArray[5] + outputname + "withExt" + ".mtx", )
+	 SetMatrixIndexNames(m, {{"TAZ"}, {"TAZ"}})
+	 
+	 mc1 = CreateMatrixCurrency(m, "Length", , , )
+	 mc1 := Nz(mc1)
+
+	 Opts = null
+	 Opts.Input.[Input Matrix] = new_mat 
+	 Opts.global.[Drop Core] = {"Table"}
+	 RunMacro("TCB Run Operation", "Drop Matrix Core", Opts, &Ret)
+	 
+     //Save matrix core "Length" as "bikeDist" in a csv using correct matrix index
+	 Opts = null
+	 Opts.Input.[Input Matrix] = pathArray[5] + outputname + "withExt" + ".mtx" 
+	 Opts.Input.[Target Core] = "Length" 
+	 Opts.Input.[Core Name] = "BIKE_DIST"
+	 RunMacro("TCB Run Operation", "Rename Matrix Core", Opts)
+
+	 SetMatrixCore(new_mat, "BIKE_DIST")
+     SetMatrixIndex(new_mat,"TAZ","TAZ")
+     AddMatrixCore(m,"Blank")
+     mc = CreateMatrixCurrency(m,"Blank",,,)
+     FillMatrix(mc,,,{"Copy",0},)
+	 
+	 matrix_indices = GetMatrixIndexNames(m)
+     CreateTableFromMatrix(m, pathArray[5] + outputname + ".bin","FFB",{{"Complete","Yes"}})
+     tempTable = OpenTable("TempTable","FFB",{pathArray[5] + outputname + ".bin",})
+	 tableInfo = GetTableStructure(tempTable)
+     dim newTableInfo[tableInfo.length - 1]
+     for i = 1 to (tableInfo.length - 1) do
+       newTableInfo[i] = tableInfo[i] + {tableInfo[i][1]}
+     end     
+     ModifyTable(tempTable,newTableInfo)
+	 SetView(tempTable)
+	 //curr_dec = GetFieldDecimals("tempTable.BIKE_DIST")
+	 //SetFieldDecimals("tempTable.BIKE_DIST", curr_dec + 2)
+     ExportView("TempTable|","CSV",pathArray[5] + "bikeDist" + ".csv",,{{"CSV Header"},
+																		{"Indexed Fields", {"TAZ", "TAZ:1"}},
+																		{"Row Order", {{"TAZ", "Ascending"},
+																		{"TAZ:1", "Ascending"}}}
+																		})  
+     CloseView(tempTable)
+	 
+     //RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCC\"",)
+	// This loop closes all views:
+
+	vws = GetViewNames()
+
+	for i = 1 to vws.length do
+
+		 CloseView(vws[i])
+
+		 end
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + "withExt" + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + "bikeDist" + ".DCC\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".bin\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCB\"",)
+endMacro
+
+Macro "BikeTimeSkim" (season, pathArray, outputname)
+    RunMacro("TCB Init")
+    //Set up and run shortest path skim
+     Opts = null
+     Opts.Input.Network = pathArray[15] + "Tahoe_BikePed_Network.net"
+     Opts.Input.[Origin Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Destination Set] = {pathArray[1] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Via Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes"}
+     Opts.Field.Minimize = "BIKE_MINMILE"
+     Opts.Field.Nodes = "bike_ped_nodes.ID"
+     //Opts.Field.[Skim Fields].Length = "All" 
+     Opts.Output.[Output Matrix].Label = "Bike_Time_Matrix"
+     //Opts.Output.[Output Matrix].Compression = 1
+     Opts.Output.[Output Matrix].[File Name] = pathArray[5] + outputname + ".mtx"
+     ret_value = RunMacro("TCB Run Procedure", 1, "TCSPMAT", Opts)
+     
+	 //Create intrazonal
+     Opts = null
+     Opts.Input.[Matrix Currency] = {pathArray[5] + outputname + ".mtx", "BIKE_MINMILE",,}
+	 Opts.Global.Factor = 1
+     Opts.Global.Neighbors = 3
+     Opts.Global.Operation = 1
+     Opts.Global.[Treat Missing] = 1
+     ret_value = RunMacro("TCB Run Procedure", 1, "Intrazonal", Opts)
+
+	 
+	  //Add TAZ Matrix Index on Row and Column
+	 skimMatrix = OpenMatrix(pathArray[5] + outputname + ".mtx","True")
+	 mtxinx = GetMatrixIndexNames(skimMatrix)
+	 for i = 1 to mtxinx[1].length do
+		if mtxinx[1][i] = "TAZ" then goto skiphere
+	 end
+
+     Opts = null
+     Opts.Input.[Current Matrix] = skimMatrix
+     Opts.Input.[Index Type] = "Both"
+     Opts.Input.[View Set] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes+TAZ", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Old ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes.ID"}
+     Opts.Input.[New ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "TAZ"}
+     Opts.Output.[New Index] = "TAZ"
+     ret_value = RunMacro("TCB Run Operation", "Add Matrix Index", Opts, &Ret)
+	 
+	 skiphere:
+	 
+	 // Adding the External Zones skimmed
+	 // Filled all cells with zeros to indicate infeasible Bike/Ped routes from external zones to Lake Tahoe internal zones by Ped/Bike (this will be taken care of in the UEC)
+	 m2 = OpenMatrix(pathArray[9] + "ExternalDistanceMatrixBikePed.mtx", )
+	 mc1 = CreateMatrixCurrency(skimMatrix, "BIKE_MINMILE", "TAZ", "TAZ", )
+	 mc2 = CreateMatrixCurrency(m2, "Table", "TAZ", "TAZ", )
+	 new_mat = CombineMatrices({mc1, mc2}, {{"File Name",pathArray[5] + outputname + "withExt" + ".mtx"},
+     {"Label", ""},
+     {"Operation", "Union"}})
+	 m2 = null
+	 mc1 = null
+	 mc2 = null
+	 
+	 m = OpenMatrix(pathArray[5] + outputname + "withExt" + ".mtx", )
+	 SetMatrixIndexNames(m, {{"TAZ"}, {"TAZ"}})
+	 mc1 = CreateMatrixCurrency(m, "BIKE_MINMILE", , , )
+	 mc1 := Nz(mc1)
+
+	 Opts = null
+	 Opts.Input.[Input Matrix] = pathArray[5] + outputname + "withExt" + ".mtx" 
+	 Opts.global.[Drop Core] = {"Table"}
+	 RunMacro("TCB Run Operation", "Drop Matrix Core", Opts, &Ret)
+	  //Save matrix core "Time" as csv using correct matrix index
+     Opts = null
+	 Opts.Input.[Input Matrix] = new_mat 
+	 Opts.Input.[Target Core] = "BIKE_MINMILE" 
+	 Opts.Input.[Core Name] = "BIKE_TIME"
+	 RunMacro("TCB Run Operation", "Rename Matrix Core", Opts)
+	 
+	 SetMatrixCore(new_mat, "BIKE_TIME")
+     SetMatrixIndex(new_mat,"TAZ","TAZ")
+     AddMatrixCore(m,"Blank")
+     mc = CreateMatrixCurrency(m,"Blank",,,)
+     FillMatrix(mc,,,{"Copy",0},)
+	 
+	 matrix_indices = GetMatrixIndexNames(m)
+     CreateTableFromMatrix(m, pathArray[5] + outputname + ".bin","FFB",{{"Complete","Yes"}})
+     tempTable = OpenTable("TempTable","FFB",{pathArray[5] + outputname + ".bin",})
+	 tableInfo = GetTableStructure(tempTable)
+     dim newTableInfo[tableInfo.length - 1]
+     for i = 1 to (tableInfo.length - 1) do
+       newTableInfo[i] = tableInfo[i] + {tableInfo[i][1]}
+     end     
+     ModifyTable(tempTable,newTableInfo)
+	 SetView(tempTable)
+	 //curr_dec = GetFieldDecimals("tempTable.BIKE_TIME")
+	 //SetFieldDecimals("tempTable.BIKE_TIME", curr_dec + 2)
+     ExportView("TempTable|","CSV",pathArray[5] + "bikeTime" + ".csv",,{{"CSV Header"},
+																		{"Indexed Fields", {"TAZ", "TAZ:1"}},
+																		{"Row Order", {{"TAZ", "Ascending"},
+																		{"TAZ:1", "Ascending"}}}
+																		})
+     CloseView(tempTable)
+	  //RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCC\"",)
+	// This loop closes all views:
+
+	vws = GetViewNames()
+
+	for i = 1 to vws.length do
+
+		 CloseView(vws[i])
+
+		 end
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + "withExt" + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + "bikeTime" + ".DCC\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".bin\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCB\"",)
+endMacro		 
+
+// BK: this Macro defines the WalkSkim
+Macro "WalkDistanceSkim" (season, pathArray, outputname)
+    RunMacro("TCB Init")
+    //Set up and run shortest path skim
+     Opts = null
+     Opts.Input.Network = pathArray[15] + "Tahoe_BikePed_Network.net"
+     Opts.Input.[Origin Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Destination Set] = {pathArray[1] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids"}
+     Opts.Input.[Via Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes"}
+     Opts.Field.Minimize = "Length" 
+     Opts.Field.Nodes = "bike_ped_nodes.ID"
+     //Opts.Field.[Skim Fields].Length = "All"
+     Opts.Output.[Output Matrix].Label = "Walk_Distance_Matrix"
+     //Opts.Output.[Output Matrix].Compression = 1
+     Opts.Output.[Output Matrix].[File Name] = pathArray[5] + outputname + ".mtx"
+     ret_value = RunMacro("TCB Run Procedure", 1, "TCSPMAT", Opts)
+     
+     //Create intrazonal distances
+     Opts = null
+     Opts.Input.[Matrix Currency] = {pathArray[5] + outputname + ".mtx", "Length",,}
+	 Opts.Global.Factor = 1
+     Opts.Global.Neighbors = 3
+     Opts.Global.Operation = 1
+     Opts.Global.[Treat Missing] = 1
+     ret_value = RunMacro("TCB Run Procedure", 1, "Intrazonal", Opts)
+	 
+     Opts = null
+	 Opts.Input.[Matrix Currency] = {pathArray[5] + outputname + ".mtx", "Length",,}
+	 Opts.Global.Factor = 1
+     Opts.Global.Neighbors = 3
+     Opts.Global.Operation = 1
+     Opts.Global.[Treat Missing] = 1
+     ret_value = RunMacro("TCB Run Procedure", 1, "Intrazonal", Opts)
+
+	 
+	 //Add TAZ Matrix Index on Row and Column
+	 skimMatrix = OpenMatrix(pathArray[5] + outputname + ".mtx","True")
+	 mtxinx = GetMatrixIndexNames(skimMatrix)
+	 for i = 1 to mtxinx[1].length do
+		if mtxinx[1][i] = "TAZ" then goto skiphere
+	 end
+
+     Opts = null
+     Opts.Input.[Current Matrix] = skimMatrix
+     Opts.Input.[Index Type] = "Both"
+     Opts.Input.[View Set] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes+TAZ", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Old ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes.ID"}
+     Opts.Input.[New ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "TAZ"}
+     Opts.Output.[New Index] = "TAZ"
+     ret_value = RunMacro("TCB Run Operation", "Add Matrix Index", Opts, &Ret)
+
+	 skiphere:
+
+	 // Adding the External Zones skimmed
+	 // Filled all cells with zeros to indicate infeasible Bike/Ped routes from external zones to Lake Tahoe internal zones by Ped/Bike (this will be taken care of in the UEC)
+	 m2 = OpenMatrix(pathArray[9] + "ExternalDistanceMatrixBikePed.mtx", )
+	 mc1 = CreateMatrixCurrency(skimMatrix, "Length", "TAZ", "TAZ", )
+	 mc2 = CreateMatrixCurrency(m2, "Table", "TAZ", "TAZ", )
+	 new_mat = CombineMatrices({mc1, mc2}, {{"File Name",pathArray[5] + outputname + "withExt" + ".mtx"},
+     {"Label", ""},
+     {"Operation", "Union"}})
+	 m2 = null
+	 mc1 = null
+	 mc2 = null
+	 
+	 m = OpenMatrix(pathArray[5] + outputname + "withExt" + ".mtx", )
+	 SetMatrixIndexNames(m, {{"TAZ"}, {"TAZ"}})
+	 mc1 = CreateMatrixCurrency(m, "Length", , , )
+	 mc1 := Nz(mc1)
+	 
+	 Opts = null
+	 Opts.Input.[Input Matrix] = new_mat 
+	 Opts.global.[Drop Core] = {"Table"}
+	 RunMacro("TCB Run Operation", "Drop Matrix Core", Opts, &Ret)
+     //Save matrix core "Length" as "walkDist" in a csv using correct matrix index
+	 Opts = null
+	 Opts.Input.[Input Matrix] = pathArray[5] + outputname + "withExt" + ".mtx" 
+	 Opts.Input.[Target Core] = "Length" 
+	 Opts.Input.[Core Name] = "WALK_DIST"
+	 RunMacro("TCB Run Operation", "Rename Matrix Core", Opts)
+	 
+	 SetMatrixCore(new_mat, "WALK_DIST")
+     SetMatrixIndex(new_mat,"TAZ","TAZ")
+     AddMatrixCore(m,"Blank")
+     mc = CreateMatrixCurrency(m,"Blank",,,)
+     FillMatrix(mc,,,{"Copy",0},)
+	 
+	 matrix_indices = GetMatrixIndexNames(m)
+     CreateTableFromMatrix(m, pathArray[5] + outputname + ".bin","FFB",{{"Complete","Yes"}})
+     tempTable = OpenTable("TempTable","FFB",{pathArray[5] + outputname + ".bin",})
+	 tableInfo = GetTableStructure(tempTable)
+     dim newTableInfo[tableInfo.length - 1]
+     for i = 1 to (tableInfo.length - 1) do
+       newTableInfo[i] = tableInfo[i] + {tableInfo[i][1]}
+     end     
+     ModifyTable(tempTable,newTableInfo)
+	 SetView(tempTable)
+	 //curr_dec = GetFieldDecimals("tempTable.WALK_DIST")
+	 //SetFieldDecimals("tempTable.WALK_DIST", curr_dec + 2)
+     ExportView("TempTable|","CSV",pathArray[5] + "walkDist" + ".csv",,{{"CSV Header"},
+																		{"Indexed Fields", {"TAZ", "TAZ:1"}},
+																		{"Row Order", {{"TAZ", "Ascending"},
+																		{"TAZ:1", "Ascending"}}}
+																		})  
+     CloseView(tempTable)
+	 
+     //RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCC\"",)
+	// This loop closes all views:
+
+	vws = GetViewNames()
+
+	for i = 1 to vws.length do
+
+		 CloseView(vws[i])
+
+		 end
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + "withExt" + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + "walkDist" + ".DCC\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".bin\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCB\"",)
+endMacro
+
+Macro "WalkTimeSkim" (season, pathArray, outputname)
+    RunMacro("TCB Init")
+    //Set up and run shortest path skim
+     Opts = null
+     Opts.Input.Network = pathArray[15] + "Tahoe_BikePed_Network.net"
+     Opts.Input.[Origin Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Destination Set] = {pathArray[1] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes", "Centroids"}
+     Opts.Input.[Via Set] = {pathArray[14] + "bike_ped_links.DBD|bike_ped_nodes", "bike_ped_nodes"}
+     Opts.Field.Minimize = "WALK_MINMILE" 
+     Opts.Field.Nodes = "bike_ped_nodes.ID"
+     //Opts.Field.[Skim Fields].Length = "All"
+     Opts.Output.[Output Matrix].Label = "Walk_Time_Matrix"
+     //Opts.Output.[Output Matrix].Compression = 1
+     Opts.Output.[Output Matrix].[File Name] = pathArray[5] + outputname + ".mtx"
+     ret_value = RunMacro("TCB Run Procedure", 1, "TCSPMAT", Opts)
+     
+     //Create intrazonal distances
+     Opts = null
+     Opts.Input.[Matrix Currency] = {pathArray[5] + outputname + ".mtx", "WALK_MINMILE",,}
+	 Opts.Global.Factor = 1
+     Opts.Global.Neighbors = 3
+     Opts.Global.Operation = 1
+     Opts.Global.[Treat Missing] = 1
+     ret_value = RunMacro("TCB Run Procedure", 1, "Intrazonal", Opts)
+	 
+     Opts = null
+	 Opts.Input.[Matrix Currency] = {pathArray[5] + outputname + ".mtx", "WALK_MINMILE",,}
+	 Opts.Global.Factor = 1
+     Opts.Global.Neighbors = 3
+     Opts.Global.Operation = 1
+     Opts.Global.[Treat Missing] = 1
+     ret_value = RunMacro("TCB Run Procedure", 1, "Intrazonal", Opts)
+	 
+	 //Add TAZ Matrix Index on Row and Column
+	 skimMatrix = OpenMatrix(pathArray[5] + outputname + ".mtx","True")
+	 mtxinx = GetMatrixIndexNames(skimMatrix)
+	 for i = 1 to mtxinx[1].length do
+		if mtxinx[1][i] = "TAZ" then goto skiphere
+	 end
+
+     Opts = null
+     Opts.Input.[Current Matrix] = skimMatrix
+     Opts.Input.[Index Type] = "Both"
+     Opts.Input.[View Set] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes+TAZ", "Centroids", "Select * where Centroid <> null"}
+     Opts.Input.[Old ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "bike_ped_nodes.ID"}
+     Opts.Input.[New ID Field] = {{pathArray[14] + "bike_ped_links.dbd|bike_ped_nodes", pathArray[16] + "TAZ_BikePedExtTAZLookup.bin", {"Centroid"}, {"ID"}}, "TAZ"}
+     Opts.Output.[New Index] = "TAZ"
+     ret_value = RunMacro("TCB Run Operation", "Add Matrix Index", Opts, &Ret)
+
+	 skiphere:
+	 
+	 	 
+	 // Adding the External Zones skimmed
+	 // Filled all cells with zeros to indicate infeasible Bike/Ped routes from external zones to Lake Tahoe internal zones by Ped/Bike (this will be taken care of in the UEC)
+	 m2 = OpenMatrix(pathArray[9] + "ExternalDistanceMatrixBikePed.mtx", )
+	 mc1 = CreateMatrixCurrency(skimMatrix, "WALK_MINMILE", "TAZ", "TAZ", )
+	 mc2 = CreateMatrixCurrency(m2, "Table", "TAZ", "TAZ", )
+	 new_mat = CombineMatrices({mc1, mc2}, {{"File Name", pathArray[5] + outputname + "withExt" + ".mtx"},
+     {"Label", ""},
+     {"Operation", "Union"}})
+	 m2 = null
+	 mc1 = null
+	 mc2 = null
+	 
+	 m = OpenMatrix(pathArray[5] + outputname + "withExt" + ".mtx", )
+	 SetMatrixIndexNames(m, {{"TAZ"}, {"TAZ"}})
+	 mc1 = CreateMatrixCurrency(m, "WALK_MINMILE","TAZ" ,"TAZ" , )
+	 mc1 := Nz(mc1)
+	 
+	 Opts = null
+	 Opts.Input.[Input Matrix] = new_mat 
+	 Opts.global.[Drop Core] = {"Table"}
+	 RunMacro("TCB Run Operation", "Drop Matrix Core", Opts, &Ret)
+	  //Save matrix core "BIKE_MINMILE" as csv using correct matrix index
+     Opts = null
+	 Opts.Input.[Input Matrix] = pathArray[5] + outputname + "withExt" + ".mtx" 
+	 Opts.Input.[Target Core] = "WALK_MINMILE" 
+	 Opts.Input.[Core Name] = "WALK_TIME"
+	 RunMacro("TCB Run Operation", "Rename Matrix Core", Opts)
+	 
+	 SetMatrixCore(m, "WALK_TIME")
+     SetMatrixIndex(m,"TAZ","TAZ")
+	 AddMatrixCore(m,"Blank")
+     mc = CreateMatrixCurrency(m,"Blank",,,)
+     FillMatrix(mc,,,{"Copy",0},)
+	 
+	 matrix_indices = GetMatrixIndexNames(m)
+     CreateTableFromMatrix(m, pathArray[5] + outputname + ".bin","FFB",{{"Complete","Yes"}})
+     tempTable = OpenTable("TempTable","FFB",{pathArray[5] + outputname + ".bin",})
+	 tableInfo = GetTableStructure(tempTable)
+     dim newTableInfo[tableInfo.length - 1]
+     for i = 1 to (tableInfo.length - 1) do
+       newTableInfo[i] = tableInfo[i] + {tableInfo[i][1]}
+     end     
+     ModifyTable(tempTable,newTableInfo)
+	 
+	 SetView(tempTable) 
+     ExportView("TempTable|","CSV",pathArray[5] + "walkTime" + ".csv",,{{"CSV Header"},
+																		{"Indexed Fields", {"TAZ", "TAZ:1"}},
+																		{"Row Order", {{"TAZ", "Ascending"},
+																		{"TAZ:1", "Ascending"}}}
+																		}) 
+	 /*
+	 
+																		*/
+     CloseView(tempTable)
+	 
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".mtx\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + "withExt" + ".mtx\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + "walkTime" + ".DCC\"",)
+	 RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".bin\"",)
+     RunProgram("cmd /c del \"" + pathArray[5] + outputname + ".DCB\"",)
+	// This loop closes all views:
+	 vws = GetViewNames()
+
+	 for i = 1 to vws.length do
+
+		 CloseView(vws[i])
+
+		 end
+		 
+
+endMacro
+	 
+	 
 Macro "ReIndex" (pathArray, matrixName)
     RunMacro("TCB Init")
 
@@ -2742,7 +3463,7 @@ endMacro
 
 Macro "CreateTripMatrices"(pathArray)
     timePeriods = {"AM","MD","PM","LN"}
-    modeSet = {"DA","SA","SH","WT","DT","NM","SB"}
+    modeSet = {"DA","SA","SH","WT","DT","WK","BK","SB"} // BK: If Walk and Bike will be assigned, "NM" should be replaced by "Bike" and "Walk", instead.
     driveCoreSet = {"DA","SA"}
     
     for i = 1 to timePeriods.length do

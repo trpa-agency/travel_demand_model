@@ -7,10 +7,12 @@ args=commandArgs(trailingOnly=TRUE)
 library(tidyverse)
 
 
+
 scen_name = args[1]
 scenFolder <- paste0('../../../scenarios/',scen_name)
 print(scenFolder)
-
+cw <- read_csv(paste0(scenFolder,"/gis/tahoe_geo_crosswalk.csv"))
+cw[cw == "0"] <- NA
 propFile  <- readLines(paste0(scenFolder,"/code/tahoe_summer.properties"))
 
 checkReqString <- function(inpStr) {
@@ -29,30 +31,52 @@ PartyArray <- read_csv(paste0(scenFolder,"/outputs_summer/PartyArray_afterThruVi
 ### read in trip file ###
 trip_file_orig <- read_csv(paste0(scenFolder,"/outputs_summer/trip_file.csv")) #%>%     filter(startTaz>0 & endTaz>0)
 
+bikeDist_col_types <- cols(
+  TAZ = col_double(),
+  `TAZ:1` = col_double(),
+  BIKE_DIST = col_double() # Ensure BIKE_DIST is read as numeric
+)
+
+walkDist_col_types <- cols(
+  TAZ = col_double(),
+  `TAZ:1` = col_double(),
+  WALK_DIST = col_double() # Ensure WALK_DIST is read as numeric
+)
+### incorporate new bike and walk skims ####
+bikeDist<-read_csv(paste0(scenFolder,"/gis/Skims/bikeDist.csv"), col_types = bikeDist_col_types) %>%
+  mutate(id=paste( TAZ, `TAZ:1`,sep="-"))
+walkDist<-read_csv(paste0(scenFolder,"/gis/Skims/walkDist.csv"), col_types = walkDist_col_types)%>%
+  mutate(id=paste( TAZ, `TAZ:1`,sep="-"))
 
 trip_file<- trip_file_orig %>% 
   mutate(id=paste(startTaz, endTaz, sep="-"), id2=paste(startTaz, endTaz, skim, sep="-")) %>% 
   mutate(modeAgg = case_when(
     mode %in% c('drive alone','shared auto')~'drive',
     mode %in% c('drive to transit','walk to transit')~'transit',
-    mode %in% c('non motorized')~'non-motorized',
     mode %in% c('visitor shuttle','school bus')~'other')) %>% 
   left_join(PartyArray %>% select(id,stayType,walkSegment), by=c("partyID"="id")) %>% 
-    mutate(partyType=ifelse(partyType=='overnight visitor' & stayType==1,'seasonal',partyType))
+  mutate(partyType=ifelse(partyType=='overnight visitor' & stayType==1,'seasonal',partyType)) %>%
+  left_join(bikeDist %>% select(id, BIKE_DIST), by="id") %>%
+  left_join(walkDist %>% select(id, WALK_DIST), by="id")
 
+missing_ids <- trip_file %>%
+  anti_join(bikeDist %>% select(id), by="id") %>%
+  select(id)
+
+print(missing_ids)
 
 ### read in and combine distances skim files ###
 pm<-read_csv(paste0(scenFolder,"/gis/Skims/SummerPMPeakDriveDistanceSkim.csv")) %>%
-  mutate(skim=2,id2=paste(`TAZ:1`, TAZ,skim, sep="-")) %>%
+  mutate(skim=2,id2=paste( TAZ,`TAZ:1`,skim, sep="-")) %>%
   rename(trip_time=`AB_PM_IVTT / BA_PM_IVTT`)
 am<-read_csv(paste0(scenFolder,"/gis/Skims/SummerAMPeakDriveDistanceSkim.csv")) %>%
-  mutate(skim=1,id2=paste(`TAZ:1`, TAZ,skim, sep="-")) %>%
+  mutate(skim=1,id2=paste(TAZ,`TAZ:1`,skim, sep="-")) %>%
   rename(trip_time=`AB_AM_IVTT / BA_AM_IVTT`)
 ln<-read_csv(paste0(scenFolder,"/gis/Skims/SummerLateNightDriveDistanceSkim.csv")) %>%
-  mutate(skim=4,id2=paste(`TAZ:1`, TAZ, skim, sep="-")) %>%
+  mutate(skim=4,id2=paste(TAZ,`TAZ:1`,skim, sep="-")) %>%
   rename(trip_time=`AB_LN_IVTT / BA_LN_IVTT`)
 md<-read_csv(paste0(scenFolder,"/gis/Skims/SummerMiddayDriveDistanceSkim.csv")) %>%
-  mutate(skim=3, id2=paste(`TAZ:1`, TAZ, skim, sep="-")) %>%
+  mutate(skim=3, id2=paste(TAZ,`TAZ:1`,skim, sep="-")) %>%
   rename(trip_time=`AB_MD_IVTT / BA_MD_IVTT`)
 dist <- bind_rows(pm,am,ln,md) %>%
   mutate(ext_dist=case_when(`TAZ:1`%in% c(1,2,3,4,5,6,7,10,20,30,40,50,60,70) & 
@@ -239,3 +263,22 @@ select(-c(partyType1, tripType1, Time1)) %>%
 
 write.csv(auto_occ_sum,paste0(scenFolder,"/outputs_summer/reports/autoocc_summary.csv"),row.names=F)
 
+
+#### new trip file ####
+
+trip_new<-trip_file %>% #filter(modeAgg=='drive') %>% 
+  left_join(dist, by="id2") %>% 
+  left_join(cw, by=c("startTaz"="TAZ")) %>% 
+  rename(startTract=TRACT_2000,startCounty=COUNTY,startCDP=CDP,startCity=SOUTH_LAKE) %>%
+  left_join(cw, by=c("endTaz"="TAZ")) %>% 
+  rename(endTract=TRACT_2000,endCounty=COUNTY,endCDP=CDP,endCity=SOUTH_LAKE) %>%
+  mutate(Time=case_when(skim.x==1 ~ "AM",
+                        skim.x==2 ~ "PM",
+                        skim.x==3 ~ "MD",
+                        skim.x==4 ~ "LN"),
+                        startTazJurisdiction = NA, # place holder for jurisdiction, will modify this based upon taz to jurisdiction crosswalk
+                        endTazJurisdiction = NA) %>% # place holder for jurisdiction, will modify this based upon taz to jurisdiction crosswalk
+  rename(total_distance = `Length (Skim)`, internal_distance = distance, external_distance = ext_dist) %>%
+  select(tripID, tourID, startTaz, startTract, startCounty,startCDP,startCity, endTaz, endTract, endCounty,endCDP,endCity, partyType, persons, tripType, Time, mode, modeAgg, stayType, walkSegment, trip_time, internal_distance, external_distance, total_distance, BIKE_DIST, WALK_DIST)
+
+write.csv(trip_new,paste0(scenFolder,"/outputs_summer/reports/trip_file_juris.csv"),row.names=F)
