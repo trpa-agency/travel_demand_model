@@ -305,7 +305,7 @@ public class StopsModelBase {
 
             } else {
 
-                legMode = TourModeType.NONMOTORIZED;
+                legMode = TourModeType.WALK;
 
             }
 

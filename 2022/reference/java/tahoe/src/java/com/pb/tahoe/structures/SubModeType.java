@@ -6,6 +6,13 @@ package com.pb.tahoe.structures;
  * @author Christi Willison
  * @version 1.0,  Oct 25, 2006
  */
+
+
+/**
+ * Enumeration of submodes.
+ * 
+ * Note: Only ZERO and LBS are being used in Tahoe.
+ */
 public enum SubModeType {
     ZERO ("0"),
     ONE("1"),

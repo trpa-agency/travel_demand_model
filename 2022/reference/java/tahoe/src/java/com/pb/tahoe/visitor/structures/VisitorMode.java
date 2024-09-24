@@ -9,8 +9,9 @@ public enum VisitorMode implements java.io.Serializable  {
     Shuttle(2),
     WalkToTransit(3),
     DriveToTransit(4),
-    NonMotorized(5);
-
+    Walk(5),
+	Bike(6);
+	
     private int id;
 
     private VisitorMode(int id) {
@@ -27,7 +28,8 @@ public enum VisitorMode implements java.io.Serializable  {
             case 2 : return Shuttle;
             case 3 : return WalkToTransit;
             case 4 : return DriveToTransit;
-            default : return NonMotorized;
+            case 5 : return Walk;
+            default : return Bike;
         }
     }
 

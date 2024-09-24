@@ -88,15 +88,16 @@ public class TahoeReports {
 
     public void modeFilter(ReportMaker rm, String name, String colName) {
         //Create mode choice filter with school bus
-        String[] modeNames = {"Drive Alone","Shared Ride","Drive to Transit","Walk to Transit","Non-Motorized","School Bus"};
-        float[][] modeValues = new float[6][1];
+        String[] modeNames = {"Drive Alone","Shared Ride","Drive to Transit","Walk to Transit","Walk","Bike","School Bus"};
+        float[][] modeValues = new float[7][1];
         modeValues[0][0] = 1.0f;
         modeValues[1][0] = 2.0f;
         modeValues[2][0] = 4.0f;
         modeValues[3][0] = 3.0f;
         modeValues[4][0] = 5.0f;
         modeValues[5][0] = 6.0f;
-        rm.addFilter(name,colName,modeValues,modeNames);
+        modeValues[6][0] = 7.0f;
+       rm.addFilter(name,colName,modeValues,modeNames);
     }
 
     public void purposeFilter(ReportMaker rm, String name, String colName) {
@@ -540,13 +541,14 @@ public class TahoeReports {
 
     public void visitorModeFilter(ReportMaker rm, String name, String colName) {
         //Create mode choice filter with school bus
-        String[] modeNames = {"Drive","Shuttle","Drive to Transit","Walk to Transit","Non-Motorized"};
-        float[][] modeValues = new float[5][1];
+        String[] modeNames = {"Drive","Shuttle","Drive to Transit","Walk to Transit","Walk","Bike"};
+        float[][] modeValues = new float[6][1];
         modeValues[0][0] = 1.0f;
         modeValues[1][0] = 2.0f;
-        modeValues[2][0] = 4.0f;
-        modeValues[3][0] = 3.0f;
+        modeValues[2][0] = 3.0f;
+        modeValues[3][0] = 4.0f;
         modeValues[4][0] = 5.0f;
+        modeValues[5][0] = 6.0f;
         rm.addFilter(name,colName,modeValues,modeNames);
     }
 

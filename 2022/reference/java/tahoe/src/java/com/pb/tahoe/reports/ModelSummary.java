@@ -625,8 +625,9 @@ public class ModelSummary {
             case 2 : return "Shared Auto";
             case 3 : return "Walk to Transit";
             case 4 : return "Drive to Transit";
-            case 5 : return "Non-Motorized";
-            case 6 : return "School Bus";
+            case 5 : return "Walk";
+            case 6 : return "Bike";
+            case 7 : return "School Bus";
             default : return "Not a mode";
         }
     }
