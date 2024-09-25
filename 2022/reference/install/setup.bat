@@ -3,7 +3,7 @@
 ::This version has the TC_PATH hard-coded.
 :: use the command below to manually set the path to the folder containing tcw.exe
 
-SET TC_PATH=C:\Program Files\TransCAD 9.0_32770
+SET TC_PATH=C:\Program Files\TransCAD 9.0_32930
 
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
