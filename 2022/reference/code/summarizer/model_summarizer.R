@@ -53,7 +53,8 @@ trip_file<- trip_file_orig %>%
   mutate(modeAgg = case_when(
     mode %in% c('drive alone','shared auto')~'drive',
     mode %in% c('drive to transit','walk to transit')~'transit',
-    mode %in% c('visitor shuttle','school bus')~'other')) %>% 
+    mode %in% c('visitor shuttle','school bus')~'other',
+    mode %in% c('non motorized','bike', 'walk')~'non motorized')) %>% 
   left_join(PartyArray %>% select(id,stayType,walkSegment), by=c("partyID"="id")) %>% 
   mutate(partyType=ifelse(partyType=='overnight visitor' & stayType==1,'seasonal',partyType)) %>%
   left_join(bikeDist %>% select(id, BIKE_DIST), by="id") %>%
