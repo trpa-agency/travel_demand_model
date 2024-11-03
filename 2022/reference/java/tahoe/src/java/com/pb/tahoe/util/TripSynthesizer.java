@@ -69,7 +69,7 @@ public class TripSynthesizer {
             for (VisitorTour tour : tp.getTours()) {
                 if (tp.getPattern() != -1)
                     //doesn't get all walk trips for drive tours with stops, it should get all transit trips correctly
-                    if (tour.getMode().getId() == 1) {
+                    if (tour.getMode() == VisitorMode.Drive) {
                         addVisitorTourTrips(tour, tp);
                     } else {
                         for (int i = 1; i <= tp.getPersons(); i++) {
@@ -337,7 +337,8 @@ public class TripSynthesizer {
             case 2 : return "SH";
             case 3 : return "WT";
             case 4 : return "DT";
-            case 5 : return "NM";
+            case 5 : return "WK";
+            case 6 : return "BK";
             default : return "DA";
         }
     }
@@ -348,8 +349,9 @@ public class TripSynthesizer {
             case 2 : return "SA";
             case 3 : return "WT";
             case 4 : return "DT";
-            case 5 : return "NM";
-            case 6 : return "SB";
+            case 5 : return "WK";
+            case 6 : return "BK";
+            case 7 : return "SB";
             default : return "WT";
         }
     }
@@ -371,8 +373,10 @@ public class TripSynthesizer {
             return "walk to transit";
         else if (mode.equals("DT"))
             return "drive to transit";
-        else if (mode.equals("NM"))
-            return "non motorized";
+        else if (mode.equals("WK"))
+            return "walk";
+        else if (mode.equals("BK"))
+            return "bike";
         else if (mode.equals("SB"))
             return "school bus";
         else if (mode.equals("SH"))
@@ -530,7 +534,7 @@ public class TripSynthesizer {
         int j = t.getDestTAZ();
         int mode = t.getMode().getId();
         //for drive alone
-        if (tp.getPersons() == 1 && mode == 1)
+        if (tp.getPersons() == 1 && mode == VisitorMode.Drive.getId())
             mode = 99;
         String tripBase = "";
         if (buildTripFile) {
@@ -560,15 +564,15 @@ public class TripSynthesizer {
                 addTrip(getSkimClassName('o',tourType, mode,skimOut,"OV_"),i,ko);
                 ikMode = mode;
             } else {
-                addTrip(getSkimClassName('o',tourType, VisitorMode.NonMotorized.getId(),skimOut,"OV_"),i,ko);
-                ikMode = VisitorMode.NonMotorized.getId();
+                addTrip(getSkimClassName('o',tourType, VisitorMode.Walk.getId(),skimOut,"OV_"),i,ko);
+                ikMode = VisitorMode.Walk.getId();
             }
             if (outMode == 0 || outMode == 1) {
                 addTrip(getSkimClassName('o',tourType, mode,skimOut,"OV_"),ko,j);
                 kjMode = mode;
             } else {
-                addTrip(getSkimClassName('o',tourType, VisitorMode.NonMotorized.getId(),skimOut,"OV_"),ko,j);
-                kjMode = VisitorMode.NonMotorized.getId();
+                addTrip(getSkimClassName('o',tourType, VisitorMode.Walk.getId(),skimOut,"OV_"),ko,j);
+                kjMode = VisitorMode.Walk.getId();
             }
             if (buildTripFile) {
                tripFileText.append(tripCount++).append(",").append(tripBase).append("is").append(",").
@@ -604,15 +608,15 @@ public class TripSynthesizer {
                 addTrip(getSkimClassName('o',tourType, mode,skimIn,"OV_"),j,ki);
                 jkMode = mode;
             } else {
-                addTrip(getSkimClassName('o',tourType, VisitorMode.NonMotorized.getId(),skimIn,"OV_"),j,ki);
-                jkMode = VisitorMode.NonMotorized.getId();
+                addTrip(getSkimClassName('o',tourType, VisitorMode.Walk.getId(),skimIn,"OV_"),j,ki);
+                jkMode = VisitorMode.Walk.getId();
             }
             if (inMode == 0 || inMode == 1) {
                 addTrip(getSkimClassName('o',tourType, mode,skimIn,"OV_"),ki,i);
                 kiMode = mode;
             } else {
-                addTrip(getSkimClassName('o',tourType, VisitorMode.NonMotorized.getId(),skimIn,"OV_"),ki,i);
-                kiMode = VisitorMode.NonMotorized.getId();
+                addTrip(getSkimClassName('o',tourType, VisitorMode.Walk.getId(),skimIn,"OV_"),ki,i);
+                kiMode = VisitorMode.Walk.getId();
             }
             if (buildTripFile) {
                 tripFileText.append(tripCount++).append(",").append(tripBase).append("js").append(",").

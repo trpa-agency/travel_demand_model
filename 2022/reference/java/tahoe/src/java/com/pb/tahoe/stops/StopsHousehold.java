@@ -101,7 +101,7 @@ public class StopsHousehold extends StopsModelBase {
         // loop over individual mandatory tours for the hh
         for (int t=0; t < hh.mandatoryTours.length; t++) {
             // if the primary mode for this mandatory tour is non-motorized or school bus, skip stop freq choice
-            if (hh.mandatoryTours[t].getMode() == TourModeType.NONMOTORIZED ||
+            if (TourModeType.isNonmotor(hh.mandatoryTours[t].getMode()) ||
                 hh.mandatoryTours[t].getMode() == TourModeType.SCHOOLBUS) {
                 continue;
             }
@@ -118,7 +118,7 @@ public class StopsHousehold extends StopsModelBase {
 
             tourType = hh.mandatoryTours[t].getTourType();
 
-            int autoTransit = hh.mandatoryTours[t].getMode() < 3 ? 0 : 1;
+            int autoTransit = TourModeType.isAuto(hh.mandatoryTours[t].getMode()) ? 0 : 1;
 
             setStopLocationAvailabilities(autoTransit, OB);
 
@@ -303,7 +303,7 @@ public class StopsHousehold extends StopsModelBase {
         for (int t=0; t < hh.mandatoryTours.length; t++) {
 
             // if the primary mode for this mandatory tour is non-motorized or school bus, skip stop mode choice
-            if (hh.mandatoryTours[t].getMode() == TourModeType.NONMOTORIZED ||
+            if (TourModeType.isNonmotor(hh.mandatoryTours[t].getMode()) ||
                 hh.mandatoryTours[t].getMode() == TourModeType.SCHOOLBUS) {
 
                     continue;
@@ -436,7 +436,7 @@ public class StopsHousehold extends StopsModelBase {
             index.setDestZone( hh.jointTours[t].getDestTaz() );
 
             // if the primary mode for this joint tour is non-motorized, skip stop freq choice
-            if (hh.jointTours[t].getMode() == TourModeType.NONMOTORIZED) {
+            if (TourModeType.isNonmotor(hh.jointTours[t].getMode())) {
                 continue;
             }
 
@@ -449,7 +449,7 @@ public class StopsHousehold extends StopsModelBase {
             hh.setPersonID ( person );
             hh.setTourID ( t );
 
-            int autoTransit = hh.jointTours[t].getMode() < 3 ? 0 : 1;
+            int autoTransit = TourModeType.isAuto(hh.jointTours[t].getMode() ) ? 0 : 1;
 
             //need to set inbound availabilities so that the inbound logsum
             //can be calculated as it is used in the utility expression for joint stop-frequency.
@@ -661,7 +661,7 @@ public class StopsHousehold extends StopsModelBase {
         for (int t=0; t < hh.jointTours.length; t++) {
 
             // if the primary mode for this joint tour is non-motorized, skip stop mode choice
-            if (hh.jointTours[t].getMode() == TourModeType.NONMOTORIZED) {
+            if (TourModeType.isNonmotor(hh.jointTours[t].getMode())) {
                  continue;
             }
 
@@ -801,7 +801,7 @@ public class StopsHousehold extends StopsModelBase {
             index.setDestZone( hh.indivTours[t].getDestTaz() );
 
             // if the primary mode for this indiv non-mandatory tour is non-motorized, skip stop freq choice
-            if (hh.indivTours[t].getMode() == TourModeType.NONMOTORIZED) {
+            if (TourModeType.isNonmotor(hh.indivTours[t].getMode())) {
                 continue;
             }
 
@@ -814,7 +814,7 @@ public class StopsHousehold extends StopsModelBase {
             hh.setPersonID ( person );
             hh.setTourID ( t );
 
-            int autoTransit = hh.indivTours[t].getMode() < 3 ? 0 : 1;
+            int autoTransit = TourModeType.isAuto(hh.indivTours[t].getMode() ) ? 0 : 1;
 
             setStopLocationAvailabilities(autoTransit, IB);
 
@@ -1016,7 +1016,7 @@ public class StopsHousehold extends StopsModelBase {
         for (int t=0; t < hh.indivTours.length; t++) {
 
             // if the primary mode for this indiv non-mandatory tour is non-motorized, skip trip mode choice
-            if (hh.indivTours[t].getMode() == TourModeType.NONMOTORIZED ) {
+            if (TourModeType.isNonmotor(hh.indivTours[t].getMode())) {
 
                     continue;
             }
@@ -1174,12 +1174,12 @@ public class StopsHousehold extends StopsModelBase {
                 index.setDestZone( hh.mandatoryTours[t].subTours[s].getDestTaz() );
 
                 // if the primary mode for this at-work subtour is non-motorized, skip stop frequency choice
-                if (hh.mandatoryTours[t].subTours[s].getMode() == TourModeType.NONMOTORIZED) {
+                if (TourModeType.isNonmotor(hh.mandatoryTours[t].subTours[s].getMode())) {
                     continue;
                 }
 
 
-                int autoTransit = hh.mandatoryTours[t].subTours[s].getMode() < 3 ? 0 : 1;
+                int autoTransit = TourModeType.isAuto(hh.mandatoryTours[t].subTours[s].getMode() ) ? 0 : 1;
                 int subtourType = hh.mandatoryTours[t].subTours[s].getSubTourType();
 
                 // compute stop frequency choice proportions and choose alternative
@@ -1395,7 +1395,7 @@ public class StopsHousehold extends StopsModelBase {
             for (int s=0; s < hh.mandatoryTours[t].subTours.length; s++) {
 
                 // if the primary mode for this at-work subtour is non-motorized, skip stop mode choice
-                if (hh.mandatoryTours[t].subTours[s].getMode() == TourModeType.NONMOTORIZED) {
+                if (TourModeType.isNonmotor(hh.mandatoryTours[t].subTours[s].getMode())) {
 
                     continue;
                 }

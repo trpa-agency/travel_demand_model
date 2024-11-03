@@ -20,7 +20,7 @@ import com.pb.common.matrix.CSVMatrixReader;
 import com.pb.common.matrix.Matrix;
 import com.pb.common.matrix.ZipMatrixWriter;
 import com.pb.common.util.ResourceUtil;
-
+import org.apache.log4j.Logger;
 import java.io.File;
 import java.util.ResourceBundle;
 
@@ -35,6 +35,7 @@ public class SkimConverter {
     static String skimsDir;
     static String matrixFormat;
     static String season;
+    protected static Logger logger = Logger.getLogger(SkimConverter.class);
 
     static String[] driveDistancePropNames = {"sovTime", "sovDist"};
 
@@ -61,6 +62,9 @@ public class SkimConverter {
 //            "SummerMiddayDrive2TransitSkim.csv","SummerLateNightDrive2TransitSkim.csv"};
     static String[] drive2TransitFiles = {"AMPeakDrive2TransitSkim.csv","PMPeakDrive2TransitSkim.csv",
             "MiddayDrive2TransitSkim.csv","LateNightDrive2TransitSkim.csv"};
+    
+    static String[] nonMotorizedFiles = {"walkTime","walkDist","bikeTime","bikeDist"};
+    static String[] nonMotorizedCores = {"\"WALK_TIME\"","\"WALK_DIST\"","\"BIKE_TIME\"","\"BIKE_DIST\""};
 
     public static void main(String[] args) {
 
@@ -95,9 +99,9 @@ public class SkimConverter {
 //            matrices[1] = reader.readMatrix(drivePeakDistanceCores[1]);
 //            System.out.println("Max of matrix " + drivePeakDistanceCores[1] + " is " + matrices[1].getMax());
             for(int i=0; i< drivePeakDistanceCores.length; i++){
-                System.out.println("Max of matrix " + drivePeakDistanceCores[i] + " is " + matrices[i].getMax());
+                logger.info("Max of matrix " + drivePeakDistanceCores[i] + " is " + matrices[i].getMax());
                 File outputFile = new File(skimsDir + "/" + driveDistancePropNames[i] + outputFileSuffix + "." + matrixFormat);
-                System.out.println("Writing file " + outputFile);
+                logger.info("Writing file " + outputFile);
                 ZipMatrixWriter writer = new ZipMatrixWriter(outputFile);
                 writer.writeMatrix(matrices[i]);
             }
@@ -111,12 +115,12 @@ public class SkimConverter {
             else if(ddopFileName.contains("Midday")) outputFileSuffix = "Md";
             else if(ddopFileName.contains("LateNight")) outputFileSuffix = "Ln";
             File file = new File(skimsDir + "/" + ddopFileName );
-            System.out.println("Reading file " + file);
+            logger.info("Reading file " + file);
             CSVMatrixReader reader = new CSVMatrixReader(file);
             matrices = reader.readMatrices();
             for(int i=0; i< driveOffPeakDistanceCores.length; i++){
                 File outputFile = new File(skimsDir + "/" + driveDistancePropNames[i] + outputFileSuffix + "." + matrixFormat);
-                System.out.println("Writing file " + outputFile);
+                logger.info("Writing file " + outputFile);
                 ZipMatrixWriter writer = new ZipMatrixWriter(outputFile);
                 writer.writeMatrix(matrices[i]);
             }
@@ -132,13 +136,13 @@ public class SkimConverter {
             else if(ptFileName.contains("LateNight")) outputFileSuffix = "Ln";
             File file = new File(skimsDir + "/" + ptFileName );
             for(int i=0; i< peakTransitCores.length; i++){
-                System.out.println("Reading file " + file);
+            	logger.info("Reading file " + file);
                 CSVMatrixReader reader = new CSVMatrixReader(file);
                 matrices[i] = reader.readMatrix(peakTransitCores[i]);
                 File outputFile = new File(skimsDir + "/" + peakTransitPropNames[i] + outputFileSuffix + "." + matrixFormat);
                 ZipMatrixWriter writer = new ZipMatrixWriter(outputFile);
                 writer.writeMatrix(matrices[i]);
-                System.out.println("Writing file " + outputFile);
+                logger.info("Writing file " + outputFile);
             }
         }
 
@@ -150,7 +154,7 @@ public class SkimConverter {
             else if(ptFileName.contains("Midday")) outputFileSuffix = "Md";
             else if(ptFileName.contains("LateNight")) outputFileSuffix = "Ln";
             File file = new File(skimsDir + "/" + ptFileName );
-            System.out.println("Reading file " + file);
+            logger.info("Reading file " + file);
             CSVMatrixReader reader = new CSVMatrixReader(file);
             matrices = reader.readMatrices();
             int count = 0;
@@ -161,7 +165,7 @@ public class SkimConverter {
                         ZipMatrixWriter writer = new ZipMatrixWriter(outputFile);
                         writer.writeMatrix(m);
                         count++;
-                        System.out.println("Writing file " + outputFile);
+                        logger.info("Writing file " + outputFile);
                     }
                 }
             }
@@ -178,14 +182,28 @@ public class SkimConverter {
             else if(ptFileName.contains("LateNight")) outputFileSuffix = "Ln";
             File file = new File(skimsDir + "/" + ptFileName );
             for(int i=0; i< drive2TransitCores.length; i++){
-                System.out.println("Reading file " + file);
+            	logger.info("Reading file " + file);
                 CSVMatrixReader reader = new CSVMatrixReader(file);
                 matrices[i] = reader.readMatrix(drive2TransitCores[i]);
                 File outputFile = new File(skimsDir + "/" + drive2TransitPropNames[i] + outputFileSuffix + "." + matrixFormat);
                 ZipMatrixWriter writer = new ZipMatrixWriter(outputFile);
                 writer.writeMatrix(matrices[i]);
-                System.out.println("Writing file " + outputFile);
+                logger.info("Writing file " + outputFile);
             }
+        }
+        
+        //non-motorized
+        for(int i = 0; i<nonMotorizedFiles.length;++i) {
+        	File inFile = new File(skimsDir + "/"+nonMotorizedFiles[i]+".csv");
+        	File outFile = new File(skimsDir + "/"+nonMotorizedFiles[i]+ "." + matrixFormat);
+        	logger.info("Reading file "+inFile);
+        	CSVMatrixReader reader = new CSVMatrixReader(inFile);
+        	Matrix m = reader.readMatrix(nonMotorizedCores[i]);
+        	logger.info("Done reading file "+inFile);
+            ZipMatrixWriter writer = new ZipMatrixWriter(outFile);
+            logger.info("Writing file " + outFile);
+            writer.writeMatrix(m);
+        	logger.info("Done writing file "+outFile);
         }
 
     }

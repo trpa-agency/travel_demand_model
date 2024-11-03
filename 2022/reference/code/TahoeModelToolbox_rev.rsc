@@ -2068,7 +2068,7 @@ Dbox "NewScenarioCreator" (pathArray,scenarioList) title: "Create New Scenario"
     init do
         opt_idx = 0
 		source_inputs = 1
-		source_inputs_list = {"2018_inputs","20XX_inputs"}
+		source_inputs_list = {"2022_inputs","2018_inputs"}
     enditem
     Text "Enter New Scenario Name" 1.5,.6
 	Text "Select Source Scenario" 26.5,.6

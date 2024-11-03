@@ -175,7 +175,15 @@ public class AtWorkDTM extends DTMModel {
         // compute destination choice proportions and choose alternative
         markTime = System.currentTimeMillis();
         dc[tourTypeIndex].updateLogitModel ( hh, dcAvailability, dcSample );
-        int chosen = dc[tourTypeIndex].getChoiceResult();
+        int chosen = 0;
+        
+        try{
+        	chosen = dc[tourTypeIndex].getChoiceResult();
+        }catch(Exception e) {
+        	logger.fatal("Error choosing At-Work tour destination");
+        	hh.writeContentToLogger(logger);
+        	throw e;
+        }
         int chosenDestAlt = (int) dcUEC[tourTypeIndex].getAlternativeData().getIndexedValueAt(chosen, 2);
         int chosenShrtWlk = (int) dcUEC[tourTypeIndex].getAlternativeData().getIndexedValueAt(chosen, 3);
         dcTime += (System.currentTimeMillis() - markTime);
