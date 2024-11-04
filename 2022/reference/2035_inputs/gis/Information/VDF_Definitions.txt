@@ -1,0 +1,31 @@
+VDF Function Definitions:
+
+These are derived from those used in the Oregon statewide model.  An "X" in the Oregon column
+means they were copied directly, otherwise they were derived as "best guesses"
+
++---------------+-------+-------+-------+-------+-------+
+|Area Type      |Speed  |Lanes  |Alpha  |Beta   |Oregon |
++---------------+-------+-------+-------+-------+-------+
+|Rural          |60     |2+     |0.09   |6      |X      |
+|Rural          |55     |2+     |0.08   |6      |X      |
+|Rural          |50     |2+     |0.07   |6      |X      |
+|Rural          |45     |2+     |0.07   |6      |X      |
+|Rural          |35     |2+     |0.92   |5      |       |
+|Rural          |25     |2+     |1.10   |5      |       |
+|Rural          |Any    |<2     |0.34   |4      |X      |
+|Suburban       |55     |Any    |0.33   |4      |       |
+|Suburban       |50     |Any    |0.34   |4      |X      |
+|Suburban       |45     |Any    |0.42   |5      |       |
+|Suburban       |40     |Any    |0.38   |5      |X      |
+|Suburban       |35     |Any    |0.96   |5      |X      |
+|Suburban       |30     |Any    |1.11   |5      |X      |
+|Suburban       |25     |Any    |1.20   |5      |       |
+|Suburban       |20     |Any    |1.25   |5      |       |
+|Suburban       |15     |Any    |1.30   |5      |       |
+|Urban          |50     |Any    |0.74   |5      |X      |
+|Urban          |45     |Any    |0.72   |5      |       |
+|Urban          |40     |Any    |0.70   |5      |X      |
+|Urban          |35     |Any    |1.00   |5      |X      |
+|Urban          |30     |Any    |1.20   |5      |X      |
+|Urban          |25     |Any    |1.30   |5      |       |
++---------------+-------+-------+-------+-------+-------+

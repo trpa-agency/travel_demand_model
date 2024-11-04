@@ -1,0 +1,7 @@
+FC For Tahoe Model
+1 - Principle Arterial
+2 - Minor Arterial
+3 - Collector
+7 - Walk-only link
+8 - Transit only link (Gondola)
+9 - Centroid connector
