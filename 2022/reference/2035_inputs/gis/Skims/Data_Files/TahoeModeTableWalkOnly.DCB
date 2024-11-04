@@ -1,0 +1,6 @@
+
+32
+"Mode_Name",C,1,16,0,16,0,,,"",,Blank,
+"Mode_ID",I,17,4,0,8,0,,,"",,Blank,
+"Mode_Used",I,21,4,0,8,0,,,"",,Blank,
+"Speed",R,25,8,0,10,2,,,"",,Blank,
