@@ -1,6 +1,6 @@
-Routable_Network_Dra
-210
-"ID",I,1,4,0,10,0,,"","",,"Sum",
+Routable_Network_Draft03 2024-12-11
+226
+"ID",I,1,4,0,4,0,,"","",,"Sum",
 "osmid",R,5,8,0,10,0,,"","",,"Sum",
 "lanes",C,13,4,0,4,0,,"","",,"Copy",
 "name",C,17,40,0,40,0,,"","",,"Copy",
@@ -15,3 +15,5 @@ Routable_Network_Dra
 "manual_spl",R,187,8,0,19,0,,"","",,"Sum",
 "shp_length",R,195,8,0,19,2,,"","",,"Sum",
 "Connector",R,203,8,0,10,2,,"","",,"Sum",
+"BIKE_MINMILE",R,211,8,0,12,2,,"","",,"Sum",
+"WALK_MINMILE",R,219,8,0,12,2,,"","",,"Sum",
